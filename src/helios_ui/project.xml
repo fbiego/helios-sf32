@@ -1,0 +1,31 @@
+<project name="helios_ui" lvgl_version="9.4.0">
+	<targets>
+		<target name="target_466R">
+			<display width="466" height="466" radius="233" />
+		</target>
+		<!-- <target name="target_466">
+			<display width="466" height="466" />
+		</target> -->
+		<target name="target_360R">
+			<display width="360" height="360" radius="180" />
+		</target>
+		<!-- <target name="target_360">
+			<display width="360" height="360" />
+		</target> -->
+		<target name="target_240R">
+			<display width="240" height="240" radius="120" />
+		</target>
+		<!-- <target name="target_240">
+			<display width="240" height="240" />
+		</target> -->
+		<target name="target_240">
+			<display width="240" height="280" radius="50" />
+		</target>
+		<target name="target_390">
+			<display width="390" height="450" radius="80" />
+		</target>
+		<target name="target_410">
+			<display width="410" height="502" radius="100" />
+		</target>
+	</targets>
+</project>

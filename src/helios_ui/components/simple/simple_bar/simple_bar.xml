@@ -1,0 +1,26 @@
+<component>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0x020202" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style name="style_base" width="100%" height="6" bg_color="0xffffff" blend_mode="difference" />
+		<style name="style_indicator" bg_color="0xffffff" />
+		<style name="style_base_360" height="4" />
+		<style name="style_base_240" height="2" />
+	</styles>
+
+	<view extends="lv_bar">
+		<!-- Add widgets/components here -->
+		<style name="style_base" />
+		<style name="style_indicator" selector="indicator" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+	</view>
+</component>

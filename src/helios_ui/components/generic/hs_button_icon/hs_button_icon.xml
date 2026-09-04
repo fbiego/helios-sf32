@@ -1,0 +1,50 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style name="style_button" width="60" height="60" radius="55" bg_color="0x282828" bg_opa="255" />
+		<style name="style_button_360" width="50" height="50" />
+		<style name="style_button_240" width="30" height="30" />
+		<style name="style_pressed" bg_color="0xbebebe" />
+		<style name="style_icon" align="center" image_recolor="0xffffff" image_recolor_opa="255" />
+		<style name="style_checked" bg_color="0x0534ff" />
+		<style name="style_disabled" bg_color="0x383838" />
+
+		<style name="style_image" image_recolor="0xffffff" image_recolor_opa="255" />
+		<style name="style_image_disabled" image_recolor="0x5c5959" image_recolor_opa="255" />
+	</styles>
+	<api>
+		<prop name="icon" type="image" default="icon_arrow_up" />
+		<prop name="rotation" type="int" default="0" />
+		<prop name="bind_icon" type="subject" default="sb_placeholder" />
+	</api>
+	<view scrollable="false" state_trickle="true">
+		<remove_style_all />
+		<style name="style_button" />
+		<style name="style_pressed" selector="pressed" />
+		<style name="style_checked" selector="checked" />
+		<style name="style_disabled" selector="disabled" />
+
+		<bind_style name="style_button_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_button_240" subject="sb_screen_size" ref_value="2" />
+		<wd_image
+			clickable="false"
+			align="center"
+			src="$icon"
+			scale_0="256"
+			scale_1="190"
+			scale_2="130"
+			size_1="60"
+			size_2="40"
+			rotation="$rotation"
+			bind_scale="sb_screen_size"
+			bind_src="$bind_icon"
+		>
+			<style name="style_image" />
+			<style name="style_image_disabled" selector="disabled" />
+		</wd_image>
+	</view>
+</component>

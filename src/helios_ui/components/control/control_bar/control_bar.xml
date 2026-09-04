@@ -1,0 +1,59 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style
+			name="style_bar"
+			width="110"
+			height="110"
+			radius="55"
+			bg_color="0x282828"
+			bg_opa="255"
+			text_color="0xffffff"
+			text_font="NS_Medium_40"
+		/>
+		<style name="style_bar_360" width="90" height="90" text_font="NS_Medium_30" />
+
+		<style name="style_bar_240" width="60" height="60" text_font="NS_Medium_20" />
+		<style name="style_indicator" bg_color="0xffffff" bg_opa="255" />
+	</styles>
+
+	<api>
+		<prop name="bind_subject" type="subject" />
+		<prop name="bind_fmt" type="string" default="%d%%" />
+		<prop name="icon" type="image" default="icon_empty" />
+		<prop name="hide_text" type="bool" default="false" />
+	</api>
+
+	<view extends="lv_bar" orientation="vertical" bind_value="$bind_subject" event_bubble="true">
+		<remove_style_all />
+		<style name="style_bar" />
+		<style name="style_indicator" selector="indicator" />
+		<bind_style name="style_bar_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_bar_240" subject="sb_screen_size" ref_value="2" />
+
+		<wd_image
+			clickable="false"
+			align="center"
+			src="$icon"
+			scale_0="256"
+			scale_1="190"
+			scale_2="130"
+			bind_scale="sb_screen_size"
+			style_blend_mode="difference"
+			style_image_recolor="0xffffff"
+			style_image_recolor_opa="255"
+		/>
+		<lv_label
+			bind_text="$bind_subject"
+			bind_text-fmt="$bind_fmt"
+			align="center"
+			style_blend_mode="difference"
+			hidden="$hide_text"
+			style_pad_top="5"
+		/>
+	</view>
+</component>

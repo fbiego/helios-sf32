@@ -1,0 +1,45 @@
+<widget>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0x0c0c0c" />
+	</previews>
+
+	<api>
+		<!-- Add your API here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+		<element name="container" access="get" type="lv_obj" />
+		<element name="dot" access="get" type="lv_obj" />
+	</api>
+
+	<styles>
+		<style name="style_base" width="100%" height="100%" bg_opa="0" />
+		<style
+			name="style_panel_dot"
+			width="100%"
+			height="content"
+			align="bottom_mid"
+			layout="flex"
+			flex_main_place="center"
+			pad_bottom="12"
+			pad_column="9"
+		/>
+		<style name="style_panel_dot_360" pad_bottom="9" pad_column="6" />
+		<style name="style_panel_dot_240" pad_bottom="7" pad_column="3" />
+	</styles>
+
+	<view extends="lv_obj">
+		<style name="style_base" />
+
+		<lv_obj name="container">
+			<remove_style_all />
+			<style name="style_base" />
+		</lv_obj>
+
+		<lv_obj name="dots">
+			<remove_style_all />
+			<style name="style_panel_dot" />
+			<bind_style name="style_panel_dot_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_panel_dot_240" subject="sb_screen_size" ref_value="2" />
+		</lv_obj>
+	</view>
+</widget>

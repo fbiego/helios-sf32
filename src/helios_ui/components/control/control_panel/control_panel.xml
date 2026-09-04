@@ -1,0 +1,71 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_radius="233" style_bg_color="0x8f8b8b" />
+		<preview width="360" height="360" style_radius="180" style_bg_color="0x8f8b8b" />
+		<preview width="240" height="240" style_radius="120" style_bg_color="0x8f8b8b" />
+		<preview width="240" height="280" style_radius="50" style_bg_color="0x8f8b8b" />
+		<preview width="390" height="450" style_radius="50" style_bg_color="0x8f8b8b" />
+		<preview width="410" height="502" style_radius="100" style_bg_color="0x8f8b8b" />
+	</previews>
+
+	<styles>
+		<style name="style_control" width="100%" height="100%" bg_color="0x0e0e0e" bg_opa="255" />
+
+		<style name="style_cont_360" pad_hor="35" pad_row="10" pad_column="10" pad_top="60" pad_bottom="80" />
+		<style name="style_cont_240" pad_hor="20" pad_row="10" pad_column="10" pad_top="40" pad_bottom="60" />
+		<style
+			name="style_grid"
+			width="100%"
+			height="100%"
+			align="center"
+			flex_main_place="center"
+			border_width="0"
+			pad_top="70"
+			pad_bottom="100"
+			pad_hor="3"
+		/>
+		<style name="style_bar" width="100%" height="15%" align="bottom_mid" />
+		<style name="style_bar_pressed" bg_color="0xfff" bg_opa="100" />
+		<style name="style_min_pad" pad_hor="20" />
+	</styles>
+	<view>
+		<remove_style_all />
+		<style name="style_control" />
+
+		<wd_list name="control_list" bind_screen="sb_screen_size">
+			<style name="style_control" />
+			<wd_list-container gesture_bubble="false">
+				<style name="style_grid" />
+				<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+				<bind_style name="style_min_pad" subject="sb_screen_type" ref_value="1" />
+				<control_group>
+					<control_slider icon_left="icon_brightness_full" bind_value="sb_screen_brightness" />
+					<control_bar bind_subject="sb_battery_percent" />
+				</control_group>
+				<control_group>
+					<control_slider icon_left="icon_volume_high" bind_value="sb_sound_volume" />
+					<control_switch icon="icon_connect" clickable="false" bind_checked="sb_system_connection" />
+				</control_group>
+				<music_info>
+					<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				</music_info>
+				<control_music>
+					<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				</control_music>
+				<control_group>
+					<control_switch icon="icon_list" bind_checked="sb_app_list_mode" />
+
+					<control_switch icon="icon_vibration" bind_checked="sb_list_circular_mode" />
+
+					<control_switch icon="icon_dnd" bind_checked="sb_focusable" />
+				</control_group>
+			</wd_list-container>
+		</wd_list>
+		<lv_obj name="drag_control" gesture_bubble="false">
+			<remove_style_all />
+			<style name="style_bar" />
+			<style name="style_bar_pressed" selector="pressed" />
+		</lv_obj>
+	</view>
+</component>

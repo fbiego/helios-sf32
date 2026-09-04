@@ -1,0 +1,62 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style name="style_slider" width="235" height="110" radius="55" bg_color="0x282828" bg_opa="255" />
+		<style name="style_slider_360" width="190" height="90" />
+		<style name="style_slider_240" width="130" height="60" />
+		<style name="style_indicator" bg_color="0xffffff" bg_opa="255" />
+		<style name="style_disabled" bg_color="0x898989" />
+	</styles>
+	<api>
+		<prop name="icon_left" type="image" default="icon_volume_high" />
+		<prop name="icon_right" type="image" default="icon_empty" />
+	</api>
+	<view extends="lv_slider" scrollable="false" event_bubble="true" scroll_on_focus="false">
+		<remove_style_all />
+		<style name="style_slider" />
+		<style name="style_indicator" selector="indicator" />
+		<style name="style_disabled" selector="disabled" />
+		<bind_style name="style_slider_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_slider_240" subject="sb_screen_size" ref_value="2" />
+
+		<wd_image
+			clickable="false"
+			align="left_mid"
+			src="$icon_left"
+			scale_0="256"
+			scale_1="190"
+			scale_2="130"
+			size_1="60"
+			size_2="40"
+			x_0="24"
+			x_1="14"
+			x_2="8"
+			bind_scale="sb_screen_size"
+			style_blend_mode="difference"
+			style_image_recolor="0xffffff"
+			style_image_recolor_opa="255"
+		/>
+
+		<wd_image
+			clickable="false"
+			align="right_mid"
+			src="$icon_right"
+			scale_0="256"
+			scale_1="190"
+			scale_2="130"
+			size_1="60"
+			size_2="40"
+			x_0="-24"
+			x_1="-14"
+			x_2="-8"
+			bind_scale="sb_screen_size"
+			style_blend_mode="difference"
+			style_image_recolor="0xffffff"
+			style_image_recolor_opa="255"
+		/>
+	</view>
+</component>

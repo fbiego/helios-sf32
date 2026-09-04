@@ -1,0 +1,57 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_bg_color="0x000" />
+		<preview width="360" height="360" style_bg_color="0x000" />
+		<preview width="240" height="240" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			layout="flex"
+			flex_main_place="space_around"
+			text_color="0xfff"
+			border_color="0x626262"
+			border_opa="255"
+			border_width="1"
+			border_side="top"
+			pad_top="10"
+		/>
+		<style name="style_pad_360" pad_top="8" />
+		<style name="style_pad_240" pad_top="5" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+
+		<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+
+		<bind_style name="style_text_normal_466" subject="sb_screen_size" ref_value="0" />
+		<bind_style name="style_text_normal_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_text_normal_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_text_normal flex_grow="2" text="Sun" translation_tag="sun" style_text_align="center" />
+		<wd_image
+			src="icon_weather"
+			scale_0="120"
+			scale_1="110"
+			scale_2="70"
+			size_0="30"
+			size_1="25"
+			size_2="15"
+			bind_scale="sb_screen_size"
+			flex_grow="1"
+		/>
+		<hs_text_normal flex_grow="2" text="19°/12°" style_text_align="center" style_text_letter_space="-1" />
+	</view>
+</component>

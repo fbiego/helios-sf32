@@ -1,0 +1,24 @@
+<component>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0x111111" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+		<prop name="title" type="string" default="Lap 1" />
+		<prop name="time" type="string" default="00:05:34" />
+	</api>
+
+	<styles>
+		<style name="style_base" flex_main_place="space_between" />
+	</styles>
+
+	<view extends="hs_row">
+		<!-- Add widgets/components here -->
+		<style name="style_base" />
+		<hs_text_small text="$title" />
+		<hs_text_small text="$time" />
+	</view>
+</component>

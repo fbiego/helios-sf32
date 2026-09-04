@@ -1,0 +1,859 @@
+<globals>
+	<api>
+		<!-- Add <enumdefs> here -->
+		<enumdef name="screen_size">
+			<enum name="sc_466" value="0" />
+			<enum name="sc_360" value="1" />
+			<enum name="sc_240" value="2" />
+		</enumdef>
+	</api>
+
+	<consts>
+		<!-- Add <px>, <int>, <color> etc here -->
+		<color name="color_primary" value="0x0534ff" />
+		<color name="color_danger" value="0xf62525" />
+
+		<color name="color_button_primary" value="0x181146" />
+		<color name="color_button_danger" value="0x2c0d0b" />
+
+		<string name="ui_version" value="v0.1.0" />
+	</consts>
+
+	<fonts>
+		<!-- Add <bin> , <tiny_ttf>, <freetype> tags here -->
+
+		<!-- <tiny_ttf name="NS_Medium_14" size="14" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_16" size="16" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_18" size="18" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_20" size="20" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_30" size="30" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_40" size="40" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_70" size="70" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_100" size="100" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" />
+		<tiny_ttf name="NS_Medium_140" size="140" src_path="fonts/raw/NotoSans-Medium.ttf" as_file="false" /> -->
+
+		<!-- <tiny_ttf name="NS_Medium_emoji_16" size="16" src_path="fonts/raw/languages/NotoEmoji-Medium.ttf" as_file="false" /> -->
+
+		<!-- Numeric font -->
+		<bin
+			name="NS_Medium_70"
+			size="70"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="2"
+			range="0x3-0x39"
+			symbols=":°CF"
+			as_file="false"
+		/>
+		<bin
+			name="NS_Medium_100"
+			size="100"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="2"
+			range="0x3-0x39"
+			symbols=":°CF"
+			as_file="false"
+		/>
+
+		<bin
+			name="NS_Medium_140"
+			size="140"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="2"
+			range="0x3-0x39"
+			symbols=":°CF"
+			as_file="false"
+		/>
+
+		<!-- English font -->
+		<bin
+			name="NS_Medium_14"
+			size="14"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range="0x20-0x7f"
+			symbols="’°"
+			as_file="false"
+			lv_fallback="NS_Medium_latin_14_data"
+		/>
+
+		<bin
+			name="NS_Medium_16"
+			size="16"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range="0x20-0x7f"
+			symbols="’°"
+			as_file="false"
+			lv_fallback="NS_Medium_latin_16_data"
+		/>
+
+		<bin
+			name="NS_Medium_18"
+			size="18"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range="0x20-0x7f"
+			symbols="’°"
+			as_file="false"
+			lv_fallback="NS_Medium_latin_18_data"
+		/>
+
+		<bin
+			name="NS_Medium_20"
+			size="20"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range="0x20-0x7f"
+			symbols="’°"
+			as_file="false"
+			lv_fallback="NS_Medium_latin_20_data"
+		/>
+
+		<bin
+			name="NS_Medium_30"
+			size="30"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range="0x20-0x7f"
+			symbols="’°"
+			as_file="false"
+			lv_fallback="NS_Medium_latin_30_data"
+		/>
+
+		<bin
+			name="NS_Medium_40"
+			size="40"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range="0x20-0x7f"
+			symbols="’°"
+			as_file="false"
+			lv_fallback="NS_Medium_latin_40_data"
+		/>
+
+		<!-- Fallback fonts -->
+		<!-- Latin ext font -->
+		<bin
+			name="NS_Medium_latin_14"
+			size="14"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols=" ¿ÀÁÂÉÊÓÔÖÚÜßàáâãäçèéêìíñòóôõöùúûüăĐđőơứạảấầẫẬậẮắằặẹẻẽếềểệịỏốồộớờởợụủỨứửữự"
+			as_file="false"
+			lv_fallback="NS_Medium_ru_14_data"
+		/>
+
+		<bin
+			name="NS_Medium_latin_16"
+			size="16"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols=" ¿ÀÁÂÉÊÓÔÖÚÜßàáâãäçèéêìíñòóôõöùúûüăĐđőơứạảấầẫẬậẮắằặẹẻẽếềểệịỏốồộớờởợụủỨứửữự"
+			as_file="false"
+			lv_fallback="NS_Medium_ru_16_data"
+		/>
+
+		<bin
+			name="NS_Medium_latin_18"
+			size="18"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols=" ¿ÀÁÂÉÊÓÔÖÚÜßàáâãäçèéêìíñòóôõöùúûüăĐđőơứạảấầẫẬậẮắằặẹẻẽếềểệịỏốồộớờởợụủỨứửữự"
+			as_file="false"
+			lv_fallback="NS_Medium_ru_18_data"
+		/>
+
+		<bin
+			name="NS_Medium_latin_20"
+			size="20"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols=" ¿ÀÁÂÉÊÓÔÖÚÜßàáâãäçèéêìíñòóôõöùúûüăĐđőơứạảấầẫẬậẮắằặẹẻẽếềểệịỏốồộớờởợụủỨứửữự"
+			as_file="false"
+			lv_fallback="NS_Medium_ru_20_data"
+		/>
+
+		<bin
+			name="NS_Medium_latin_30"
+			size="30"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols=" ¿ÀÁÂÉÊÓÔÖÚÜßàáâãäçèéêìíñòóôõöùúûüăĐđőơứạảấầẫẬậẮắằặẹẻẽếềểệịỏốồộớờởợụủỨứửữự"
+			as_file="false"
+			lv_fallback="NS_Medium_ru_30_data"
+		/>
+
+		<bin
+			name="NS_Medium_latin_40"
+			size="40"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols=" ¿ÀÁÂÉÊÓÔÖÚÜßàáâãäçèéêìíñòóôõöùúûüăĐđőơứạảấầẫẬậẮắằặẹẻẽếềểệịỏốồộớờởợụủỨứửữự"
+			as_file="false"
+			lv_fallback="NS_Medium_ru_40_data"
+		/>
+
+		<!-- Russian font -->
+		<bin
+			name="NS_Medium_ru_14"
+			size="14"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="«»АБВДЕЗИКМНОПРСТУФХЦЧШЭЯабвгдежзийклмнопрстуфхцчшщыьюя"
+			as_file="false"
+			lv_fallback="NS_Medium_el_14_data"
+		/>
+
+		<bin
+			name="NS_Medium_ru_16"
+			size="16"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="«»АБВДЕЗИКМНОПРСТУФХЦЧШЭЯабвгдежзийклмнопрстуфхцчшщыьюя"
+			as_file="false"
+			lv_fallback="NS_Medium_el_16_data"
+		/>
+
+		<bin
+			name="NS_Medium_ru_18"
+			size="18"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="«»АБВДЕЗИКМНОПРСТУФХЦЧШЭЯабвгдежзийклмнопрстуфхцчшщыьюя"
+			as_file="false"
+			lv_fallback="NS_Medium_el_18_data"
+		/>
+
+		<bin
+			name="NS_Medium_ru_20"
+			size="20"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="«»АБВДЕЗИКМНОПРСТУФХЦЧШЭЯабвгдежзийклмнопрстуфхцчшщыьюя"
+			as_file="false"
+			lv_fallback="NS_Medium_el_20_data"
+		/>
+
+		<bin
+			name="NS_Medium_ru_30"
+			size="30"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="«»АБВДЕЗИКМНОПРСТУФХЦЧШЭЯабвгдежзийклмнопрстуфхцчшщыьюя"
+			as_file="false"
+			lv_fallback="NS_Medium_el_30_data"
+		/>
+
+		<bin
+			name="NS_Medium_ru_40"
+			size="40"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="«»АБВДЕЗИКМНОПРСТУФХЦЧШЭЯабвгдежзийклмнопрстуфхцчшщыьюя"
+			as_file="false"
+			lv_fallback="NS_Medium_el_40_data"
+		/>
+
+		<!-- Greek font -->
+		<bin
+			name="NS_Medium_el_14"
+			size="14"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ΈΉΏΑΒΓΔΕΗΘΙΚΛΜΝΟΠΡΣΤΥΦΧΩάέήίαβγδεζηθικλμνξοπρςστυφχψωόύώ"
+			as_file="false"
+			lv_fallback="NS_Medium_hi_14_data"
+		/>
+
+		<bin
+			name="NS_Medium_el_16"
+			size="16"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ΈΉΏΑΒΓΔΕΗΘΙΚΛΜΝΟΠΡΣΤΥΦΧΩάέήίαβγδεζηθικλμνξοπρςστυφχψωόύώ"
+			as_file="false"
+			lv_fallback="NS_Medium_hi_16_data"
+		/>
+
+		<bin
+			name="NS_Medium_el_18"
+			size="18"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ΈΉΏΑΒΓΔΕΗΘΙΚΛΜΝΟΠΡΣΤΥΦΧΩάέήίαβγδεζηθικλμνξοπρςστυφχψωόύώ"
+			as_file="false"
+			lv_fallback="NS_Medium_hi_18_data"
+		/>
+
+		<bin
+			name="NS_Medium_el_20"
+			size="20"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ΈΉΏΑΒΓΔΕΗΘΙΚΛΜΝΟΠΡΣΤΥΦΧΩάέήίαβγδεζηθικλμνξοπρςστυφχψωόύώ"
+			as_file="false"
+			lv_fallback="NS_Medium_hi_20_data"
+		/>
+
+		<bin
+			name="NS_Medium_el_30"
+			size="30"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ΈΉΏΑΒΓΔΕΗΘΙΚΛΜΝΟΠΡΣΤΥΦΧΩάέήίαβγδεζηθικλμνξοπρςστυφχψωόύώ"
+			as_file="false"
+			lv_fallback="NS_Medium_hi_30_data"
+		/>
+
+		<bin
+			name="NS_Medium_el_40"
+			size="40"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ΈΉΏΑΒΓΔΕΗΘΙΚΛΜΝΟΠΡΣΤΥΦΧΩάέήίαβγδεζηθικλμνξοπρςστυφχψωόύώ"
+			as_file="false"
+			lv_fallback="NS_Medium_hi_40_data"
+		/>
+
+		<!-- Hindi -->
+		<bin
+			name="NS_Medium_hi_14"
+			size="14"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ँंअआइईउएऐऔकखगघचछजटठडढणतथदधनपफबभमयरलवशषसह़ािीुूृेैॉोौ्।"
+			as_file="false"
+			lv_fallback="NS_Medium_th_14_data"
+		/>
+
+		<bin
+			name="NS_Medium_hi_16"
+			size="16"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ँंअआइईउएऐऔकखगघचछजटठडढणतथदधनपफबभमयरलवशषसह़ािीुूृेैॉोौ्।"
+			as_file="false"
+			lv_fallback="NS_Medium_th_16_data"
+		/>
+
+		<bin
+			name="NS_Medium_hi_18"
+			size="18"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ँंअआइईउएऐऔकखगघचछजटठडढणतथदधनपफबभमयरलवशषसह़ािीुूृेैॉोौ्।"
+			as_file="false"
+			lv_fallback="NS_Medium_th_18_data"
+		/>
+
+		<bin
+			name="NS_Medium_hi_20"
+			size="20"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ँंअआइईउएऐऔकखगघचछजटठडढणतथदधनपफबभमयरलवशषसह़ािीुूृेैॉोौ्।"
+			as_file="false"
+			lv_fallback="NS_Medium_th_20_data"
+		/>
+
+		<bin
+			name="NS_Medium_hi_30"
+			size="30"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ँंअआइईउएऐऔकखगघचछजटठडढणतथदधनपफबभमयरलवशषसह़ािीुूृेैॉोौ्।"
+			as_file="false"
+			lv_fallback="NS_Medium_th_30_data"
+		/>
+
+		<bin
+			name="NS_Medium_hi_40"
+			size="40"
+			src_path="fonts/raw/NotoSans-Medium.ttf"
+			bpp="4"
+			range=""
+			symbols="ँंअआइईउएऐऔकखगघचछजटठडढणतथदधनपफबभमयरलवशषसह़ािीुूृेैॉोौ्।"
+			as_file="false"
+			lv_fallback="NS_Medium_th_40_data"
+		/>
+
+		<!-- Thai Font -->
+		<bin
+			name="NS_Medium_th_14"
+			size="14"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansThaiLooped-Medium.ttf"
+			range=""
+			symbols="กขคฆงจชซฎณดตถทธนบปฝพฟภมยรฤลวศษสหฬอะัาำิีึืุูเแโใไๆ็่้์"
+			as_file="false"
+			lv_fallback="NS_Medium_zh_14_data"
+		/>
+		<bin
+			name="NS_Medium_th_16"
+			size="16"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansThaiLooped-Medium.ttf"
+			range=""
+			symbols="กขคฆงจชซฎณดตถทธนบปฝพฟภมยรฤลวศษสหฬอะัาำิีึืุูเแโใไๆ็่้์"
+			as_file="false"
+			lv_fallback="NS_Medium_zh_16_data"
+		/>
+		<bin
+			name="NS_Medium_th_18"
+			size="18"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansThaiLooped-Medium.ttf"
+			range=""
+			symbols="กขคฆงจชซฎณดตถทธนบปฝพฟภมยรฤลวศษสหฬอะัาำิีึืุูเแโใไๆ็่้์"
+			as_file="false"
+			lv_fallback="NS_Medium_zh_18_data"
+		/>
+		<bin
+			name="NS_Medium_th_20"
+			size="20"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansThaiLooped-Medium.ttf"
+			range=""
+			symbols="กขคฆงจชซฎณดตถทธนบปฝพฟภมยรฤลวศษสหฬอะัาำิีึืุูเแโใไๆ็่้์"
+			as_file="false"
+			lv_fallback="NS_Medium_zh_20_data"
+		/>
+		<bin
+			name="NS_Medium_th_30"
+			size="30"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansThaiLooped-Medium.ttf"
+			range=""
+			symbols="กขคฆงจชซฎณดตถทธนบปฝพฟภมยรฤลวศษสหฬอะัาำิีึืุูเแโใไๆ็่้์"
+			as_file="false"
+			lv_fallback="NS_Medium_zh_30_data"
+		/>
+		<bin
+			name="NS_Medium_th_40"
+			size="40"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansThaiLooped-Medium.ttf"
+			range=""
+			symbols="กขคฆงจชซฎณดตถทธนบปฝพฟภมยรฤลวศษสหฬอะัาำิีึืุูเแโใไๆ็่้์"
+			as_file="false"
+			lv_fallback="NS_Medium_zh_40_data"
+		/>
+
+		<!-- Chinese Font -->
+		<bin
+			name="NS_Medium_zh_14"
+			size="14"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansSC-Medium.ttf"
+			range=""
+			symbols="♥。一七三上不乐九二于云五亚亮代件位使俊倾停健光全八六关内出到制动勿十卡卷厂压取可同后向吗启周和唤器四固图圆在地型基声备复多大天太始媚存定导将小尼屏展已幕并序库应度康开式形态恢您情成所手打扰找报振据接控收数文断新方旋无日时明星是暂更月有期本机查标格模次步每气池法活消清温版状生用由电的盘相看睡知码确示秒程稍类系终统继续网置联肯能航行表要觉言警设话语请贮费起跃跑身转轴达这进连逐通造部醒重链闪闭间阳阴除雪雷霾非音预风骤龙，？"
+			as_file="false"
+			lv_fallback="NS_Medium_jp_14_data"
+		/>
+		<bin
+			name="NS_Medium_zh_16"
+			size="16"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansSC-Medium.ttf"
+			range=""
+			symbols="♥。一七三上不乐九二于云五亚亮代件位使俊倾停健光全八六关内出到制动勿十卡卷厂压取可同后向吗启周和唤器四固图圆在地型基声备复多大天太始媚存定导将小尼屏展已幕并序库应度康开式形态恢您情成所手打扰找报振据接控收数文断新方旋无日时明星是暂更月有期本机查标格模次步每气池法活消清温版状生用由电的盘相看睡知码确示秒程稍类系终统继续网置联肯能航行表要觉言警设话语请贮费起跃跑身转轴达这进连逐通造部醒重链闪闭间阳阴除雪雷霾非音预风骤龙，？"
+			as_file="false"
+			lv_fallback="NS_Medium_jp_16_data"
+		/>
+		<bin
+			name="NS_Medium_zh_18"
+			size="18"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansSC-Medium.ttf"
+			range=""
+			symbols="♥。一七三上不乐九二于云五亚亮代件位使俊倾停健光全八六关内出到制动勿十卡卷厂压取可同后向吗启周和唤器四固图圆在地型基声备复多大天太始媚存定导将小尼屏展已幕并序库应度康开式形态恢您情成所手打扰找报振据接控收数文断新方旋无日时明星是暂更月有期本机查标格模次步每气池法活消清温版状生用由电的盘相看睡知码确示秒程稍类系终统继续网置联肯能航行表要觉言警设话语请贮费起跃跑身转轴达这进连逐通造部醒重链闪闭间阳阴除雪雷霾非音预风骤龙，？"
+			as_file="false"
+			lv_fallback="NS_Medium_jp_18_data"
+		/>
+		<bin
+			name="NS_Medium_zh_20"
+			size="20"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansSC-Medium.ttf"
+			range=""
+			symbols="♥。一七三上不乐九二于云五亚亮代件位使俊倾停健光全八六关内出到制动勿十卡卷厂压取可同后向吗启周和唤器四固图圆在地型基声备复多大天太始媚存定导将小尼屏展已幕并序库应度康开式形态恢您情成所手打扰找报振据接控收数文断新方旋无日时明星是暂更月有期本机查标格模次步每气池法活消清温版状生用由电的盘相看睡知码确示秒程稍类系终统继续网置联肯能航行表要觉言警设话语请贮费起跃跑身转轴达这进连逐通造部醒重链闪闭间阳阴除雪雷霾非音预风骤龙，？"
+			as_file="false"
+			lv_fallback="NS_Medium_jp_20_data"
+		/>
+		<bin
+			name="NS_Medium_zh_30"
+			size="30"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansSC-Medium.ttf"
+			range=""
+			symbols="♥。一七三上不乐九二于云五亚亮代件位使俊倾停健光全八六关内出到制动勿十卡卷厂压取可同后向吗启周和唤器四固图圆在地型基声备复多大天太始媚存定导将小尼屏展已幕并序库应度康开式形态恢您情成所手打扰找报振据接控收数文断新方旋无日时明星是暂更月有期本机查标格模次步每气池法活消清温版状生用由电的盘相看睡知码确示秒程稍类系终统继续网置联肯能航行表要觉言警设话语请贮费起跃跑身转轴达这进连逐通造部醒重链闪闭间阳阴除雪雷霾非音预风骤龙，？"
+			as_file="false"
+			lv_fallback="NS_Medium_jp_30_data"
+		/>
+		<bin
+			name="NS_Medium_zh_40"
+			size="40"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansSC-Medium.ttf"
+			range=""
+			symbols="♥。一七三上不乐九二于云五亚亮代件位使俊倾停健光全八六关内出到制动勿十卡卷厂压取可同后向吗启周和唤器四固图圆在地型基声备复多大天太始媚存定导将小尼屏展已幕并序库应度康开式形态恢您情成所手打扰找报振据接控收数文断新方旋无日时明星是暂更月有期本机查标格模次步每气池法活消清温版状生用由电的盘相看睡知码确示秒程稍类系终统继续网置联肯能航行表要觉言警设话语请贮费起跃跑身转轴达这进连逐通造部醒重链闪闭间阳阴除雪雷霾非音预风骤龙，？"
+			as_file="false"
+			lv_fallback="NS_Medium_jp_40_data"
+		/>
+
+		<!-- Japanese Font -->
+		<bin
+			name="NS_Medium_jp_14"
+			size="14"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansJP-Medium.ttf"
+			range=""
+			symbols="、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風"
+			as_file="false"
+		/>
+		<bin
+			name="NS_Medium_jp_16"
+			size="16"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansJP-Medium.ttf"
+			range=""
+			symbols="、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風"
+			as_file="false"
+		/>
+		<bin
+			name="NS_Medium_jp_18"
+			size="18"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansJP-Medium.ttf"
+			range=""
+			symbols="、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風"
+			as_file="false"
+		/>
+		<bin
+			name="NS_Medium_jp_20"
+			size="20"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansJP-Medium.ttf"
+			range=""
+			symbols="、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風"
+			as_file="false"
+		/>
+		<bin
+			name="NS_Medium_jp_30"
+			size="30"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansJP-Medium.ttf"
+			range=""
+			symbols="、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風"
+			as_file="false"
+		/>
+		<bin
+			name="NS_Medium_jp_40"
+			size="40"
+			bpp="4"
+			src_path="fonts/raw/languages/NotoSansJP-Medium.ttf"
+			range=""
+			symbols="、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風"
+			as_file="false"
+		/>
+	</fonts>
+
+	<images>
+		<!-- Add <file> or <data> tags here -->
+
+		<data name="icon_empty" src_path="images/actions/empty.png" color_format="a8" />
+		<data name="icon_wifi" src_path="images/actions/wifi.png" color_format="a8" />
+		<data name="icon_list" src_path="images/actions/list.png" color_format="a8" />
+		<data name="icon_brightness_full" src_path="images/actions/brightness-full.png" color_format="a8" />
+		<data name="icon_brightness_empty" src_path="images/actions/brightness-empty.png" color_format="a8" />
+		<data name="icon_volume_high" src_path="images/actions/volume_high.png" color_format="a8" />
+		<data name="icon_volume_low" src_path="images/actions/volume_low.png" color_format="a8" />
+		<data name="icon_mute" src_path="images/actions/mute.png" color_format="a8" />
+		<data name="icon_play" src_path="images/actions/play.png" color_format="a8" />
+		<data name="icon_back" src_path="images/actions/back.png" color_format="a8" />
+		<data name="icon_next" src_path="images/actions/next.png" color_format="a8" />
+
+		<data name="icon_connect" src_path="images/actions/connect.png" color_format="a8" />
+		<data name="icon_vibration" src_path="images/actions/vibration.png" color_format="a8" />
+		<data name="icon_dnd" src_path="images/actions/dnd.png" color_format="a8" />
+		<data name="icon_qr" src_path="images/actions/qr_icon.png" color_format="a8" />
+		<data name="icon_arrow_up" src_path="images/actions/up-arrow.png" color_format="a8" />
+		<data name="icon_turn_left" src_path="images/actions/turn_left.png" color_format="a1" />
+
+		<data name="icon_settings_harddisk" src_path="images/settings/005-harddisk.png" color_format="rgb565a8" />
+		<data name="icon_settings_brightness" src_path="images/settings/007-brightness.png" color_format="rgb565a8" />
+		<data name="icon_settings_monitor" src_path="images/settings/001-monitor.png" color_format="rgb565a8" />
+		<data name="icon_settings_information" src_path="images/settings/004-information.png" color_format="rgb565a8" />
+		<data name="icon_settings_smartwatch" src_path="images/settings/006-smartwatch.png" color_format="rgb565a8" />
+		<data name="icon_settings_rotate" src_path="images/settings/008-rotate.png" color_format="rgb565a8" />
+		<data name="icon_settings_power" src_path="images/settings/003-power.png" color_format="rgb565a8" />
+		<data name="icon_settings_bell" src_path="images/settings/002-bell.png" color_format="rgb565a8" />
+
+		<data name="icon_application" src_path="images/apps/application.png" color_format="rgb565a8" />
+		<data name="icon_chat" src_path="images/apps/chat.png" color_format="rgb565a8" />
+		<data name="icon_weather" src_path="images/apps/weather.png" color_format="rgb565a8" />
+		<data name="icon_gear" src_path="images/apps/gear.png" color_format="rgb565a8" />
+		<data name="icon_measurement" src_path="images/apps/measurement.png" color_format="rgb565a8" />
+		<data name="icon_stopwatch" src_path="images/apps/stopwatch.png" color_format="rgb565a8" />
+		<data name="icon_contacts" src_path="images/apps/contacts.png" color_format="rgb565a8" />
+		<data name="icon_navigation" src_path="images/apps/navigation.png" color_format="rgb565a8" />
+		<data name="icon_timer" src_path="images/apps/timer.png" color_format="rgb565a8" />
+		<data name="icon_music" src_path="images/apps/music.png" color_format="rgb565a8" />
+		<data name="icon_folder" src_path="images/apps/folder.png" color_format="rgb565a8" />
+		<data name="icon_running" src_path="images/apps/running.png" color_format="rgb565a8" />
+		<data name="icon_sleep" src_path="images/apps/sleep.png" color_format="rgb565a8" />
+		<data name="icon_user" src_path="images/apps/user.png" color_format="rgb565a8" />
+		<data name="icon_spotify" src_path="images/apps/icon_spotify.png" color_format="rgb565a8" />
+		<data name="icon_phone_link" src_path="images/apps/icon_phone_link.png" color_format="rgb565a8" />
+
+		<data name="icon_weather_humidity_icon" src_path="images/weather/humidity_icon.png" color_format="rgb565a8" />
+		<data name="icon_weather_temp_up_icon" src_path="images/weather/temp_up_icon.png" color_format="rgb565a8" />
+		<data name="icon_weather_temp_down_icon" src_path="images/weather/temp_down_icon.png" color_format="rgb565a8" />
+		<data name="icon_weather_uv_icon" src_path="images/weather/uv_icon.png" color_format="rgb565a8" />
+
+		<data name="icon_nt_messenger" src_path="images/notifications/001-messenger.png" color_format="rgb565a8" />
+		<data name="icon_nt_whatsapp" src_path="images/notifications/002-whatsapp.png" color_format="rgb565a8" />
+		<data name="icon_nt_twitter" src_path="images/notifications/003-twitter.png" color_format="rgb565a8" />
+		<data name="icon_nt_mail" src_path="images/notifications/004-mail.png" color_format="rgb565a8" />
+		<data name="icon_nt_qq" src_path="images/notifications/005-china.png" color_format="rgb565a8" />
+		<data name="icon_nt_skype" src_path="images/notifications/006-skype.png" color_format="rgb565a8" />
+		<data name="icon_nt_line" src_path="images/notifications/007-line.png" color_format="rgb565a8" />
+		<data name="icon_nt_weibo" src_path="images/notifications/008-weibo.png" color_format="rgb565a8" />
+		<data name="icon_nt_kakao" src_path="images/notifications/009-kakao-talk.png" color_format="rgb565a8" />
+		<data name="icon_nt_viber" src_path="images/notifications/010-viber.png" color_format="rgb565a8" />
+		<data name="icon_nt_vk" src_path="images/notifications/011-vk.png" color_format="rgb565a8" />
+		<data name="icon_nt_wechat" src_path="images/notifications/012-wechat.png" color_format="rgb565a8" />
+		<data name="icon_nt_paypal" src_path="images/notifications/013-paypal.png" color_format="rgb565a8" />
+		<data name="icon_nt_chat" src_path="images/notifications/014-chat.png" color_format="rgb565a8" />
+		<data name="icon_nt_telegram" src_path="images/notifications/015-telegram.png" color_format="rgb565a8" />
+		<data name="icon_nt_instagram" src_path="images/notifications/016-instagram.png" color_format="rgb565a8" />
+		<data name="icon_nt_calendar" src_path="images/notifications/017-calendar.png" color_format="rgb565a8" />
+		<data name="icon_nt_hangouts" src_path="images/notifications/018-google-hangouts.png" color_format="rgb565a8" />
+		<data name="icon_nt_download" src_path="images/notifications/019-download.png" color_format="rgb565a8" />
+		<data name="icon_nt_facebook" src_path="images/notifications/020-facebook.png" color_format="rgb565a8" />
+		<data name="icon_nt_snapchat" src_path="images/notifications/021-logo.png" color_format="rgb565a8" />
+		<data name="icon_nt_tiktok" src_path="images/notifications/022-social-media.png" color_format="rgb565a8" />
+		<data name="icon_nt_dingtalk" src_path="images/notifications/023-dingtalk.png" color_format="rgb565a8" />
+
+		<data name="icon_wt_sun_cloud" src_path="images/weather/001-cloudy.png" color_format="rgb565a8" />
+		<data name="icon_wt_sun" src_path="images/weather/002-sun.png" color_format="rgb565a8" />
+		<data name="icon_wt_rain" src_path="images/weather/003-rain.png" color_format="rgb565a8" />
+		<data name="icon_wt_cloud" src_path="images/weather/004-cloud.png" color_format="rgb565a8" />
+		<data name="icon_wt_tornado" src_path="images/weather/005-tornado.png" color_format="rgb565a8" />
+		<data name="icon_wt_snow" src_path="images/weather/006-snow.png" color_format="rgb565a8" />
+		<data name="icon_wt_wind" src_path="images/weather/007-wind.png" color_format="rgb565a8" />
+		<data name="icon_wt_haze" src_path="images/weather/008-haze.png" color_format="rgb565a8" />
+
+		<data name="img_music_album" src_path="images/generic/img_music_album.png" color_format="a8" />
+		<data name="icon_vol_down_32" src_path="images/music/icon_vol_down_32.png" color_format="a8" />
+		<data name="icon_vol_up_32" src_path="images/music/icon_vol_up_32.png" color_format="a8" />
+		<data name="icon_music_play_32" src_path="images/music/icon_music_play_32.png" color_format="a8" />
+		<data name="icon_music_pause_32" src_path="images/music/icon_music_pause_32.png" color_format="a8" />
+		<data name="icon_music_next_32" src_path="images/music/icon_music_next_32.png" color_format="a8" />
+		<data name="icon_music_previous_32" src_path="images/music/icon_music_previous_32.png" color_format="a8" />
+		<data name="icon_stop" src_path="images/actions/icon_music_stop.png" color_format="a8" />
+		<data name="icon_timer_cancel" src_path="images/actions/icon_timer_cancel.png" color_format="a8" />
+		<data name="icon_timer_start" src_path="images/actions/icon_timer_start.png" color_format="a8" />
+		<data name="icon_timer_pause" src_path="images/actions/icon_timer_pause.png" color_format="a8" />
+		<data name="icon_lap_time" src_path="images/actions/icon_lap_time.png" color_format="a8" />
+		<data name="icon_restart" src_path="images/actions/icon_restart.png" color_format="a8" />
+		<data name="img_heart_beat" src_path="images/generic/img_heart_beat.png" color_format="rgb565a8" />
+		<data name="img_blood_oxygen" src_path="images/generic/img_blood_oxygen.png" color_format="rgb565a8" />
+		<data name="img_finger_sensor" src_path="images/generic/img_finger_sensor.png" color_format="a8" />
+	</images>
+
+	<styles>
+		<!-- Add <style> tags here -->
+		<style name="style_dark" bg_color="0x000000" text_color="0xffffff" />
+
+		<style name="style_primary_bg" bg_color="#color_primary" />
+		<style name="style_white_bg" bg_color="0xffffff" />
+
+		<style name="style_text_small_466" text_font="NS_Medium_20" />
+		<style name="style_text_small_360" text_font="NS_Medium_18" />
+		<style name="style_text_small_240" text_font="NS_Medium_14" />
+
+		<style name="style_text_normal_466" text_font="NS_Medium_40" />
+		<style name="style_text_normal_360" text_font="NS_Medium_30" />
+		<style name="style_text_normal_240" text_font="NS_Medium_20" />
+
+		<style name="style_text_large_466" text_font="NS_Medium_140" />
+		<style name="style_text_large_360" text_font="NS_Medium_100" />
+		<style name="style_text_large_240" text_font="NS_Medium_70" />
+	</styles>
+
+	<subjects>
+		<!-- Add <int>, <string>, or <float> subjects here -->
+
+		<!-- Handled internally-->
+		<int name="sb_screen_size" value="0" />
+		<int name="sb_screen_type" value="0" />
+		<int name="sb_screen_width" value="466" />
+		<int name="sb_screen_height" value="466" />
+		<string name="sb_screen_res" value="466x466" />
+		<string name="sb_placeholder" value="" />
+		<string name="sb_lvgl_version" value="v9.0.0" />
+
+		<!-- System settings -->
+		<int name="sb_app_list_mode" value="0" min_value="0" max_value="1" help="[set|change] Grid mode" />
+		<int name="sb_list_circular_mode" value="1" min_value="0" max_value="1" help="[set|change] Circular mode" />
+		<int
+			name="sb_screen_brightness"
+			value="100"
+			min_value="1"
+			max_value="100"
+			help="[set|change] Screen brightness"
+		/>
+		<int name="sb_screen_rotation" value="0" min_value="0" max_value="3" help="[set|change] Screen rotation" />
+		<int name="sb_screen_timeout" value="0" min_value="0" max_value="4" help="[set|change] Screen timeout" />
+		<int name="sb_screen_rtw" value="1" min_value="0" max_value="1" help="[set|change] Raise to wake" />
+		<int name="sb_language" value="0" help="[set|change] System Language" />
+
+		<int name="sb_sound_volume" value="40" min_value="0" max_value="100" help="[set|change] Music volume" />
+		<int name="sb_focusable" value="1" min_value="0" max_value="1" help="[set|change] Collapsed notifications" />
+
+		<!-- Clock -->
+		<string name="sb_time_string" value="12:45" help="[set] Time string" />
+		<string name="sb_date_string" value="Sun 5 Oct" help="[set] Date string" />
+		<int name="sb_time_hour" value="12" help="[set] Hour" />
+		<int name="sb_time_minute" value="45" help="[set] Minute" />
+		<int name="sb_time_seconds" value="23" help="[set] Seconds" />
+		<int name="sb_time_hour_analog" value="3150" help="[set] Hour rotation" />
+		<int name="sb_time_minute_analog" value="450" help="[set] Minute rotation" />
+		<int name="sb_time_seconds_analog" value="1800" help="[set] Seconds rotation" />
+		<string name="sb_time_am_pm" value="am" help="[set] am/pm" />
+		<int name="sb_time_am" value="-1" help="[set] -1 24hr, 0 am, 1 pm" />
+		<int name="sb_time_day" value="5" help="[set] Day" />
+		<int name="sb_time_month" value="10" help="[set|change] Month" />
+		<int name="sb_time_year" value="2025" help="[set] Year" />
+		<string name="sb_time_month_short" value="oct" help="Month short, set internally with sb_time_month" />
+		<string name="sb_time_month_long" value="october" help="Month long, set internally with sb_time_month" />
+		<int name="sb_time_weekday" value="0" help="[set|change] Weekday index" />
+		<string name="sb_time_weekday_short" value="sun" help="Weekday short, set internally with sb_time_weekday" />
+		<string name="sb_time_weekday_long" value="sunday" help="Weekday long, set internally with sb_time_weekday" />
+
+		<!-- Watchface -->
+		<int name="sb_activity_steps" value="2735" help="[set] Step count" />
+		<int name="sb_activity_kcal" value="163" help="[set] " />
+		<int name="sb_activity_distance" value="157" help="[set] " />
+		<int name="sb_health_bpm" value="72" help="[set] BPM" />
+		<int name="sb_health_oxygen" value="98" help="[set] SP02" />
+
+		<!-- System Information -->
+		<int name="sb_system_connection" value="0" help="[set|change] System ble connection" />
+		<string
+			name="sb_system_connection_str"
+			value="disconnected"
+			help="[set] System ble connection string connected/disconnected"
+		/>
+		<string name="sb_chronos_esp_version" value="v1.9.0" help="Chronos library version [set]" />
+		<string name="sb_chronos_app_version" value="v3.8.5" help="Chronos app version [set]" />
+		<string name="sb_firmware_version" value="v1.0.0" help="Navio Firmware version [set]" />
+		<string name="sb_board_oem" value="LVGL" help="Navio board OEM [set]" />
+		<string name="sb_board_name" value="Editor" help="Navio board name [set]" />
+		<string name="sb_board_type" value="ESP32-S3" help="Navio board type [set]" />
+		<string name="sb_board_mac" value="34:54:56:23:43:32" help="Navio board MAC address [set]" />
+		<string name="sb_board_ram" value="384KB" help="Navio board RAM [set]" />
+		<string name="sb_board_psram" value="16MB" help="Navio board PSRAM [set]" />
+		<string name="sb_board_flash" value="16MB" help="Navio board Flash [set]" />
+		<string name="sb_display_type" value="AMOLED" help="Navio display type [set]" />
+
+		<int name="sb_battery_percent" value="70" min_value="0" max_value="100" help="[set] Battery percentage" />
+		<int name="sb_battery_charging" value="0" min_value="0" max_value="1" help="[set] Battery Charging" />
+		<float name="sb_battery_voltage" value="3.92" help="[set] Battery Voltage" />
+		<float name="sb_battery_temp" value="32.6" help="[set] Battery Temperature" />
+		<string name="sb_battery_usage" value="2d 14h" help="[set] Battery Usage" />
+
+		<!-- Navigation data -->
+		<int name="sb_nav_icon" value="0" help="Current navigation icon [set]{pointer}(icon_turn_left)" />
+		<string
+			name="sb_nav_text"
+			value="10:20 ETA&#10;5 mins | 1.6km"
+			help="Navigation text (eta\nduration distance) [set]"
+		/>
+		<string name="sb_nav_title" value="100m" help="Navigation title [set]" />
+		<string
+			name="sb_nav_directions"
+			value="Turn left towards Kenyatta avenue at the round about"
+			help="Navigation directions [set]"
+		/>
+
+		<!-- Music app data -->
+		<string name="sb_music_app" value="Music" help="[set] Music app" />
+		<string name="sb_music_track" value="Track" help="[set] Music track" />
+		<string name="sb_music_artist" value="Artist" help="[set] Music artist" />
+		<int name="sb_music_state" value="0" help="[set|change] Music state" />
+		<int name="sb_music_state_icon" value="0" help="[set]{pointer}(icon_music_play_32) Music play/pause ison" />
+		<int name="sb_music_icon" value="0" help="[set]{pointer}(icon_music) Music icon" />
+		<string name="sb_music_package" value="music" help="[set|change] Music app package" />
+		<int name="sb_music_album_color" value="0" help="[set]{color} Music album color" />
+
+		<!-- Phone Link app -->
+		<string name="sb_phone_manufacturer" value="Google" help="[set] Phone manufacturer" />
+		<string name="sb_phone_model" value="Pixel 7" help="[set] Phone model" />
+		<int name="sb_phone_sdk" value="37" help="[set] Phone SDK version" />
+		<int name="sb_phone_battery" value="50" help="[set] Phone battery" />
+		<int name="sb_phone_charging" value="0" help="[set|change] Phone charging" />
+		<string name="sb_phone_charging_str" value="no" help="[set] Phone charging string yes/no" />
+
+		<int name="sb_chronos_app_code" value="53" help="[set] Chronos App code" />
+		<string name="sb_phone_last_sync" value="2d 4h" help="[set] Phone last sync" />
+
+		<!-- Weather app data -->
+		<int name="sb_weather_code" value="0" min_value="0" max_value="7" help="[set|change] Weather condition code" />
+		<int name="sb_weather_icon" value="0" help="[set]{pointer}(icon_weather) Weather icon" />
+		<int name="sb_weather_temp" value="23" help="[set] Weather temperature" />
+		<string name="sb_weather_location" value="Nairobi" help="[set] Weather location" />
+		<string name="sb_weather_condition" value="cloudy" help="[set] Weather condition" />
+		<string name="sb_weather_update_time" value="10:20" help="[set] Weather update time" />
+		<string name="sb_weather_temp_unit" value="C" help="[set] Weather update date" />
+		<int name="sb_weather_humidity" value="45" help="[set] Weather humidity" />
+		<int name="sb_weather_uv" value="3" help="[set] Weather UV index" />
+		<int name="sb_weather_temp_high" value="30" help="[set] Weather high temperature" />
+		<int name="sb_weather_temp_low" value="20" help="[set] Weather low temperature" />
+
+		<!-- Stopwatch app data -->
+		<int name="sb_stopwatch_state" value="0" help="[set|change] Stopwatch state" />
+		<string name="sb_stopwatch_time" value="00:00:00" help="[set] Stopwatch time" />
+
+		<int name="sb_stopwatch_button_start_state" value="0" help="[set|change] Stopwatch pause button state" />
+		<int name="sb_stopwatch_button_reset_state" value="0" help="[set|change] Stopwatch reset button state" />
+
+		<int
+			name="sb_stopwatch_button_start_icon"
+			value="0"
+			help="[set]{pointer}(icon_timer_start) Stopwatch start button icon"
+		/>
+		<int
+			name="sb_stopwatch_button_reset_icon"
+			value="0"
+			help="[set]{pointer}(icon_lap_time) Stopwatch reset button icon"
+		/>
+
+		<!-- Health app data -->
+		<int name="sb_health_finger_detect" value="0" help="[set] Finger detect on sensor" />
+	</subjects>
+</globals>

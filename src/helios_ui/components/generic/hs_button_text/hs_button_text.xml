@@ -1,0 +1,39 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style
+			name="style_button"
+			width="content"
+			height="50"
+			radius="55"
+			bg_color="0x282828"
+			bg_opa="255"
+			pad_hor="14"
+			pad_top="5"
+		/>
+		<style name="style_button_360" height="40" pad_hor="10" pad_top="3" />
+		<style name="style_button_240" height="30" pad_hor="8" pad_top="2" />
+		<style name="style_pressed" bg_color="0xbebebe" />
+		<style name="style_icon" align="center" image_recolor="0xffffff" image_recolor_opa="255" />
+		<style name="style_checked" bg_color="0x0534ff" />
+	</styles>
+	<api>
+		<prop name="text" type="string" default="Text" />
+		<prop name="tag" type="string" default="" />
+		<prop name="rotation" type="int" default="0" />
+	</api>
+	<view scrollable="false" event_bubble="true">
+		<remove_style_all />
+		<style name="style_button" />
+		<style name="style_pressed" selector="pressed" />
+		<style name="style_checked" selector="checked" />
+
+		<bind_style name="style_button_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_button_240" subject="sb_screen_size" ref_value="2" />
+		<hs_text_small text="$text" align="center" translation_tag="$tag" />
+	</view>
+</component>

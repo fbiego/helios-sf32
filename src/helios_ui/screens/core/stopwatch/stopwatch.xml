@@ -1,0 +1,102 @@
+<screen>
+	<styles>
+		<style name="style_base" width="100%" height="100%" />
+		<style name="style_list" bg_color="0x000000" bg_opa="255" />
+		<style name="style_cont" pad_ver="20" pad_row="10" pad_hor="24" />
+		<style name="style_cont_360" pad_ver="15" pad_row="8" pad_hor="18" />
+		<style name="style_cont_240" pad_ver="10" pad_row="4" pad_hor="12" />
+
+		<style name="style_pad_rect" pad_hor="20" />
+		<style name="style_pad_rect_360" pad_hor="16" />
+		<style name="style_pad_rect_240" pad_hor="12" />
+
+		<style name="style_pad_lap" pad_hor="40" />
+		<style name="style_pad_lap_360" pad_hor="30" />
+		<style name="style_pad_lap_240" pad_hor="20" />
+
+		<style name="style_btn_reset" bg_color="0xa30084" />
+	</styles>
+
+	<view>
+		<style name="style_dark" />
+		<style name="style_base" />
+
+		<hs_container width="100%" height="100%" style_layout="flex" flex_flow="column">
+			<style name="style_cont" />
+			<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+
+			<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_2" />
+			<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_2" />
+			<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_2" />
+			<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_2" />
+
+			<hs_column
+				style_flex_cross_place="center"
+				style_flex_track_place="center"
+				style_bg_color="0x000000"
+				style_bg_opa="200"
+				style_pad_top="14"
+				style_pad_bottom="10"
+				flex_grow="1"
+				scrollable="false"
+			>
+				<style name="style_cont" />
+				<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+				<hs_title_pill tag="stopwatch" width="content" />
+
+				<hs_text_normal bind_text="sb_stopwatch_time" />
+
+				<hs_line />
+
+				<hs_column name="lap_container" flex_grow="1" style_pad_row="5">
+					<hs_lap_item />
+					<hs_lap_item />
+					<hs_lap_item />
+					<hs_lap_item />
+					<hs_lap_item />
+					<hs_lap_item />
+					<hs_lap_item />
+					<hs_lap_item />
+				</hs_column>
+				<hs_line />
+			</hs_column>
+
+			<hs_column
+				style_flex_cross_place="center"
+				align="bottom_mid"
+				style_bg_color="0x000000"
+				style_bg_opa="200"
+				style_pad_row="5"
+			>
+				<hs_row style_flex_main_place="center" style_pad_column="10">
+					<hs_container flex_grow="1">
+						<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+					</hs_container>
+					<hs_button_icon
+						checkable="true"
+						bind_checked="sb_stopwatch_button_reset_state"
+						flex_grow="2"
+						bind_icon="sb_stopwatch_button_reset_icon"
+						style_bg_color="0x9a3a00"
+					>
+						<style name="style_btn_reset" selector="checked" />
+						<bind_state_if_eq subject="sb_stopwatch_state" state="disabled" ref_value="0" />
+					</hs_button_icon>
+					<hs_button_icon
+						checkable="true"
+						bind_checked="sb_stopwatch_button_start_state"
+						flex_grow="2"
+						bind_icon="sb_stopwatch_button_start_icon"
+						style_bg_color="0x088c00"
+					/>
+					<hs_container flex_grow="1">
+						<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+					</hs_container>
+				</hs_row>
+				<hs_text_small bind_text="sb_time_string" />
+			</hs_column>
+		</hs_container>
+	</view>
+</screen>

@@ -1,0 +1,22 @@
+<component>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0x090909" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style name="style_base" text_color="0xffffff" />
+	</styles>
+
+	<view extends="wd_label">
+		<style name="style_base" />
+		<bind_style name="style_text_normal_466" subject="sb_screen_size" ref_value="0" />
+		<bind_style name="style_text_normal_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_text_normal_240" subject="sb_screen_size" ref_value="2" />
+	</view>
+</component>

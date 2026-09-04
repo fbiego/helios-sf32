@@ -1,0 +1,47 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="label" type="subject" default="sb_placeholder" />
+		<prop name="info" type="subject" default="sb_placeholder" />
+		<prop name="info_space" type="int" default="0" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			radius="10"
+			pad_ver="4"
+			bg_color="0x171717"
+			bg_opa="255"
+		/>
+		<style name="style_pad_360" pad_ver="3" radius="6" />
+		<style name="style_pad_240" pad_ver="2" radius="3" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+
+		<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_text_normal bind_text="$label" width="content" style_pad_right="5" style_text_align="left" />
+		<hs_text_normal
+			bind_text="$info"
+			align="top_right"
+			width="content"
+			style_text_align="right"
+			style_text_color="0xaaa"
+			style_text_letter_space="$info_space"
+		/>
+
+		<event_cb callback="on_hs_info_cb" trigger="all" />
+	</view>
+</component>

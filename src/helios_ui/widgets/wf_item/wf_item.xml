@@ -1,0 +1,23 @@
+<widget>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0xeee" />
+	</previews>
+
+	<api>
+		<!-- Add your API here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+		<prop name="image_array" type="image[count]" help="The array containing the image digits" />
+		<prop name="bind_subject" type="subject" help="The watchface subject to attach the item" />
+		<prop name="place_value" type="int" help="The place value to show on this item" />
+	</api>
+
+	<styles>
+		<style name="style_base" width="content" height="content" />
+	</styles>
+
+	<view extends="lv_image">
+		<style name="style_base" />
+		<!-- Add widgets/components here -->
+	</view>
+</widget>

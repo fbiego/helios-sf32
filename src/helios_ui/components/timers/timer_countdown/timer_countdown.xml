@@ -1,0 +1,45 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_radius="233" style_bg_color="0x000000" />
+		<preview width="360" height="360" style_radius="180" style_bg_color="0x000" />
+		<preview width="240" height="240" style_radius="120" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style name="style_base" width="100%" height="100%" />
+		<style name="style_list" bg_color="0x000000" bg_opa="255" />
+		<style name="style_cont" pad_ver="30" pad_row="18" />
+		<style name="style_cont_360" pad_ver="20" pad_row="8" />
+		<style name="style_cont_240" pad_ver="12" pad_row="4" />
+	</styles>
+
+	<view>
+		<remove_style_all />
+		<style name="style_base" />
+
+		<hs_text_normal text="00:00:00" align="center" />
+
+		<hs_column style_flex_cross_place="center" align="bottom_mid" style_bg_color="0x000000" style_bg_opa="200">
+			<style name="style_cont" />
+			<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+			<hs_row style_flex_main_place="center" style_pad_column="10">
+				<hs_container flex_grow="1">
+					<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+				</hs_container>
+				<hs_button_icon flex_grow="2" icon="icon_timer_cancel" />
+				<hs_button_icon flex_grow="2" icon="icon_music_play_32" />
+				<hs_container flex_grow="1">
+					<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+				</hs_container>
+			</hs_row>
+			<hs_text_small bind_text="sb_time_string" />
+		</hs_column>
+	</view>
+</component>

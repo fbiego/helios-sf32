@@ -1,0 +1,85 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_radius="233" style_bg_color="0x000000" />
+		<preview width="360" height="360" style_radius="180" style_bg_color="0x000" />
+		<preview width="240" height="240" style_radius="120" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="100%"
+			pad_row="10"
+			pad_ver="60"
+			text_color="0xfff"
+			layout="flex"
+			flex_flow="column"
+			flex_main_place="center"
+			flex_cross_place="center"
+			flex_track_place="center"
+		/>
+		<style name="style_pad_360" pad_ver="40" pad_hor="25" pad_row="6" />
+		<style name="style_pad_240" pad_ver="20" pad_hor="20" pad_row="4" />
+
+		<style name="style_cont" width="content" height="content" layout="flex" />
+		<style name="style_pad_cont" pad_column="10" />
+	</styles>
+
+	<view extends="lv_obj" scrollable="false">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+		<hs_text_normal
+			bind_text="sb_weather_location"
+			style_text_align="center"
+			long_mode="scroll_circular"
+			width="80%"
+		/>
+		<wd_image
+			clickable="false"
+			src="icon_weather"
+			bind_src="sb_weather_icon"
+			scale_0="256"
+			scale_1="190"
+			scale_2="120"
+			size_1="50"
+			size_2="30"
+			bind_scale="sb_screen_size"
+		/>
+
+		<hs_tag_small bind_tag="sb_weather_condition" />
+		<lv_obj>
+			<remove_style_all />
+			<style name="style_cont" />
+			<hs_text_large bind_text="sb_weather_temp" />
+			<hs_text_normal
+				bind_text="sb_weather_temp_unit"
+				bind_text-fmt="°%s"
+				style_text_align="center"
+				style_pad_top="15"
+			/>
+		</lv_obj>
+		<lv_obj>
+			<remove_style_all />
+			<style name="style_cont" />
+			<style name="style_pad_cont" />
+			<hs_text_icon_normal icon="icon_weather_temp_up_icon" bind_value="sb_weather_temp_high" bind_fmt="%d°" />
+			<hs_text_icon_normal icon="icon_weather_temp_down_icon" bind_value="sb_weather_temp_low" bind_fmt="%d°" />
+		</lv_obj>
+		<lv_obj>
+			<remove_style_all />
+			<style name="style_cont" />
+			<style name="style_pad_cont" />
+			<hs_text_icon_normal icon="icon_weather_humidity_icon" bind_value="sb_weather_humidity" bind_fmt="%d" />
+			<hs_text_icon_normal icon="icon_weather_uv_icon" bind_value="sb_weather_uv" bind_fmt="%d" />
+		</lv_obj>
+	</view>
+</component>

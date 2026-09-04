@@ -1,0 +1,24 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<api />
+
+	<styles>
+		<style name="style_base" width="9" height="9" bg_color="0x484848" radius="10" bg_opa="255" />
+		<style name="style_base_360" width="7" height="7" radius="8" />
+		<style name="style_base_240" width="5" height="5" radius="6" />
+		<style name="style_checked" bg_color="0xffffff" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+		<style name="style_checked" selector="checked" />
+	</view>
+</component>

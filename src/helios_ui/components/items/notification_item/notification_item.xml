@@ -1,0 +1,98 @@
+<component>
+	<previews>
+		<preview width="400" height="300" style_bg_color="0x1a1a1a" />
+		<preview width="300" style_bg_color="0x1a1a1a" />
+		<preview width="200" style_bg_color="0x1a1a1a" />
+	</previews>
+
+	<api>
+		<prop name="icon" type="image" default="icon_chat" />
+		<prop name="title" type="string" default="Title" />
+		<prop name="time" type="string" default="13:35" />
+		<prop
+			name="message"
+			type="string"
+			default="Health summary update: Your average heart rate today is 78 bpm and you have completed 6,540 steps so far. Keep moving to reach your daily goal."
+		/>
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			text_color="0xfff"
+			radius="30"
+			bg_color="0xb7b7b7"
+			bg_opa="20"
+			layout="flex"
+			flex_flow="column"
+			pad_all="10"
+			pad_row="5"
+		/>
+		<style name="style_base_360" radius="25" pad_all="8" pad_row="3" />
+		<style name="style_base_240" radius="20" pad_all="6" pad_row="0" />
+		<style
+			name="style_title_cont"
+			width="100%"
+			height="content"
+			layout="flex"
+			pad_column="10"
+			pad_hor="5"
+			pad_top="7"
+		/>
+		<style
+			name="style_text_cont"
+			flex_grow="1"
+			height="content"
+			layout="flex"
+			flex_flow="column"
+			pad_top="0"
+			pad_row="0"
+		/>
+		<style name="style_text" width="100%" height="30" pad_all="5" />
+		<style name="style_text_360" height="29" />
+		<style name="style_text_240" height="26" />
+		<style name="style_text_focused" height="content" />
+		<style name="style_pressed" bg_color="0xffffff" bg_opa="127" />
+		<style name="style_focused" height="content" bg_opa="40" />
+		<style name="style_bottom_cont" height="10" bg_color="0xb7b7b7" bg_opa="255" />
+	</styles>
+
+	<view extends="lv_obj" scroll_on_focus="true" state_trickle="true">
+		<remove_style_all />
+		<style name="style_base" />
+		<!-- <style name="style_pressed" selector="pressed" /> -->
+		<style name="style_focused" selector="focused" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+		<bind_style name="style_focused" subject="sb_focusable" ref_value="1" />
+		<hs_container clickable="false">
+			<style name="style_title_cont" />
+
+			<wd_image
+				src="$icon"
+				scale_0="256"
+				scale_1="200"
+				scale_2="140"
+				size_1="50"
+				size_2="35"
+				bind_scale="sb_screen_size"
+			/>
+
+			<hs_container clickable="false">
+				<style name="style_text_cont" />
+				<hs_text_normal text="$title" width="100%" long_mode="scroll_circular" />
+
+				<hs_text_small text="$time" width="100%" />
+			</hs_container>
+		</hs_container>
+		<hs_text_small text="$message">
+			<style name="style_text" />
+			<bind_style name="style_text_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_text_240" subject="sb_screen_size" ref_value="2" />
+			<style name="style_text_focused" selector="focused" />
+			<bind_style name="style_text_focused" subject="sb_focusable" ref_value="1" />
+		</hs_text_small>
+	</view>
+</component>

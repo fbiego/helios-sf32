@@ -1,0 +1,32 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			layout="flex"
+			flex_flow="column"
+			radius="10"
+			pad_all="10"
+			pad_row="10"
+			bg_color="0x171717"
+			bg_opa="255"
+		/>
+
+		<style name="style_pad_360" pad_all="8" pad_row="8" radius="8" />
+		<style name="style_pad_240" pad_all="6" pad_row="6" radius="6" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+	</view>
+</component>

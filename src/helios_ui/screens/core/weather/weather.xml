@@ -1,0 +1,74 @@
+<screen>
+	<styles>
+		<style name="style_list" bg_color="0x000000" bg_opa="255" />
+		<style name="style_cont" pad_top="0" pad_bottom="150" pad_hor="33" />
+		<style name="style_cont_360" pad_hor="30" pad_top="0" pad_bottom="100" />
+		<style name="style_cont_240" pad_hor="20" pad_top="10" pad_bottom="80" />
+		<style name="style_pad_rect" pad_hor="18" />
+		<style name="style_pad_rect_360" pad_hor="14" />
+		<style name="style_pad_rect_240" pad_hor="10" />
+	</styles>
+	<view>
+		<style name="style_dark" />
+
+		<wd_list name="weather_list" bind_screen="sb_screen_size">
+			<style name="style_list" />
+
+			<wd_list-container>
+				<bind_style name="style_cont" subject="sb_screen_size" ref_value="0" />
+				<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+
+				<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_2" />
+				<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_2" />
+				<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_2" />
+				<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_2" />
+
+				<weather_widget height="content" />
+
+				<hs_card>
+					<hs_text_normal
+						width="100%"
+						text="Hourly Forecast"
+						translation_tag="hourly_forecast"
+						style_text_align="center"
+						long_mode="scroll_circular"
+					/>
+					<hs_line />
+					<hs_row name="hourly_cont" style_pad_column="10">
+						<hourly_forecast />
+						<hourly_forecast />
+						<hourly_forecast />
+						<hourly_forecast />
+						<hourly_forecast />
+						<hourly_forecast />
+						<hourly_forecast />
+					</hs_row>
+				</hs_card>
+				<hs_card>
+					<hs_text_normal
+						width="100%"
+						text="Daily Forecast"
+						translation_tag="daily_forecast"
+						style_text_align="center"
+						long_mode="scroll_circular"
+					/>
+					<hs_column name="daily_cont" style_pad_row="2">
+						<daily_forecast />
+						<daily_forecast />
+						<daily_forecast />
+						<daily_forecast />
+						<daily_forecast />
+						<daily_forecast />
+						<daily_forecast />
+					</hs_column>
+				</hs_card>
+
+				<hs_column>
+					<hs_text_small width="100%" translation_tag="updated_at" style_text_align="center" />
+					<hs_text_small width="100%" bind_text="sb_weather_update_time" style_text_align="center" />
+				</hs_column>
+			</wd_list-container>
+		</wd_list>
+	</view>
+</screen>

@@ -1,0 +1,16 @@
+<component>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0x000000" />
+	</previews>
+
+	<styles>
+		<style name="style_base" text_color="0xfff" />
+	</styles>
+
+	<view extends="lv_label" text="12:45">
+		<style name="style_base" />
+		<bind_style name="style_text_large_466" subject="sb_screen_size" ref_value="0" />
+		<bind_style name="style_text_large_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_text_large_240" subject="sb_screen_size" ref_value="2" />
+	</view>
+</component>

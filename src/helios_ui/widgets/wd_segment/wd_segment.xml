@@ -1,0 +1,22 @@
+<widget>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0xeee" />
+	</previews>
+
+	<api>
+		<prop name="selected" type="int" help="The current selected item, -1 for none" />
+		<prop name="bind_value" type="subject" help="The subject to bind the selected item" />
+	</api>
+
+	<styles>
+		<style name="style_base" width="100%" height="content" layout="flex" flex_flow="row" pad_column="10" />
+		<style name="style_base_360" pad_column="6" />
+		<style name="style_base_240" pad_column="4" />
+	</styles>
+
+	<view extends="lv_obj">
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+	</view>
+</widget>

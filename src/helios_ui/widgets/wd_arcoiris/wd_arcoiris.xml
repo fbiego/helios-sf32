@@ -1,0 +1,18 @@
+<widget>
+	<previews>
+		<preview width="360" height="360" style_bg_color="0x000000" />
+	</previews>
+	<consts />
+
+	<api>
+		<prop name="thickness" type="int" default="20" help="Thickness of the arc widget" />
+	</api>
+
+	<styles>
+		<style name="style_main" width="100%" height="100%" bg_color="0x000000" bg_opa="0" />
+	</styles>
+
+	<view extends="lv_obj">
+		<style name="style_main" />
+	</view>
+</widget>

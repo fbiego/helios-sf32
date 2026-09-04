@@ -1,0 +1,82 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style
+			name="style_app"
+			width="100%"
+			height="80"
+			text_font="NS_Medium_40"
+			text_color="0xfff"
+			radius="40"
+			bg_color="0xb7b7b7"
+			bg_opa="20"
+			pad_column="12"
+			pad_hor="22"
+		/>
+		<style name="style_text" height="50" pad_top="10" />
+		<style name="style_text_360" height="40" pad_top="7" />
+		<style name="style_text_240" height="30" pad_top="7" />
+		<style name="style_app_360" height="60" text_font="NS_Medium_30" pad_column="10" pad_hor="15" />
+		<style name="style_app_240" height="40" text_font="NS_Medium_20" pad_column="10" pad_hor="12" />
+		<style name="style_grid_mode" width="110" height="110" radius="55" bg_color="0xb7b7b7" bg_opa="20" />
+		<style name="style_grid_mode_360" width="90" height="90" />
+		<style name="style_grid_mode_240" width="60" height="60" />
+		<style name="style_icon" align="center" />
+		<style name="style_icon_360" transform_scale_x="200" transform_scale_y="200" />
+		<style
+			name="style_flex"
+			layout="flex"
+			pad_hor="20"
+			pad_column="20"
+			flex_track_place="center"
+			flex_cross_place="center"
+		/>
+		<style name="style_pressed" bg_color="0xffffff" bg_opa="60" />
+	</styles>
+	<api>
+		<prop name="icon" type="image" help="Application icon, must be of size 64x64" default="icon_chat" />
+		<prop name="app_name" type="string" help="App Name" default="App Name" />
+		<prop name="tag" type="string" default="" />
+	</api>
+	<view scrollable="false" event_bubble="true">
+		<remove_style_all />
+		<style name="style_app" />
+		<style name="style_pressed" selector="pressed" />
+		<style name="style_pressed" selector="pressed|user_1" />
+		<bind_state_if_eq subject="sb_app_list_mode" ref_value="1" state="user_1" />
+
+		<bind_style name="style_flex" subject="sb_app_list_mode" ref_value="0" />
+
+		<style name="style_grid_mode" selector="user_1" />
+
+		<bind_style name="style_app_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_app_240" subject="sb_screen_size" ref_value="2" />
+
+		<bind_style name="style_grid_mode_360" subject="sb_screen_size" ref_value="1" selector="user_1" />
+		<bind_style name="style_grid_mode_240" subject="sb_screen_size" ref_value="2" selector="user_1" />
+
+		<wd_image
+			clickable="false"
+			src="$icon"
+			scale_0="256"
+			scale_1="190"
+			scale_2="120"
+			size_1="55"
+			size_2="30"
+			bind_scale="sb_screen_size"
+		>
+			<bind_style name="style_icon" subject="sb_app_list_mode" ref_value="1" />
+		</wd_image>
+
+		<lv_label text="$app_name" flex_grow="1" long_mode="clip" translation_tag="$tag">
+			<style name="style_text" />
+			<bind_style name="style_text_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_text_240" subject="sb_screen_size" ref_value="2" />
+			<bind_flag_if_eq subject="sb_app_list_mode" flag="hidden" ref_value="1" />
+		</lv_label>
+	</view>
+</component>

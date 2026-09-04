@@ -1,0 +1,10 @@
+# Project-specific options kept small so this app is easy to move.
+config CUSTOM_MEM_MAP
+    bool
+    select custom_mem_map
+    default y if !SOC_SIMULATOR
+
+config SOLUTION_ALLOC_MEM
+    bool
+    default y
+

@@ -1,0 +1,88 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+import os
+import re
+
+cwd = GetCurrentDir()
+src = Glob('*.c')
+
+ui_dir = os.path.join(cwd, 'helios_ui')
+chronos_core_dir = os.path.join(cwd, 'chronos_core')
+faces_dir = os.path.join(cwd, 'faces')
+excluded_ui_sources = {
+    'img_preview_240_data.c',
+    'img_preview_280_data.c',
+    'img_preview_360_data.c',
+    'img_preview_410_data.c',
+    'img_preview_466_data.c',
+    'watchface_previews.c',
+}
+
+src.extend([
+    source for source in Glob(os.path.join(chronos_core_dir, '*.c'))
+    if os.path.basename(str(source)) != 'watch_example.c'
+])
+face_src = []
+face_defines = set()
+if os.path.isdir(faces_dir):
+    for root, dirs, files in os.walk(faces_dir):
+        dirs[:] = [directory for directory in dirs if not directory.startswith('.')]
+        rel_root = os.path.relpath(root, faces_dir)
+        face_name = rel_root.split(os.sep, 1)[0]
+        if face_name != '.':
+            face_defines.add('ENABLE_FACE_' + re.sub(r'[^0-9A-Za-z_]', '_', face_name).upper())
+        for filename in files:
+            if filename.endswith('.c'):
+                face_src.append(File(os.path.join(root, filename)))
+
+def append_cmake_sources(path, sources):
+    if not os.path.exists(path):
+        return
+
+    pattern = re.compile(r'\$\{CMAKE_CURRENT_LIST_DIR\}/([^\s\)]+\.c)')
+    with open(path, 'r') as source_list:
+        for line in source_list:
+            match = pattern.search(line)
+            if match:
+                source = os.path.join(ui_dir, match.group(1))
+                if os.path.basename(source) in excluded_ui_sources:
+                    continue
+                if os.path.basename(source).endswith('_xml_parser.c'):
+                    continue
+                if os.path.exists(source):
+                    source_file = File(source)
+                    if source_file not in sources:
+                        sources.append(source_file)
+
+def append_tree_sources(path, sources):
+    if not os.path.isdir(path):
+        return
+
+    for root, dirs, files in os.walk(path):
+        dirs[:] = [directory for directory in dirs if not directory.startswith('.')]
+        for filename in files:
+            if filename.endswith('.c') and not filename.endswith('_xml_parser.c'):
+                source_file = File(os.path.join(root, filename))
+                if source_file not in sources:
+                    sources.append(source_file)
+
+append_cmake_sources(os.path.join(ui_dir, 'file_list_gen.cmake'), src)
+append_cmake_sources(os.path.join(ui_dir, 'user_config.cmake'), src)
+append_tree_sources(os.path.join(ui_dir, 'custom', 'apps', 'apps'), src)
+
+CPPPATH = [cwd, ui_dir, chronos_core_dir, faces_dir, str(Dir('#'))]
+
+group = [DefineGroup('helios_app', src, depend=[''], CPPPATH=CPPPATH, LOCAL_CCFLAGS='-DLV_LVGL_H_INCLUDE_SIMPLE')]
+
+if face_src:
+    face_flags = '-DLV_LVGL_H_INCLUDE_SIMPLE'
+    if face_defines:
+        face_flags += ' ' + ' '.join('-D' + define for define in sorted(face_defines))
+    group.append(DefineGroup('helios_faces',
+                             face_src,
+                             depend=[''],
+                             CPPPATH=CPPPATH,
+                             LOCAL_CCFLAGS=face_flags))
+
+Return('group')

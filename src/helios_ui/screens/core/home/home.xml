@@ -1,0 +1,8 @@
+<screen>
+	<view>
+		<style name="style_dark" />
+		<hs_container name="watchface_cont" width="100%" height="100%" clickable="false">
+			<watchface_default />
+		</hs_container>
+	</view>
+</screen>

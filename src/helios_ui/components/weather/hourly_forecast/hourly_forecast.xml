@@ -1,0 +1,44 @@
+<component>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0x000000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="content"
+			height="content"
+			layout="flex"
+			flex_flow="column"
+			flex_track_place="center"
+			flex_cross_place="center"
+			pad_row="5"
+		/>
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<!-- Add widgets/components here -->
+		<style name="style_base" />
+		<hs_text_small text="12:00" />
+		<wd_image
+			src="icon_weather"
+			scale_0="120"
+			scale_1="110"
+			scale_2="70"
+			size_0="30"
+			size_1="25"
+			size_2="15"
+			bind_scale="sb_screen_size"
+		/>
+
+		<hs_text_small text="22°" />
+		<hs_text_small text="35%" />
+	</view>
+</component>

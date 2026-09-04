@@ -1,0 +1,36 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style name="style_music" width="360" height="110" radius="55" />
+		<style name="style_music_360" width="290" height="90" />
+		<style name="style_music_240" width="200" height="60" />
+		<style name="style_cont" width="320" height="60" radius="30" bg_color="0x838383" bg_opa="100" align="center" />
+		<style name="style_cont_360" width="250" height="48" />
+		<style name="style_cont_240" width="180" height="35" />
+	</styles>
+	<view event_bubble="true">
+		<remove_style_all />
+		<style name="style_music" />
+		<bind_style name="style_music_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_music_240" subject="sb_screen_size" ref_value="2" />
+		<lv_obj clickable="false">
+			<remove_style_all />
+			<style name="style_cont" />
+			<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+		</lv_obj>
+		<control_button icon="icon_back" align="left_mid">
+			<event_cb callback="on_music_control_cb" trigger="clicked" user_data="previous" />
+		</control_button>
+		<control_button icon="icon_play" align="center">
+			<event_cb callback="on_music_control_cb" trigger="clicked" user_data="toggle" />
+		</control_button>
+		<control_button icon="icon_next" align="right_mid">
+			<event_cb callback="on_music_control_cb" trigger="clicked" user_data="next" />
+		</control_button>
+	</view>
+</component>

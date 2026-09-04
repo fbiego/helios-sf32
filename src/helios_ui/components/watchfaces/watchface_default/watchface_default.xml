@@ -1,0 +1,50 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_bg_color="0x000" />
+		<preview width="360" height="360" style_bg_color="0x000" />
+		<preview width="240" height="240" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style name="style_base" width="100%" height="100%" bg_color="0x6688ee" text_color="0xfff" />
+		<style
+			name="style_column"
+			width="100%"
+			height="100%"
+			layout="flex"
+			flex_flow="column"
+			flex_main_place="center"
+			flex_track_place="center"
+			flex_cross_place="center"
+		/>
+	</styles>
+
+	<view extends="lv_obj" clickable="false">
+		<remove_style_all />
+		<style name="style_base" />
+		<!-- <wd_arcoiris clickable="false" thickness="50%" style_opa="30">
+			<bind_flag_if_not_eq subject="sb_screen_type" flag="hidden" ref_value="0" />
+		</wd_arcoiris> -->
+
+		<lv_obj clickable="false">
+			<remove_style_all />
+			<style name="style_column" />
+			<hs_text_large bind_text="sb_time_string" y="-50" align="center" />
+			<hs_tag_normal bind_tag="sb_time_weekday_long" />
+			<hs_row width="content" style_pad_column="10">
+				<hs_text_normal bind_text="sb_time_day" bind_text-fmt="%02d" />
+				<hs_tag_normal bind_tag="sb_time_month_short" />
+			</hs_row>
+		</lv_obj>
+
+		<!-- <wd_arcoiris clickable="false" thickness="15" style_bg_opa="0" style_opa="200">
+			<bind_flag_if_not_eq subject="sb_screen_type" flag="hidden" ref_value="0" />
+		</wd_arcoiris> -->
+	</view>
+</component>

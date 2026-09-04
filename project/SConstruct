@@ -1,0 +1,38 @@
+import os
+import rtconfig
+import shutil
+
+SIFLI_SDK = os.getenv('SIFLI_SDK')
+if not SIFLI_SDK:
+    print("Please source export.sh/export.ps1 in the SiFli SDK root first.")
+    exit()
+
+from building import *
+
+PrepareEnv()
+
+AddOption('--lcpu',
+  dest='lcpu',
+  nargs=1, type='string',
+  action='store',
+  metavar='DIR',
+  help='lcpu image path')
+
+AddBootLoader(SIFLI_SDK, rtconfig.CHIP)
+
+lcpu_path = GetOption('lcpu')
+if lcpu_path is not None:
+    shutil.copyfile(lcpu_path, "../src/lcpu_img.c")
+else:
+    AddLCPU(SIFLI_SDK, rtconfig.CHIP, "../src/lcpu_img.c")
+
+SifliEnv()
+
+TARGET = rtconfig.OUTPUT_DIR + rtconfig.TARGET_NAME + '.' + rtconfig.TARGET_EXT
+objs = PrepareBuilding(None)
+env = GetCurrentEnv()
+
+DoBuilding(TARGET, objs)
+AddFTAB(SIFLI_SDK, rtconfig.CHIP)
+GenDownloadScript(env)
+

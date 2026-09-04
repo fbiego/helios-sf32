@@ -1,0 +1,9 @@
+<screen>
+	<view>
+		<!-- Add your code here -->
+		<style name="style_dark" />
+		<hs_title_pill tag="timer" width="content" align="top_mid" y="50" />
+
+		<timer_countdown />
+	</view>
+</screen>

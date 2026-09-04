@@ -1,0 +1,36 @@
+<screen>
+	<styles>
+		<style name="style_list" bg_color="0x000000" bg_opa="255" />
+		<style name="style_cont" pad_top="120" pad_bottom="150" pad_hor="33" flex_flow="column_reverse" />
+		<style name="style_cont_360" pad_hor="30" pad_top="80" pad_bottom="100" />
+		<style name="style_cont_240" pad_hor="20" pad_row="5" pad_top="60" pad_bottom="80" />
+	</styles>
+	<view>
+		<style name="style_dark" />
+
+		<hs_text_small
+			width="60%"
+			text="No contacts avaialble, please sync using Chronos app"
+			style_text_align="center"
+			align="center"
+		/>
+
+		<wd_list name="contacts_list" bind_circular="sb_list_circular_mode" bind_screen="sb_screen_size">
+			<wd_list-title height="content">
+				<hs_title_pill width="content" align="center" tag="contacts" style_max_width="100%" />
+			</wd_list-title>
+			<wd_list-container>
+				<style name="style_list" />
+				<style name="style_cont" />
+				<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+
+				<contact_item />
+				<contact_item />
+				<contact_item style_bg_color="0x0f4010" />
+				<contact_item />
+				<contact_item />
+			</wd_list-container>
+		</wd_list>
+	</view>
+</screen>

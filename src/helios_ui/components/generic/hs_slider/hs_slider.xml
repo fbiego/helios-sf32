@@ -1,0 +1,65 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="label" type="string" default="Brightness" />
+		<prop name="tag" type="string" default="" />
+		<prop name="bind_value" type="subject" default="sb_battery_percent" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			layout="flex"
+			flex_flow="column"
+			text_color="0xfff"
+			radius="10"
+			pad_ver="0"
+			pad_row="10"
+			bg_color="0x171717"
+			bg_opa="255"
+		/>
+		<style name="style_base_360" pad_row="6" />
+		<style name="style_base_240" pad_row="4" />
+		<style name="style_slider" width="100%" bg_color="0xfff" height="46" text_color="0xfff" />
+		<style name="style_slider_360" height="36" />
+		<style name="style_slider_240" height="24" />
+		<style name="style_indicator" bg_color="0xffffff" bg_opa="255" />
+		<style name="style_disabled" bg_color="0xa3a3a3" />
+		<style name="style_text_normal" blend_mode="multiply" />
+		<style name="style_text_show" blend_mode="difference" />
+	</styles>
+
+	<view extends="lv_obj" state_trickle="true">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_text_normal width="100%" text="$label" translation_tag="$tag" />
+
+		<lv_slider bind_value="$bind_value" gesture_bubble="false" state_trickle="true">
+			<style name="style_slider" />
+			<bind_style name="style_slider_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_slider_240" subject="sb_screen_size" ref_value="2" />
+			<remove_style selector="knob" />
+			<style name="style_indicator" selector="indicator" />
+			<style name="style_disabled" selector="indicator|disabled" />
+
+			<hs_text_small bind_text="$bind_value" bind_text-fmt="%d%%" align="left_mid" x="15">
+				<style name="style_text_show" />
+				<style name="style_text_normal" selector="disabled" />
+			</hs_text_small>
+			<hs_text_small align="center" text="Not supported">
+				<style name="style_text_normal" />
+				<style name="style_text_show" selector="disabled" />
+			</hs_text_small>
+		</lv_slider>
+	</view>
+</component>

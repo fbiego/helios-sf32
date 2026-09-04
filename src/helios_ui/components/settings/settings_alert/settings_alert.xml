@@ -1,0 +1,49 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_radius="233" style_bg_color="0x000" />
+		<preview width="360" height="360" style_radius="180" style_bg_color="0x000" />
+		<preview width="240" height="240" style_radius="120" style_bg_color="0x000" />
+		<preview width="410" height="502" style_radius="100" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style name="style_base" pad_row="10" pad_ver="120" />
+		<style name="style_pad_360" pad_ver="90" pad_hor="25" />
+		<style name="style_pad_240" pad_ver="60" pad_hor="20" />
+		<style name="style_pad_rect" pad_hor="18" />
+		<style name="style_pad_rect_360" pad_hor="14" />
+		<style name="style_pad_rect_240" pad_hor="10" />
+	</styles>
+
+	<view extends="wd_list" bind_screen="sb_screen_size">
+		<wd_list-title height="content">
+			<hs_title_pill width="content" align="center" style_max_width="100%" tag="alerts" />
+		</wd_list-title>
+		<wd_list-container>
+			<style name="style_base" />
+			<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+			<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_1" />
+			<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_1" />
+			<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_1" />
+			<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_1" />
+			<hs_card style_pad_ver="5">
+				<hs_switch tag="sound" />
+				<hs_line />
+				<hs_switch tag="vibration" />
+				<hs_line />
+				<hs_switch tag="wake_screen" />
+			</hs_card>
+
+			<hs_card style_pad_ver="5">
+				<hs_switch tag="dnd" />
+			</hs_card>
+		</wd_list-container>
+	</view>
+</component>

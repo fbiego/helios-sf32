@@ -1,0 +1,15 @@
+<screen>
+	<styles>
+		<style name="style_cont" width="100%" height="100%" layout="flex" />
+	</styles>
+	<view scrollbar_mode="off">
+		<style name="style_dark" />
+		<wd_panel>
+			<wd_panel-container scroll_snap_x="center">
+				<style name="style_cont" />
+				<weather_widget />
+				<music_widget />
+			</wd_panel-container>
+		</wd_panel>
+	</view>
+</screen>

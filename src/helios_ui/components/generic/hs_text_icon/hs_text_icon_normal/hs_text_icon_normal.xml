@@ -1,0 +1,40 @@
+<component>
+	<previews>
+		<preview width="400" height="240" style_bg_color="0x000000" />
+		<preview width="300" height="240" style_bg_color="0x000" />
+		<preview width="200" height="240" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="icon" type="image" default="icon_weather_humidity_icon" />
+		<prop name="text" type="string" default="Label" />
+		<prop name="tag" type="string" default="" />
+		<prop name="bind_value" type="subject" default="sb_placeholder" />
+		<prop name="bind_fmt" type="string" default="%s" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="content"
+			height="content"
+			layout="flex"
+			flex_track_place="center"
+			flex_cross_place="center"
+			pad_column="5"
+		/>
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+		<wd_image src="$icon" scale_1="240" scale_2="160" size_1="30" size_2="18" bind_scale="sb_screen_size" />
+		<hs_text_normal
+			text="$text"
+			translation_tag="$tag"
+			bind_text="$bind_value"
+			bind_text-fmt="$bind_fmt"
+			style_pad_top="5"
+		/>
+	</view>
+</component>

@@ -1,0 +1,23 @@
+<widget>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0xeee" />
+	</previews>
+
+	<api>
+		<!-- Add your API here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+		<prop name="text" type="string" />
+		<prop name="tag" type="string" />
+
+		<prop name="bind_tag" type="subject" />
+
+		<prop name="bind_text" type="subject" />
+	</api>
+
+	<styles />
+
+	<view extends="lv_label">
+		<!-- Add widgets/components here -->
+	</view>
+</widget>

@@ -1,0 +1,54 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="label" type="string" default="Label" />
+		<prop name="label_tag" type="string" default="" />
+		<prop name="info" type="subject" default="sb_placeholder" />
+		<prop name="fmt" type="string" default="%s" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			radius="10"
+			pad_ver="4"
+			bg_color="0x171717"
+			bg_opa="255"
+		/>
+		<style name="style_pad_360" pad_ver="3" radius="6" />
+		<style name="style_pad_240" pad_ver="2" radius="3" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+
+		<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_text_normal
+			text="$label"
+			translation_tag="$label_tag"
+			width="content"
+			style_pad_right="5"
+			style_text_align="left"
+		/>
+		<hs_text_normal
+			bind_text="$info"
+			bind_text-fmt="$fmt"
+			align="top_right"
+			width="content"
+			style_text_align="right"
+			style_text_color="0xaaa"
+		/>
+
+		<event_cb callback="on_hs_info_cb" trigger="all" />
+	</view>
+</component>

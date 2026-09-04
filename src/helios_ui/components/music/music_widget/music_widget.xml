@@ -1,0 +1,163 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_radius="233" style_bg_color="0x000000" />
+		<preview width="360" height="360" style_radius="180" style_bg_color="0x000" />
+		<preview width="240" height="240" style_radius="120" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style name="style_base" width="100%" height="100%" />
+		<style name="style_list" bg_color="0x000000" bg_opa="255" />
+		<style
+			name="style_cont"
+			width="100%"
+			height="100%"
+			pad_ver="20"
+			layout="flex"
+			flex_flow="column"
+			flex_main_place="space_between"
+			flex_cross_place="center"
+			pad_bottom="26"
+		/>
+		<style name="style_cont_360" pad_ver="15" pad_bottom="23" />
+		<style name="style_cont_240" pad_ver="10" pad_bottom="16" />
+
+		<style name="style_pad_rect" pad_hor="30" />
+		<style name="style_pad_rect_360" pad_hor="28" />
+		<style name="style_pad_rect_240" pad_hor="15" />
+	</styles>
+
+	<view>
+		<remove_style_all />
+		<style name="style_base" />
+		<wd_image
+			src="img_music_album"
+			scale_0="256"
+			scale_1="190"
+			scale_2="120"
+			size_1="180"
+			size_2="120"
+			bind_scale="sb_screen_size"
+			bind_color="sb_music_album_color"
+			align="center"
+			style_image_recolor_opa="255"
+		/>
+
+		<hs_container>
+			<style name="style_cont" />
+			<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+
+			<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_2" />
+			<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_2" />
+			<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_2" />
+			<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_2" />
+
+			<hs_column
+				style_flex_cross_place="center"
+				style_flex_track_place="center"
+				style_pad_row="10"
+				style_bg_color="0x000000"
+				style_bg_opa="200"
+				style_pad_bottom="10"
+			>
+				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				<wd_image
+					scale_0="256"
+					scale_1="190"
+					scale_2="120"
+					size_1="55"
+					size_2="30"
+					bind_scale="sb_screen_size"
+					bind_src="sb_music_icon"
+				/>
+
+				<hs_text_small
+					width="90%"
+					bind_text="sb_music_app"
+					long_mode="scroll_circular"
+					style_text_align="center"
+				/>
+			</hs_column>
+
+			<hs_column
+				height="100%"
+				style_flex_main_place="center"
+				style_flex_cross_place="center"
+				style_flex_track_place="center"
+				style_pad_row="10"
+				style_bg_color="0x000000"
+				style_bg_opa="200"
+				style_pad_bottom="10"
+			>
+				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="1" />
+
+				<hs_text_normal width="90%" translation_tag="disconnected" style_text_align="center" />
+			</hs_column>
+
+			<hs_text_small bind_text="sb_time_string">
+				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="1" />
+			</hs_text_small>
+
+			<hs_row width="90%" style_flex_cross_place="center">
+				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				<hs_button_icon flex_grow="1" icon="icon_vol_down_32">
+					<subject_increment_event subject="sb_sound_volume" trigger="clicked" step="-10" />
+				</hs_button_icon>
+				<hs_container flex_grow="3">
+					<simple_bar bind_value="sb_sound_volume" />
+				</hs_container>
+				<hs_button_icon flex_grow="1" icon="icon_vol_up_32">
+					<subject_increment_event subject="sb_sound_volume" trigger="clicked" step="10" />
+				</hs_button_icon>
+			</hs_row>
+
+			<hs_column
+				style_flex_cross_place="center"
+				style_pad_row="10"
+				style_pad_top="10"
+				align="bottom_mid"
+				style_bg_color="0x000000"
+				style_bg_opa="200"
+			>
+				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				<hs_text_normal
+					width="90%"
+					bind_text="sb_music_track"
+					long_mode="scroll_circular"
+					style_text_align="center"
+				/>
+				<hs_text_normal
+					width="90%"
+					bind_text="sb_music_artist"
+					long_mode="scroll_circular"
+					style_text_align="center"
+				/>
+				<hs_row style_flex_main_place="center" style_pad_column="10">
+					<hs_container flex_grow="1">
+						<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+					</hs_container>
+					<hs_button_icon flex_grow="1" icon="icon_music_previous_32">
+						<event_cb callback="on_music_control_cb" trigger="clicked" user_data="previous" />
+					</hs_button_icon>
+					<hs_button_icon flex_grow="1" bind_icon="sb_music_state_icon">
+						<event_cb callback="on_music_control_cb" trigger="clicked" user_data="toggle" />
+					</hs_button_icon>
+					<hs_button_icon flex_grow="1" icon="icon_music_next_32">
+						<event_cb callback="on_music_control_cb" trigger="clicked" user_data="next" />
+					</hs_button_icon>
+					<hs_container flex_grow="1">
+						<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+					</hs_container>
+				</hs_row>
+				<hs_text_small bind_text="sb_time_string" />
+			</hs_column>
+		</hs_container>
+	</view>
+</component>

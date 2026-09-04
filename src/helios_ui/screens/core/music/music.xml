@@ -1,0 +1,8 @@
+<screen>
+	<styles />
+	<view>
+		<style name="style_dark" />
+
+		<music_widget />
+	</view>
+</screen>

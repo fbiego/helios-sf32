@@ -1,0 +1,59 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_bg_color="0x000" />
+		<preview width="360" height="360" style_bg_color="0x000" />
+		<preview width="240" height="240" style_bg_color="0x000" />
+		<preview width="410" height="502" style_bg_color="0x000" />
+		<preview width="390" height="450" style_bg_color="0x000" />
+		<preview width="240" height="280" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="title" type="string" default="Title" />
+		<prop name="info" type="string" default="Some info to show on the dialog" />
+		<prop name="positive_btn" type="string" default="Ok" />
+		<prop name="negative_btn" type="string" default="Cancel" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="100%"
+			pad_ver="100"
+			pad_hor="50"
+			bg_color="0x383838"
+			bg_opa="150"
+		/>
+		<style name="style_pad_360" pad_ver="80" pad_hor="40" />
+		<style name="style_pad_240" pad_ver="60" pad_hor="30" />
+		<style name="style_pad_rect" pad_hor="18" />
+		<style name="style_pad_rect_360" pad_hor="14" />
+		<style name="style_pad_rect_240" pad_hor="10" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+		<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_1" />
+		<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_1" />
+		<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_1" />
+		<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_1" />
+
+		<hs_card>
+			<hs_text_normal width="100%" style_text_align="center" text="$title" />
+			<hs_text_small width="100%" text="$info" />
+			<hs_column style_pad_row="10">
+				<hs_button name="button_positive" label="$positive_btn" style_bg_color="#color_button_primary" />
+				<hs_button
+					name="button_negative"
+					label="$negative_btn"
+					text_color="#color_danger"
+					style_bg_color="#color_button_danger"
+				/>
+			</hs_column>
+		</hs_card>
+	</view>
+</component>

@@ -1,0 +1,24 @@
+<widget>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0xeee" />
+	</previews>
+
+	<api>
+		<prop name="src" type="image" />
+		<prop name="scale_0" type="int" />
+		<prop name="scale_1" type="int" />
+		<prop name="scale_2" type="int" />
+		<prop name="size_0" type="int" />
+		<prop name="size_1" type="int" />
+		<prop name="size_2" type="int" />
+		<prop name="x_0" type="int" />
+		<prop name="x_1" type="int" />
+		<prop name="x_2" type="int" />
+		<prop name="rotation" type="int" />
+		<prop name="bind_scale" type="subject" />
+		<prop name="bind_src" type="subject" />
+		<prop name="bind_color" type="subject" />
+	</api>
+
+	<view extends="lv_image" />
+</widget>

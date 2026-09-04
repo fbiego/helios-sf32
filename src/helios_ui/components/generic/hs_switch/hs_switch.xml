@@ -1,0 +1,55 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="label" type="string" default="Circular Scroll" />
+		<prop name="tag" type="string" default="" />
+		<prop name="bind_value" type="subject" default="sb_list_circular_mode" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			layout="flex"
+			flex_flow="row"
+			flex_track_place="center"
+			flex_cross_place="center"
+			text_color="0xfff"
+			radius="10"
+			pad_ver="0"
+			pad_row="10"
+			bg_color="0x171717"
+			bg_opa="255"
+		/>
+		<style name="style_base_360" pad_ver="2" />
+		<style name="style_base_240" pad_ver="4" />
+		<style name="style_switch" bg_color="0xffffff" width="80" height="46" text_color="0xfff" />
+		<style name="style_switch_360" width="60" height="36" />
+		<style name="style_switch_240" width="40" height="24" />
+		<style name="style_indicator" bg_color="0xffffff" bg_opa="255" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_text_normal text="$label" translation_tag="$tag" flex_grow="1" style_pad_top="5" />
+
+		<lv_switch bind_checked="$bind_value" ext_click_area="10">
+			<style name="style_switch" />
+			<style name="style_primary_bg" selector="checked|indicator" />
+			<style name="style_primary_bg" selector="knob" />
+			<style name="style_white_bg" selector="knob|checked" />
+			<bind_style name="style_switch_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_switch_240" subject="sb_screen_size" ref_value="2" />
+		</lv_switch>
+	</view>
+</component>

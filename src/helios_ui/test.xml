@@ -1,0 +1,6 @@
+<test>
+	<view extends="home" />
+	<steps>
+		<screenshot_compare path="watchface_410.png" />
+	</steps>
+</test>

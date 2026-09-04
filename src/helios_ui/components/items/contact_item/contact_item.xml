@@ -1,0 +1,53 @@
+<component>
+	<previews>
+		<preview width="400" height="300" />
+		<preview width="300" />
+		<preview width="200" />
+	</previews>
+
+	<api>
+		<prop name="name" type="string" default="John Doe" />
+		<prop name="number" type="string" default="03244875324" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			layout="flex"
+			flex_flow="row"
+			flex_track_place="center"
+			flex_cross_place="center"
+			bg_color="0x191919"
+			radius="30"
+			pad_ver="10"
+			pad_hor="20"
+			pad_column="10"
+			bg_opa="255"
+		/>
+		<style name="style_base_360" pad_ver="6" pad_hor="12" radius="24" />
+		<style name="style_base_240" pad_ver="4" pad_hor="8" radius="18" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+		<!-- <wd_image
+			src="icon_user"
+			clickable="false"
+			scale_0="256"
+			scale_1="190"
+			scale_2="120"
+			size_1="55"
+			size_2="30"
+			bind_scale="sb_screen_size"
+		/> -->
+		<hs_column flex_grow="1">
+			<hs_text_normal text="$name" />
+			<hs_text_normal text="$number" />
+		</hs_column>
+	</view>
+</component>

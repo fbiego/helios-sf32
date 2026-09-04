@@ -1,0 +1,43 @@
+<component>
+	<previews>
+		<preview width="466" height="466" style_bg_color="0x000" />
+		<preview width="360" height="360" style_bg_color="0x000" />
+		<preview width="240" height="240" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop
+			name="options"
+			type="string"
+			default="0&#10;1&#10;2&#10;3&#10;4&#10;5&#10;6&#10;7&#10;8&#10;9&#10;10&#10;11&#10;12&#10;13&#10;14&#10;15&#10;16&#10;17&#10;18&#10;19&#10;20&#10;21&#10;22&#10;23&#10;24&#10;25&#10;26&#10;27&#10;28&#10;29&#10;30&#10;31&#10;32&#10;33&#10;34&#10;35&#10;36&#10;37&#10;38&#10;39&#10;40&#10;41&#10;42&#10;43&#10;44&#10;45&#10;46&#10;47&#10;48&#10;49&#10;50&#10;51&#10;52&#10;53&#10;54&#10;55&#10;56&#10;57&#10;58&#10;59"
+		/>
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			height="130"
+			border_width="0"
+			bg_opa="0"
+			radius="0"
+			text_font="NS_Medium_30"
+			text_color="0xffffff"
+		/>
+		<style name="style_base_360" height="110" text_font="NS_Medium_20" />
+		<style name="style_base_240" height="100" text_font="NS_Medium_18" />
+
+		<style name="style_selected" bg_color="0x222222" radius="5" />
+		<style name="style_selected_360" radius="4" />
+		<style name="style_selected_240" radius="3" />
+	</styles>
+
+	<view extends="lv_roller" options="$options" options-mode="infinite" selected="3">
+		<!-- Add widgets/components here -->
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+		<style name="style_selected" selector="selected" />
+		<bind_style name="style_selected_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_selected_240" subject="sb_screen_size" ref_value="2" />
+	</view>
+</component>

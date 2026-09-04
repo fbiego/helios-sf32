@@ -1,0 +1,7 @@
+<screen>
+	<view>
+		<style name="style_dark" />
+
+		<hs_text_normal text="HELIOS" align="center" />
+	</view>
+</screen>

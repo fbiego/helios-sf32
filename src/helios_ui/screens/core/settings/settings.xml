@@ -1,0 +1,59 @@
+<screen>
+	<styles>
+		<style
+			name="style_cont"
+			width="466"
+			height="466"
+			align="center"
+			border_width="0"
+			pad_top="100"
+			pad_bottom="150"
+			pad_hor="33"
+		/>
+		<style name="style_cont_360" pad_hor="30" pad_top="80" pad_bottom="100" />
+		<style name="style_cont_240" pad_hor="20" pad_row="5" pad_top="60" pad_bottom="80" />
+
+		<style name="style_pad_grid" pad_hor="53" pad_row="15" flex_main_place="center" pad_column="10" />
+		<style name="style_pad_grid_360" pad_hor="33" pad_row="10" pad_column="12" />
+		<style name="style_pad_grid_240" pad_hor="20" pad_row="10" pad_column="10" />
+		<style name="style_pad_grid_410" pad_hor="25" />
+		<style name="style_pad_rect" pad_hor="18" />
+		<style name="style_pad_rect_360" pad_hor="14" />
+		<style name="style_pad_rect_240" pad_hor="10" />
+	</styles>
+	<view>
+		<style name="style_dark" />
+
+		<wd_list
+			name="main_settings_list"
+			bind_mode="sb_app_list_mode"
+			bind_circular="sb_list_circular_mode"
+			bind_screen="sb_screen_size"
+		>
+			<wd_list-title height="content">
+				<hs_title_pill width="content" align="center" tag="settings" style_max_width="100%" />
+			</wd_list-title>
+			<wd_list-container>
+				<bind_state_if_eq subject="sb_app_list_mode" state="user_1" ref_value="1" />
+				<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+				<bind_style name="style_pad_grid" subject="sb_screen_size" ref_value="0" selector="user_1" />
+				<bind_style name="style_pad_grid_360" subject="sb_screen_size" ref_value="1" selector="user_1" />
+				<bind_style name="style_pad_grid_240" subject="sb_screen_size" ref_value="2" selector="user_1" />
+				<bind_style name="style_pad_grid_410" subject="sb_screen_width" ref_value="410" selector="user_1" />
+
+				<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_2" />
+				<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_2" />
+				<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_2" />
+				<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_2" />
+
+				<app_item icon="icon_settings_monitor" app_name="Display" tag="display" />
+				<app_item icon="icon_settings_smartwatch" app_name="System" tag="system" />
+				<app_item icon="icon_settings_bell" app_name="Alerts" tag="alerts" />
+				<app_item icon="icon_settings_power" app_name="Battery" tag="battery" />
+				<app_item icon="icon_settings_harddisk" app_name="Storage" tag="storage" />
+				<app_item icon="icon_settings_information" app_name="About" tag="about" />
+			</wd_list-container>
+		</wd_list>
+	</view>
+</screen>

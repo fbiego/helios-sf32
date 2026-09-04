@@ -1,0 +1,83 @@
+<widget>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="options" type="string" default="Option 1&#10;Option 2&#10;Option 3" />
+		<prop name="selected" type="int" help="The current selected item, -1 for none" />
+		<prop name="bind_value" type="subject" help="The subject to bind the selected item" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			bg_color="0x3a3a3a"
+			bg_opa="255"
+			height="46"
+			text_color="0xffffff"
+			border_width="0"
+			radius="6"
+		/>
+		<style name="style_base_360" height="36" radius="4" />
+		<style name="style_base_240" height="24" radius="2" />
+		<style name="style_pressed" bg_color="0xa2a2a2" bg_opa="255" text_color="0x000" />
+		<style name="style_text" pad_top="5" pad_hor="10" />
+		<style name="style_text_360" pad_top="2" pad_hor="8" />
+		<style name="style_text_240" pad_top="1" pad_hor="5" />
+
+		<style name="style_cont" width="100%" height="100%" bg_color="0x000000" bg_opa="220" />
+
+		<style
+			name="style_list"
+			width="100%"
+			height="content"
+			bg_color="0x555555"
+			bg_opa="255"
+			layout="flex"
+			flex_flow="column"
+			pad_row="3"
+			pad_all="6"
+			radius="6"
+			align="center"
+		/>
+		<style name="style_list_360" pad_row="2" pad_all="5" radius="4" />
+		<style name="style_list_240" pad_row="1" pad_all="2" radius="2" />
+		<style name="style_scrollbar" width="2" bg_opa="255" bg_color="0xdddddd" pad_top="10" pad_bottom="10" />
+		<style name="style_scrollbar_360" width="2" />
+		<style name="style_scrollbar_240" width="1" />
+	</styles>
+
+	<view extends="lv_obj">
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+
+		<style name="style_pressed" selector="pressed" />
+
+		<hs_text_small name="main_label" width="100%" align="center">
+			<style name="style_text" />
+			<bind_style name="style_text_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_text_240" subject="sb_screen_size" ref_value="2" />
+		</hs_text_small>
+
+		<lv_obj name="dropdown_cont" hidden="true">
+			<remove_style_all />
+			<style name="style_cont" />
+
+			<lv_obj name="dropdown_list" scroll_on_focus="false">
+				<remove_style_all />
+				<style name="style_list" />
+				<bind_style name="style_list_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_list_240" subject="sb_screen_size" ref_value="2" />
+
+				<style name="style_scrollbar" selector="scrollbar" />
+				<bind_style name="style_scrollbar_360" subject="sb_screen_size" ref_value="1" selector="scrollbar" />
+				<bind_style name="style_scrollbar_240" subject="sb_screen_size" ref_value="2" selector="scrollbar" />
+			</lv_obj>
+		</lv_obj>
+	</view>
+</widget>

@@ -1,0 +1,63 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+
+	<api>
+		<prop name="label" type="string" default="Select" />
+		<prop name="tag" type="string" default="" />
+		<prop name="bind_value" type="subject" default="sb_battery_percent" />
+	</api>
+
+	<styles>
+		<style
+			name="style_base"
+			width="100%"
+			height="content"
+			layout="flex"
+			flex_flow="column"
+			text_color="0xfff"
+			radius="10"
+			pad_ver="0"
+			pad_row="8"
+			bg_color="0x171717"
+			bg_opa="255"
+		/>
+		<style name="style_base_360" pad_row="4" />
+		<style name="style_base_240" pad_row="2" />
+		<style
+			name="style_dropdown"
+			width="100%"
+			bg_color="0x3a3a3a"
+			height="46"
+			text_color="0xfff"
+			border_width="0"
+			radius="6"
+		/>
+		<style name="style_dropdown_360" height="36" radius="4" />
+		<style name="style_dropdown_240" height="24" radius="2" />
+		<style
+			name="style_dropdown_list"
+			bg_color="0x606060"
+			text_color="0xfff"
+			border_width="0"
+			pad_ver="50"
+			pad_row="10"
+		/>
+		<style name="style_dropdown_list_360" pad_ver="40" />
+		<style name="style_dropdown_list_240" pad_ver="30" />
+		<style name="style_dropdown_selected" bg_color="0xfff" text_color="0x000" />
+		<style name="style_scrollbar" bg_color="0xfff" pad_all="0" />
+	</styles>
+
+	<view extends="lv_obj">
+		<remove_style_all />
+		<style name="style_base" />
+		<bind_style name="style_base_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_base_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_text_normal width="100%" text="$label" translation_tag="$tag" />
+	</view>
+</component>

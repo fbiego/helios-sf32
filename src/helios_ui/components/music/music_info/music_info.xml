@@ -1,0 +1,35 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style
+			name="style_music"
+			width="360"
+			height="110"
+			pad_all="15"
+			pad_bottom="8"
+			radius="40"
+			bg_opa="100"
+			layout="flex"
+			flex_flow="column"
+			flex_main_place="space_between"
+		/>
+		<style name="style_music_360" width="290" height="90" radius="30" pad_all="13" pad_bottom="8" />
+		<style name="style_music_240" width="200" height="60" radius="20" pad_all="10" pad_bottom="5" />
+	</styles>
+	<view extends="wd_obj" event_bubble="true" bind_bg_color="sb_music_album_color">
+		<style name="style_music" />
+		<bind_style name="style_music_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_music_240" subject="sb_screen_size" ref_value="2" />
+		<hs_text_normal bind_text="sb_music_track" width="100%" style_text_align="center" long_mode="scroll_circular" />
+		<hs_text_normal
+			bind_text="sb_music_artist"
+			width="100%"
+			style_text_align="center"
+			long_mode="scroll_circular"
+		/>
+	</view>
+</component>

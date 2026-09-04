@@ -1,0 +1,58 @@
+<screen>
+	<styles>
+		<style name="style_cont" pad_top="150" pad_bottom="150" pad_hor="33" />
+		<style name="style_cont_360" pad_hor="30" pad_top="100" pad_bottom="100" />
+		<style name="style_cont_240" pad_hor="20" pad_row="5" pad_top="80" pad_bottom="80" />
+		<style name="style_flex" layout="flex" flex_flow="row_wrap" pad_column="15" pad_row="10" />
+		<style name="style_pad_rect" pad_hor="18" />
+		<style name="style_pad_rect_360" pad_hor="14" />
+		<style name="style_pad_rect_240" pad_hor="10" />
+		<style name="style_pad_none" />
+	</styles>
+	<view>
+		<style name="style_dark" />
+
+		<wd_list name="main_about_list" bind_screen="sb_screen_size">
+			<wd_list-title height="content">
+				<hs_title_pill width="content" align="center" style_max_width="100%" tag="phone_link" />
+			</wd_list-title>
+			<wd_list-container>
+				<style name="style_cont" />
+				<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+				<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_1" />
+				<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_1" />
+				<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_1" />
+				<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_1" />
+
+				<hs_card>
+					<hs_info_sb label_tag="status" info="sb_system_connection_str" />
+
+					<hs_info_sb label_tag="last_sync" info="sb_phone_last_sync">
+						<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="1" />
+					</hs_info_sb>
+				</hs_card>
+
+				<hs_card>
+					<hs_info_sb_sb label="sb_phone_manufacturer" info="sb_phone_model" />
+					<hs_line />
+					<hs_info_sb label="SDK" info="sb_phone_sdk" fmt="%d" />
+					<hs_line />
+					<hs_bar tag="battery" bind_value="sb_phone_battery" />
+					<hs_info_sb label_tag="charging" info="sb_phone_charging_str" />
+				</hs_card>
+				<hs_card>
+					<hs_info label="Chronos" info="App" />
+					<hs_line />
+					<hs_info_sb label_tag="version" info="sb_chronos_app_version" />
+					<hs_info_sb label_tag="code" info="sb_chronos_app_code" fmt="%d" />
+				</hs_card>
+				<hs_card>
+					<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+					<hs_button checkable="true" tag="find_phone" style_bg_color="#color_button_primary" />
+				</hs_card>
+				<hs_space />
+			</wd_list-container>
+		</wd_list>
+	</view>
+</screen>
