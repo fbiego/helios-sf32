@@ -32,23 +32,11 @@ This project is intended to live outside the SiFli SDK tree. Keep the `project/`
 - Basic RT-Thread access helpers for buttons, battery ADC, DFS storage, I2C, and SPI.
 - Weather, navigation, contacts, notification, music, health, battery, and connectivity updates are routed into the UI through subject setters or app-runtime queues.
 
-## Screenshots
+### Helios UI
 
-| Home | Applications | M-Pesa |
-| --- | --- | --- |
-| ![Home screen](screenshots/home.png) | ![Applications screen](screenshots/applications.png) | ![M-Pesa screen](screenshots/mpesa.png) |
+https://github.com/fbiego/helios_ui
 
-| Notifications | Weather | Navigation |
-| --- | --- | --- |
-| ![Notifications screen](screenshots/notifications.png) | ![Weather screen](screenshots/weather.png) | ![Navigation screen](screenshots/navigation.png) |
-
-| Music | Health | Stopwatch |
-| --- | --- | --- |
-| ![Music screen](screenshots/music.png) | ![Health screen](screenshots/health.png) | ![Stopwatch screen](screenshots/stopwatch.png) |
-
-| Phone Link | Settings |
-| --- | --- |
-| ![Phone Link screen](screenshots/phone.png) | ![Settings screen](screenshots/settings.png) |
+![screens preview](screenshots/screenshots.png)
 
 ## Repository Layout
 
@@ -90,11 +78,8 @@ External watchfaces are stored in `src/faces/<face_name>/` with a `.c`/`.h` pair
 
 The active watchface is managed by the UI watchface manager in `src/helios_ui/custom/watchfaces/`. The home screen creates the active registered watchface, and a long press opens the selector screen.
 
-### Watchface Previews
 
-| 174_390 | 228_390 | 1889_2_390 | 1891_2_390 |
-| --- | --- | --- | --- |
-| ![174_390 watchface preview](src/faces/174_390/preview.png) | ![228_390 watchface preview](src/faces/228_390/preview.png) | ![1889_2_390 watchface preview](src/faces/1889_2_390/preview.png) | ![1891_2_390 watchface preview](src/faces/1891_2_390/preview.png) |
+![watchfaces preview](screenshots/watchfaces.png)
 
 When adding a new watchface:
 
