@@ -11,6 +11,7 @@
 
 #include "helios_ui/custom/apps/app_manager.h"
 #include "helios_ui/custom/apps/mpesa/mpesa.h"
+#include "helios_ui/custom/subjects/subjects.h"
 #include "helios_ui/helios_ui_gen.h"
 
 #define HELIOS_MPESA_MESSAGE_MAX 512
@@ -357,6 +358,5 @@ static void remember_tx_id(const char * tx_id)
 
 static void set_recent_label(bool has_transactions)
 {
-    lv_subject_copy_string(&sb_mpesa_recent_text,
-                           has_transactions ? "Recent" : "No recent transactions");
+    helios_subject_set_mpesa_recent_text(has_transactions ? "Recent" : "No recent transactions");
 }

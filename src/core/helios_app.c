@@ -936,13 +936,22 @@ static void helios_ui_entry(void *parameter)
 
     // helios_subject_set_chronos_esp_version("1.0.0");
     // helios_subject_set_chronos_app_version("1.0.0");
-    helios_subject_set_firmware_version("1.0.0");
+    helios_subject_set_firmware_version("v1.0.0");
     helios_subject_set_board_oem("SIFLI");
     helios_subject_set_board_name("SF32");
     helios_subject_set_board_type("SF32LB52");
     helios_subject_set_board_ram("576KB");
     helios_subject_set_board_psram("8MB");
     helios_subject_set_board_flash("16MB");
+    helios_subject_set_os_name("RT-Thread");
+    char os_version[16];
+    rt_snprintf(os_version,
+                sizeof(os_version),
+                "v%ld.%ld.%ld",
+                (long)RTT_VERSION,
+                (long)RTT_SUBVERSION,
+                (long)RTT_REVISION);
+    helios_subject_set_os_version(os_version);
 
     helios_prefs_init();
     helios_prefs_apply_saved_ui_settings();

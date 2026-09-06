@@ -266,6 +266,20 @@ void helios_subject_set_system_connection_str(const char * value)
     lv_unlock();
 }
 
+void helios_subject_set_os_name(const char * value)
+{
+    lv_lock();
+    lv_subject_copy_string(&sb_os_name, value);
+    lv_unlock();
+}
+
+void helios_subject_set_os_version(const char * value)
+{
+    lv_lock();
+    lv_subject_copy_string(&sb_os_version, value);
+    lv_unlock();
+}
+
 void helios_subject_set_chronos_esp_version(const char * value)
 {
     lv_lock();
@@ -662,6 +676,13 @@ void helios_subject_set_mpesa_balance_text(const char * value)
 {
     lv_lock();
     lv_subject_copy_string(&sb_mpesa_balance_text, value);
+    lv_unlock();
+}
+
+void helios_subject_set_mpesa_recent_text(const char * value)
+{
+    lv_lock();
+    lv_subject_copy_string(&sb_mpesa_recent_text, value);
     lv_unlock();
 }
 

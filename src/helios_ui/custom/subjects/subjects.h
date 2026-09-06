@@ -220,6 +220,18 @@ void helios_subject_set_system_connection(int32_t value);
 void helios_subject_set_system_connection_str(const char * value);
 
 /**
+ * OS name set function.
+ * @param value    New value
+ */
+void helios_subject_set_os_name(const char * value);
+
+/**
+ * OS version set function.
+ * @param value    New value
+ */
+void helios_subject_set_os_version(const char * value);
+
+/**
  * Chronos library version set function.
  * @param value    New value
  */
@@ -232,55 +244,55 @@ void helios_subject_set_chronos_esp_version(const char * value);
 void helios_subject_set_chronos_app_version(const char * value);
 
 /**
- * Navio Firmware version set function.
+ * Helios Firmware version set function.
  * @param value    New value
  */
 void helios_subject_set_firmware_version(const char * value);
 
 /**
- * Navio board OEM set function.
+ * Helios board OEM set function.
  * @param value    New value
  */
 void helios_subject_set_board_oem(const char * value);
 
 /**
- * Navio board name set function.
+ * Helios board name set function.
  * @param value    New value
  */
 void helios_subject_set_board_name(const char * value);
 
 /**
- * Navio board type set function.
+ * Helios board type set function.
  * @param value    New value
  */
 void helios_subject_set_board_type(const char * value);
 
 /**
- * Navio board MAC address set function.
+ * Helios board MAC address set function.
  * @param value    New value
  */
 void helios_subject_set_board_mac(const char * value);
 
 /**
- * Navio board RAM set function.
+ * Helios board RAM set function.
  * @param value    New value
  */
 void helios_subject_set_board_ram(const char * value);
 
 /**
- * Navio board PSRAM set function.
+ * Helios board PSRAM set function.
  * @param value    New value
  */
 void helios_subject_set_board_psram(const char * value);
 
 /**
- * Navio board Flash set function.
+ * Helios board Flash set function.
  * @param value    New value
  */
 void helios_subject_set_board_flash(const char * value);
 
 /**
- * Navio display type set function.
+ * Helios display type set function.
  * @param value    New value
  */
 void helios_subject_set_display_type(const char * value);
@@ -560,6 +572,12 @@ void helios_subject_set_mpesa_hidden_icon(void * value);
  * @param value    New value
  */
 void helios_subject_set_mpesa_balance_text(const char * value);
+
+/**
+ * Mpesa recent text set function.
+ * @param value    New value
+ */
+void helios_subject_set_mpesa_recent_text(const char * value);
 
 
 /**********************

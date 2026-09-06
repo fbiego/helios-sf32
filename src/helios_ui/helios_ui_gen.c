@@ -578,6 +578,8 @@ lv_subject_t sb_health_bpm;
 lv_subject_t sb_health_oxygen;
 lv_subject_t sb_system_connection;
 lv_subject_t sb_system_connection_str;
+lv_subject_t sb_os_name;
+lv_subject_t sb_os_version;
 lv_subject_t sb_chronos_esp_version;
 lv_subject_t sb_chronos_app_version;
 lv_subject_t sb_firmware_version;
@@ -1550,6 +1552,22 @@ void helios_ui_init_gen(const char * asset_path)
                            UI_SUBJECT_STRING_LENGTH,
                            "disconnected"
                           );
+    static char sb_os_name_buf[UI_SUBJECT_STRING_LENGTH];
+    static char sb_os_name_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&sb_os_name,
+                           sb_os_name_buf,
+                           sb_os_name_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH,
+                           "OS"
+                          );
+    static char sb_os_version_buf[UI_SUBJECT_STRING_LENGTH];
+    static char sb_os_version_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&sb_os_version,
+                           sb_os_version_buf,
+                           sb_os_version_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH,
+                           "v0.0.1"
+                          );
     static char sb_chronos_esp_version_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_chronos_esp_version_prev_buf[UI_SUBJECT_STRING_LENGTH];
     lv_subject_init_string(&sb_chronos_esp_version,
@@ -1996,6 +2014,8 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "sb_health_oxygen", &sb_health_oxygen);
     lv_xml_register_subject(NULL, "sb_system_connection", &sb_system_connection);
     lv_xml_register_subject(NULL, "sb_system_connection_str", &sb_system_connection_str);
+    lv_xml_register_subject(NULL, "sb_os_name", &sb_os_name);
+    lv_xml_register_subject(NULL, "sb_os_version", &sb_os_version);
     lv_xml_register_subject(NULL, "sb_chronos_esp_version", &sb_chronos_esp_version);
     lv_xml_register_subject(NULL, "sb_chronos_app_version", &sb_chronos_app_version);
     lv_xml_register_subject(NULL, "sb_firmware_version", &sb_firmware_version);

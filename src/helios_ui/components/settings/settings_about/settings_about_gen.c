@@ -129,6 +129,8 @@ lv_obj_t * settings_about_create(lv_obj_t * parent)
         lv_obj_t * hs_card_2 = hs_card_create(wd_list_container_0);
         hs_info_sb_create(hs_card_2, "Label", "firmware", &sb_firmware_version, "%s");
 
+        hs_info_sb_sb_create(hs_card_2, &sb_os_name, &sb_os_version, 0);
+
         hs_info_create(hs_card_2, "Helios UI", "", UI_VERSION);
 
         hs_info_sb_create(hs_card_2, "LVGL", "", &sb_lvgl_version, "%s");

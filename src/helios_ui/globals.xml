@@ -16,7 +16,7 @@
 		<color name="color_button_primary" value="0x181146" />
 		<color name="color_button_danger" value="0x2c0d0b" />
 
-		<string name="ui_version" value="v0.1.0" />
+		<string name="ui_version" value="v1.0.0" />
 	</consts>
 
 	<fonts>
@@ -778,17 +778,19 @@
 			value="disconnected"
 			help="[set] System ble connection string connected/disconnected"
 		/>
+		<string name="sb_os_name" value="OS" help="OS name [set]" />
+		<string name="sb_os_version" value="v0.0.1" help="OS version [set]" />
 		<string name="sb_chronos_esp_version" value="v1.9.0" help="Chronos library version [set]" />
 		<string name="sb_chronos_app_version" value="v3.8.5" help="Chronos app version [set]" />
-		<string name="sb_firmware_version" value="v1.0.0" help="Navio Firmware version [set]" />
-		<string name="sb_board_oem" value="LVGL" help="Navio board OEM [set]" />
-		<string name="sb_board_name" value="Editor" help="Navio board name [set]" />
-		<string name="sb_board_type" value="ESP32-S3" help="Navio board type [set]" />
-		<string name="sb_board_mac" value="34:54:56:23:43:32" help="Navio board MAC address [set]" />
-		<string name="sb_board_ram" value="384KB" help="Navio board RAM [set]" />
-		<string name="sb_board_psram" value="16MB" help="Navio board PSRAM [set]" />
-		<string name="sb_board_flash" value="16MB" help="Navio board Flash [set]" />
-		<string name="sb_display_type" value="AMOLED" help="Navio display type [set]" />
+		<string name="sb_firmware_version" value="v1.0.0" help="Helios Firmware version [set]" />
+		<string name="sb_board_oem" value="LVGL" help="Helios board OEM [set]" />
+		<string name="sb_board_name" value="Editor" help="Helios board name [set]" />
+		<string name="sb_board_type" value="ESP32-S3" help="Helios board type [set]" />
+		<string name="sb_board_mac" value="34:54:56:23:43:32" help="Helios board MAC address [set]" />
+		<string name="sb_board_ram" value="384KB" help="Helios board RAM [set]" />
+		<string name="sb_board_psram" value="16MB" help="Helios board PSRAM [set]" />
+		<string name="sb_board_flash" value="16MB" help="Helios board Flash [set]" />
+		<string name="sb_display_type" value="AMOLED" help="Helios display type [set]" />
 
 		<int name="sb_battery_percent" value="70" min_value="0" max_value="100" help="[set] Battery percentage" />
 		<int name="sb_battery_charging" value="0" min_value="0" max_value="1" help="[set] Battery Charging" />

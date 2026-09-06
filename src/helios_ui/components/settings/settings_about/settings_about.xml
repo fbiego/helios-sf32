@@ -62,6 +62,7 @@
 			</hs_card>
 			<hs_card>
 				<hs_info_sb label_tag="firmware" info="sb_firmware_version" />
+				<hs_info_sb_sb label="sb_os_name" info="sb_os_version" />
 				<hs_info label="Helios UI" info="#ui_version" />
 				<hs_info_sb label="LVGL" info="sb_lvgl_version" />
 				<hs_line />

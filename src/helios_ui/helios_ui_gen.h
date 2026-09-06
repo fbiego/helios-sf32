@@ -57,7 +57,7 @@ bool helios_ui_check_target(uint32_t target);
 #define COLOR_DANGER lv_color_hex(0xf62525)
 #define COLOR_BUTTON_PRIMARY lv_color_hex(0x181146)
 #define COLOR_BUTTON_DANGER lv_color_hex(0x2c0d0b)
-#define UI_VERSION "v0.1.0"
+#define UI_VERSION "v1.0.0"
 
 
 #ifndef LV_XML_EVAL_STRING_BUF_SIZE
@@ -308,6 +308,8 @@ extern lv_subject_t sb_health_bpm;
 extern lv_subject_t sb_health_oxygen;
 extern lv_subject_t sb_system_connection;
 extern lv_subject_t sb_system_connection_str;
+extern lv_subject_t sb_os_name;
+extern lv_subject_t sb_os_version;
 extern lv_subject_t sb_chronos_esp_version;
 extern lv_subject_t sb_chronos_app_version;
 extern lv_subject_t sb_firmware_version;

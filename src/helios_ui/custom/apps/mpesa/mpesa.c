@@ -68,10 +68,10 @@ void helios_mpesa_init(void)
     if (inited) return;
     inited = true;
 
-    helios_mpesa_add("KCB", "4:23 PM • 3/9/2026", "+3,500", "KCB Bank", "QJ12AB34CD", true, "0");
-    helios_mpesa_add("Kenya Power", "1:08 PM • 3/9/2026", "-1,200", "335489632", "QJ12AB34CD", false, "KSH 10");
-    helios_mpesa_add("Airtime", "7:12 PM • 3/9/2026", "-50", "Safaricom Airtime", "QJ12EF56GH", false, "0");
-    helios_mpesa_add("John Doe", "7:28 PM • 3/9/2026", "+5,120", "0722000000", "QJ12IJ78KL", true, "0");
+    helios_mpesa_add("KCB", "4:23 PM • 3/9/2026", "3,500", "KCB Bank", "QJ12AB34CD", true, "0");
+    helios_mpesa_add("Kenya Power", "1:08 PM • 3/9/2026", "1,200", "335489632", "QJ12AB34CD", false, "KSH 10");
+    helios_mpesa_add("Airtime", "7:12 PM • 3/9/2026", "50", "Safaricom Airtime", "QJ12EF56GH", false, "0");
+    helios_mpesa_add("John Doe", "7:28 PM • 3/9/2026", "5,120", "0722000000", "QJ12IJ78KL", true, "0");
 }
 
 lv_obj_t * helios_mpesa_screen_create(void)
