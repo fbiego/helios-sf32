@@ -92,6 +92,41 @@ void helios_weather_daily_clear(void);
 
 Use the clear functions before loading a full replacement forecast. Use the add functions to append rows to the generated hourly and daily forecast containers. Pass a `helios_weather_icon_id_t` value; the API resolves it to the matching weather image internally.
 
+## M-Pesa
+
+Header: `custom/apps/mpesa/mpesa.h`
+
+```c
+void helios_mpesa_set_balance(const char * balance);
+
+bool helios_mpesa_add(const char * name,
+                      const char * time,
+                      const char * amount,
+                      const char * account,
+                      const char * tx_id,
+                      bool tx_in,
+                      const char * fee);
+
+bool helios_mpesa_add_and_open(const char * name,
+                               const char * time,
+                               const char * amount,
+                               const char * account,
+                               const char * tx_id,
+                               bool tx_in,
+                               const char * fee,
+                               uint32_t timeout_ms);
+
+bool helios_mpesa_open_transaction(uint32_t id, uint32_t timeout_ms);
+bool helios_mpesa_open_latest(uint32_t timeout_ms);
+void helios_mpesa_clear(void);
+```
+
+`helios_mpesa_add()` appends a transaction to the M-Pesa app list. If the list is full, the oldest transaction is dropped.
+
+`helios_mpesa_add_and_open()` is intended for incoming transaction events. It stores the transaction, opens its details from whatever screen is active, and auto-closes after `timeout_ms`. Pass `HELIOS_MPESA_DETAILS_TIMEOUT_MS` for the default timeout. If the user touches the details screen before the timeout, the timeout is cancelled and the details screen stays open until dismissed with a right-swipe gesture.
+
+Use `helios_mpesa_open_transaction()` or `helios_mpesa_open_latest()` when the transaction is already stored and the platform only needs to deep-open the details view.
+
 ## App Registry
 
 Header: `custom/apps/app_manager.h`

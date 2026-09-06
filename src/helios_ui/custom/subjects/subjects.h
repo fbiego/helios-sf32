@@ -316,7 +316,7 @@ void helios_subject_set_battery_temp(float value);
 void helios_subject_set_battery_usage(const char * value);
 
 /**
- * Current navigation icon (icon_turn_left) set function.
+ * Current navigation icon set function.
  * @param value    New value
  */
 void helios_subject_set_nav_icon(void * value);
@@ -364,13 +364,13 @@ void helios_subject_set_music_artist(const char * value);
 void helios_subject_set_music_state(int32_t value);
 
 /**
- * (icon_music_play_32) Music play/pause ison set function.
+ * Music play/pause icon set function.
  * @param value    New value
  */
 void helios_subject_set_music_state_icon(void * value);
 
 /**
- * (icon_music) Music icon set function.
+ * Music icon set function.
  * @param value    New value
  */
 void helios_subject_set_music_icon(void * value);
@@ -442,7 +442,7 @@ void helios_subject_set_phone_last_sync(const char * value);
 void helios_subject_set_weather_code(int32_t value);
 
 /**
- * (icon_weather) Weather icon set function.
+ * Weather icon set function.
  * @param value    New value
  */
 void helios_subject_set_weather_icon(void * value);
@@ -526,13 +526,13 @@ void helios_subject_set_stopwatch_button_start_state(int32_t value);
 void helios_subject_set_stopwatch_button_reset_state(int32_t value);
 
 /**
- * (icon_timer_start) Stopwatch start button icon set function.
+ * Stopwatch start button icon set function.
  * @param value    New value
  */
 void helios_subject_set_stopwatch_button_start_icon(void * value);
 
 /**
- * (icon_lap_time) Stopwatch reset button icon set function.
+ * Stopwatch reset button icon set function.
  * @param value    New value
  */
 void helios_subject_set_stopwatch_button_reset_icon(void * value);
@@ -542,6 +542,24 @@ void helios_subject_set_stopwatch_button_reset_icon(void * value);
  * @param value    New value
  */
 void helios_subject_set_health_finger_detect(int32_t value);
+
+/**
+ * Mpesa Balance hidden set function.
+ * @param value    New value
+ */
+void helios_subject_set_mpesa_balance_hidden(int32_t value);
+
+/**
+ * hide icon set function.
+ * @param value    New value
+ */
+void helios_subject_set_mpesa_hidden_icon(void * value);
+
+/**
+ * Mpesa balance text set function.
+ * @param value    New value
+ */
+void helios_subject_set_mpesa_balance_text(const char * value);
 
 
 /**********************
@@ -666,6 +684,12 @@ void helios_subject_stopwatch_button_start_state_change(int32_t value);
  * @param value    Updated value
  */
 void helios_subject_stopwatch_button_reset_state_change(int32_t value);
+
+/**
+ * Mpesa Balance hidden change callback.
+ * @param value    Updated value
+ */
+void helios_subject_mpesa_balance_hidden_change(int32_t value);
 
 
 #ifdef __cplusplus

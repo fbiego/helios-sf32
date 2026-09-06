@@ -172,6 +172,11 @@ void helios_subject_phone_charging_change(int32_t value)
     helios_subject_set_phone_charging_str(value ? "yes" : "no");
 }
 
+void helios_subject_mpesa_balance_hidden_change(int32_t value)
+{
+    helios_subject_set_mpesa_hidden_icon(value ? (void *)icon_text_show : (void *)icon_text_hide);
+}
+
 
 /**********************
  *   STATIC FUNCTIONS

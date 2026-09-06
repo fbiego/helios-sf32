@@ -17,6 +17,7 @@ extern "C" {
 #include "custom/apps/app_screens.h"
 #include "custom/subjects/subjects.h"
 #include "custom/events/events.h"
+#include "custom/apps/mpesa/mpesa.h"
 #include "custom/apps/weather/weather.h"
 #include "custom/watchfaces/watchface_manager.h"
 

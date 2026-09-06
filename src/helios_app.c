@@ -11,6 +11,7 @@
 #include "littlevgl2rtt.h"
 #include "lvgl.h"
 #include "helios_ui/helios_ui.h"
+#include "apps/mpesa/mpesa_notifications.h"
 #include "helios_ui/custom/apps/notifications/notifications.h"
 #ifndef _WIN32
 #include "drv_lcd.h"
@@ -52,6 +53,7 @@ static uint8_t g_nav_icon_data[CHRONOS_ICON_DATA_SIZE];
 
 typedef struct {
     const void *icon;
+    char app[CHRONOS_TEXT_SMALL_SIZE];
     char title[HELIOS_NOTIFICATION_TITLE_MAX];
     char message[HELIOS_NOTIFICATION_MESSAGE_MAX];
 } helios_pending_notification_t;
@@ -287,16 +289,19 @@ static const chronos_hourly_forecast_t *helios_weather_current_hourly(void)
     return NULL;
 }
 
-static void helios_chronos_add_notification(const void *icon, const char *title, const char *message)
+static void helios_chronos_add_notification(const void *icon, const char *app, const char *title, const char *message)
 {
     time_t now = time(RT_NULL);
     struct tm *tm_now = localtime(&now);
     char time_now[16] = "--:--";
+    bool is_mpesa;
     if (tm_now)
         rt_snprintf(time_now, sizeof(time_now), "%02d:%02d", tm_now->tm_hour, tm_now->tm_min);
 
-    helios_notifications_add(icon ? icon : icon_nt_chat,
-                             title ? title : "Message",
+    is_mpesa = helios_mpesa_handle_notification(app, title, message);
+
+    helios_notifications_add(is_mpesa ? icon_mpesa_watch_32 : (icon ? icon : icon_nt_chat),
+                             is_mpesa ? "MPESA" : (title ? title : "Message"),
                              time_now,
                              message ? message : "");
 }
@@ -320,11 +325,11 @@ static void helios_chronos_notification_async(void *user_data)
         g_pending_notification_count--;
         rt_hw_interrupt_enable(level);
 
-        helios_chronos_add_notification(pending.icon, pending.title, pending.message);
+        helios_chronos_add_notification(pending.icon, pending.app, pending.title, pending.message);
     }
 }
 
-static void helios_chronos_queue_notification(const void *icon, const char *title, const char *message)
+static void helios_chronos_queue_notification(const void *icon, const char *app, const char *title, const char *message)
 {
     if (!g_ui_ready)
         return;
@@ -338,6 +343,10 @@ static void helios_chronos_queue_notification(const void *icon, const char *titl
 
     uint8_t index = (uint8_t)((g_pending_notification_head + g_pending_notification_count) % HELIOS_PENDING_NOTIFICATIONS);
     g_pending_notifications[index].icon = icon ? icon : icon_nt_chat;
+    rt_snprintf(g_pending_notifications[index].app,
+                sizeof(g_pending_notifications[index].app),
+                "%s",
+                app ? app : "");
     rt_snprintf(g_pending_notifications[index].title,
                 sizeof(g_pending_notifications[index].title),
                 "%s",
@@ -571,6 +580,7 @@ void helios_app_chronos_notification(const chronos_notification_t *notification)
 
     helios_chronos_queue_notification(
         helios_chronos_app_icon(notification->icon),
+        notification->app,
         notification->title[0] ? notification->title : notification->app,
         notification->message);
 }
@@ -578,7 +588,7 @@ void helios_app_chronos_notification(const chronos_notification_t *notification)
 void helios_app_chronos_ringer(const char *caller, bool active)
 {
     if (active)
-        helios_chronos_queue_notification(icon_nt_chat, "Incoming call", caller ? caller : "");
+        helios_chronos_queue_notification(icon_nt_chat, "Phone", "Incoming call", caller ? caller : "");
 }
 
 void helios_app_music_update(const chronos_music_info_t *music)

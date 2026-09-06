@@ -25,41 +25,30 @@ static void string_subject_observer_cb(lv_observer_t * observer, lv_subject_t * 
 void helios_subjects_init(void)
 {
     /* Re-initialize non-supported subjects in the Editor */
-    lv_subject_deinit(&sb_nav_icon);
-    lv_subject_init_pointer(&sb_nav_icon, (void *)icon_turn_left);
-    lv_subject_deinit(&sb_music_state_icon);
-    lv_subject_init_pointer(&sb_music_state_icon, (void *)icon_music_play_32);
-    lv_subject_deinit(&sb_music_icon);
-    lv_subject_init_pointer(&sb_music_icon, (void *)icon_music);
     lv_subject_deinit(&sb_music_album_color);
     lv_subject_init_color(&sb_music_album_color, lv_color_hex(0xFFFFFF));
-    lv_subject_deinit(&sb_weather_icon);
-    lv_subject_init_pointer(&sb_weather_icon, (void *)icon_weather);
-    lv_subject_deinit(&sb_stopwatch_button_start_icon);
-    lv_subject_init_pointer(&sb_stopwatch_button_start_icon, (void *)icon_timer_start);
-    lv_subject_deinit(&sb_stopwatch_button_reset_icon);
-    lv_subject_init_pointer(&sb_stopwatch_button_reset_icon, (void *)icon_lap_time);
 
     /* Attach observers for change notifications */
-    lv_subject_add_observer(&sb_app_list_mode, int_subject_observer_cb, helios_subject_app_list_mode_change);
-    lv_subject_add_observer(&sb_list_circular_mode, int_subject_observer_cb, helios_subject_list_circular_mode_change);
-    lv_subject_add_observer(&sb_screen_brightness, int_subject_observer_cb, helios_subject_screen_brightness_change);
-    lv_subject_add_observer(&sb_screen_rotation, int_subject_observer_cb, helios_subject_screen_rotation_change);
-    lv_subject_add_observer(&sb_screen_timeout, int_subject_observer_cb, helios_subject_screen_timeout_change);
-    lv_subject_add_observer(&sb_screen_rtw, int_subject_observer_cb, helios_subject_screen_rtw_change);
-    lv_subject_add_observer(&sb_language, int_subject_observer_cb, helios_subject_language_change);
-    lv_subject_add_observer(&sb_sound_volume, int_subject_observer_cb, helios_subject_sound_volume_change);
-    lv_subject_add_observer(&sb_focusable, int_subject_observer_cb, helios_subject_focusable_change);
-    lv_subject_add_observer(&sb_time_month, int_subject_observer_cb, helios_subject_time_month_change);
-    lv_subject_add_observer(&sb_time_weekday, int_subject_observer_cb, helios_subject_time_weekday_change);
-    lv_subject_add_observer(&sb_system_connection, int_subject_observer_cb, helios_subject_system_connection_change);
-    lv_subject_add_observer(&sb_music_state, int_subject_observer_cb, helios_subject_music_state_change);
-    lv_subject_add_observer(&sb_music_package, string_subject_observer_cb, helios_subject_music_package_change);
-    lv_subject_add_observer(&sb_phone_charging, int_subject_observer_cb, helios_subject_phone_charging_change);
-    lv_subject_add_observer(&sb_weather_code, int_subject_observer_cb, helios_subject_weather_code_change);
-    lv_subject_add_observer(&sb_stopwatch_state, int_subject_observer_cb, helios_subject_stopwatch_state_change);
-    lv_subject_add_observer(&sb_stopwatch_button_start_state, int_subject_observer_cb, helios_subject_stopwatch_button_start_state_change);
-    lv_subject_add_observer(&sb_stopwatch_button_reset_state, int_subject_observer_cb, helios_subject_stopwatch_button_reset_state_change);
+    lv_subject_add_observer(&sb_app_list_mode, int_subject_observer_cb, (void *)helios_subject_app_list_mode_change);
+    lv_subject_add_observer(&sb_list_circular_mode, int_subject_observer_cb, (void *)helios_subject_list_circular_mode_change);
+    lv_subject_add_observer(&sb_screen_brightness, int_subject_observer_cb, (void *)helios_subject_screen_brightness_change);
+    lv_subject_add_observer(&sb_screen_rotation, int_subject_observer_cb, (void *)helios_subject_screen_rotation_change);
+    lv_subject_add_observer(&sb_screen_timeout, int_subject_observer_cb, (void *)helios_subject_screen_timeout_change);
+    lv_subject_add_observer(&sb_screen_rtw, int_subject_observer_cb, (void *)helios_subject_screen_rtw_change);
+    lv_subject_add_observer(&sb_language, int_subject_observer_cb, (void *)helios_subject_language_change);
+    lv_subject_add_observer(&sb_sound_volume, int_subject_observer_cb, (void *)helios_subject_sound_volume_change);
+    lv_subject_add_observer(&sb_focusable, int_subject_observer_cb, (void *)helios_subject_focusable_change);
+    lv_subject_add_observer(&sb_time_month, int_subject_observer_cb, (void *)helios_subject_time_month_change);
+    lv_subject_add_observer(&sb_time_weekday, int_subject_observer_cb, (void *)helios_subject_time_weekday_change);
+    lv_subject_add_observer(&sb_system_connection, int_subject_observer_cb, (void *)helios_subject_system_connection_change);
+    lv_subject_add_observer(&sb_music_state, int_subject_observer_cb, (void *)helios_subject_music_state_change);
+    lv_subject_add_observer(&sb_music_package, string_subject_observer_cb, (void *)helios_subject_music_package_change);
+    lv_subject_add_observer(&sb_phone_charging, int_subject_observer_cb, (void *)helios_subject_phone_charging_change);
+    lv_subject_add_observer(&sb_weather_code, int_subject_observer_cb, (void *)helios_subject_weather_code_change);
+    lv_subject_add_observer(&sb_stopwatch_state, int_subject_observer_cb, (void *)helios_subject_stopwatch_state_change);
+    lv_subject_add_observer(&sb_stopwatch_button_start_state, int_subject_observer_cb, (void *)helios_subject_stopwatch_button_start_state_change);
+    lv_subject_add_observer(&sb_stopwatch_button_reset_state, int_subject_observer_cb, (void *)helios_subject_stopwatch_button_reset_state_change);
+    lv_subject_add_observer(&sb_mpesa_balance_hidden, int_subject_observer_cb, (void *)helios_subject_mpesa_balance_hidden_change);
 
 }
 
@@ -655,6 +644,27 @@ void helios_subject_set_health_finger_detect(int32_t value)
     lv_unlock();
 }
 
+void helios_subject_set_mpesa_balance_hidden(int32_t value)
+{
+    lv_lock();
+    lv_subject_set_int(&sb_mpesa_balance_hidden, value);
+    lv_unlock();
+}
+
+void helios_subject_set_mpesa_hidden_icon(void * value)
+{
+    lv_lock();
+    lv_subject_set_pointer(&sb_mpesa_hidden_icon, value);
+    lv_unlock();
+}
+
+void helios_subject_set_mpesa_balance_text(const char * value)
+{
+    lv_lock();
+    lv_subject_copy_string(&sb_mpesa_balance_text, value);
+    lv_unlock();
+}
+
 /**********************
  * GET FUNCTIONS
  **********************/
@@ -756,6 +766,11 @@ void __attribute__((weak)) helios_subject_stopwatch_button_start_state_change(in
 void __attribute__((weak)) helios_subject_stopwatch_button_reset_state_change(int32_t value)
 {
     LV_LOG_USER("Subject stopwatch_button_reset_state changed %d", value);
+}
+
+void __attribute__((weak)) helios_subject_mpesa_balance_hidden_change(int32_t value)
+{
+    LV_LOG_USER("Subject mpesa_balance_hidden changed %d", value);
 }
 
 /**********************

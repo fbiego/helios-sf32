@@ -8,6 +8,7 @@ cwd = GetCurrentDir()
 src = Glob('*.c')
 
 ui_dir = os.path.join(cwd, 'helios_ui')
+apps_dir = os.path.join(cwd, 'apps')
 chronos_core_dir = os.path.join(cwd, 'chronos_core')
 faces_dir = os.path.join(cwd, 'faces')
 excluded_ui_sources = {
@@ -69,9 +70,10 @@ def append_tree_sources(path, sources):
 
 append_cmake_sources(os.path.join(ui_dir, 'file_list_gen.cmake'), src)
 append_cmake_sources(os.path.join(ui_dir, 'user_config.cmake'), src)
+append_tree_sources(apps_dir, src)
 append_tree_sources(os.path.join(ui_dir, 'custom', 'apps', 'apps'), src)
 
-CPPPATH = [cwd, ui_dir, chronos_core_dir, faces_dir, str(Dir('#'))]
+CPPPATH = [cwd, apps_dir, ui_dir, chronos_core_dir, faces_dir, str(Dir('#'))]
 
 group = [DefineGroup('helios_app', src, depend=[''], CPPPATH=CPPPATH, LOCAL_CCFLAGS='-DLV_LVGL_H_INCLUDE_SIMPLE')]
 

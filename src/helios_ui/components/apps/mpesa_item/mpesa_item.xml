@@ -1,0 +1,44 @@
+<component>
+	<previews>
+		<preview width="400" style_bg_color="0x000" />
+		<preview width="300" style_bg_color="0x000" />
+		<preview width="200" style_bg_color="0x000" />
+	</previews>
+	<styles>
+		<style
+			name="style_container"
+			flex_flow="row"
+			pad_column="10"
+			flex_cross_place="center"
+			flex_track_place="center"
+		/>
+		<style name="style_cont_pressed" bg_color="0x545454" />
+		<style name="style_cont_360" pad_column="8" />
+		<style name="style_cont_240" pad_column="6" />
+		<style name="style_text_cont" pad_row="3" />
+		<style name="style_text_cont_360" pad_row="2" />
+		<style name="style_text_cont_240" pad_row="1" />
+	</styles>
+	<api>
+		<prop name="tx_name" type="string" default="Kenya Power" />
+		<prop name="tx_time" type="string" default="Today 10:42" />
+		<prop name="tx_amount" type="string" default="-2,500" />
+		<prop name="tx_in" type="bool" default="true" />
+	</api>
+	<view extends="hs_card">
+		<style name="style_container" />
+		<style name="style_cont_pressed" selector="pressed" />
+		<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_column flex_grow="1" clickable="false">
+			<style name="style_text_cont" />
+			<bind_style name="style_text_cont_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_text_cont_240" subject="sb_screen_size" ref_value="2" />
+			<hs_text_small width="100%" long_mode="scroll_circular" text="$tx_name" />
+			<hs_text_small width="100%" long_mode="scroll_circular" text="$tx_time" style_text_color="0xbbbbbb" />
+		</hs_column>
+
+		<hs_text_normal text="$tx_amount" style_text_color="{tx_in ? 0x237028 : 0xD82628}" />
+	</view>
+</component>

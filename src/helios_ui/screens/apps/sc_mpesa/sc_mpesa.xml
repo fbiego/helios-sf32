@@ -1,0 +1,94 @@
+<screen>
+	<styles>
+		<style
+			name="style_cont"
+			width="466"
+			height="466"
+			align="center"
+			border_width="0"
+			pad_top="100"
+			pad_bottom="150"
+			pad_hor="33"
+		/>
+		<style name="style_cont_360" pad_hor="30" pad_top="80" pad_bottom="100" />
+		<style name="style_cont_240" pad_hor="20" pad_row="5" pad_top="60" pad_bottom="80" />
+		<style name="style_pad_grid" pad_hor="54" pad_row="15" pad_column="12" />
+		<style name="style_pad_grid_360" pad_hor="30" pad_row="10" pad_column="12" />
+		<style name="style_pad_grid_240" pad_hor="20" pad_row="10" pad_column="10" />
+		<style name="style_pad_grid_410" pad_hor="28" />
+
+		<style name="style_pad_rect" pad_hor="18" />
+		<style name="style_pad_rect_360" pad_hor="14" />
+		<style name="style_pad_rect_240" pad_hor="10" />
+
+		<style name="style_pad_row" pad_row="8" />
+		<style name="style_pad_row_360" pad_row="6" />
+		<style name="style_pad_row_240" pad_row="4" />
+	</styles>
+	<view>
+		<style name="style_dark" />
+
+		<wd_list bind_screen="sb_screen_size">
+			<wd_list-title height="content">
+				<hs_row align="center" style_flex_main_place="center">
+					<hs_text_normal text="M" style_text_color="0x2d942f" />
+					<wd_image
+						src="icon_mpesa_watch_32"
+						scale_0="256"
+						scale_1="180"
+						scale_2="150"
+						size_1="26"
+						size_2="15"
+						bind_scale="sb_screen_size"
+					/>
+					<hs_text_normal text="PESA" style_text_color="0x2d942f" />
+				</hs_row>
+			</wd_list-title>
+			<wd_list-container>
+				<bind_state_if_eq subject="sb_app_list_mode" state="user_1" ref_value="1" />
+				<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+				<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+				<bind_style name="style_pad_grid" subject="sb_screen_size" ref_value="0" selector="user_1" />
+				<bind_style name="style_pad_grid_360" subject="sb_screen_size" ref_value="1" selector="user_1" />
+				<bind_style name="style_pad_grid_240" subject="sb_screen_size" ref_value="2" selector="user_1" />
+				<bind_style name="style_pad_grid_410" subject="sb_screen_width" ref_value="410" selector="user_1" />
+
+				<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_2" />
+				<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_2" />
+				<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_2" />
+				<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_2" />
+
+				<hs_row style_flex_main_place="center" style_flex_cross_place="start" style_pad_column="10">
+					<hs_text_normal bind_text="sb_mpesa_balance_text">
+						<bind_flag_if_eq subject="sb_mpesa_balance_hidden" flag="hidden" ref_value="1" />
+					</hs_text_normal>
+					<hs_text_normal text="Hidden" style_text_color="0x383838">
+						<bind_flag_if_eq subject="sb_mpesa_balance_hidden" flag="hidden" ref_value="0" />
+					</hs_text_normal>
+					<wd_image
+						bind_src="sb_mpesa_hidden_icon"
+						scale_0="256"
+						scale_1="180"
+						scale_2="160"
+						size_1="28"
+						size_2="20"
+						bind_scale="sb_screen_size"
+						style_image_recolor="0xffffff"
+						style_image_recolor_opa="255"
+						clickable="true"
+					>
+						<subject_toggle_event subject="sb_mpesa_balance_hidden" trigger="clicked" />
+					</wd_image>
+				</hs_row>
+
+				<hs_text_small bind_text="sb_mpesa_recent_text" style_text_color="0x888888" />
+
+				<hs_column name="transaction_list" flex_flow="column_reverse">
+					<bind_style name="style_pad_row" subject="sb_screen_size" ref_value="0" />
+					<bind_style name="style_pad_row_360" subject="sb_screen_size" ref_value="1" />
+					<bind_style name="style_pad_row_240" subject="sb_screen_size" ref_value="2" />
+				</hs_column>
+			</wd_list-container>
+		</wd_list>
+	</view>
+</screen>

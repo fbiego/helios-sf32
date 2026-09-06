@@ -499,6 +499,22 @@ const void * img_blood_oxygen = NULL;
 extern const void * img_blood_oxygen_data;
 const void * img_finger_sensor = NULL;
 extern const void * img_finger_sensor_data;
+const void * icon_arrow_red = NULL;
+extern const void * icon_arrow_red_data;
+const void * icon_arrow_green = NULL;
+extern const void * icon_arrow_green_data;
+const void * icon_arrow_red_64 = NULL;
+extern const void * icon_arrow_red_64_data;
+const void * icon_arrow_green_64 = NULL;
+extern const void * icon_arrow_green_64_data;
+const void * icon_text_hide = NULL;
+extern const void * icon_text_hide_data;
+const void * icon_text_show = NULL;
+extern const void * icon_text_show_data;
+const void * icon_mpesa_watch = NULL;
+extern const void * icon_mpesa_watch_data;
+const void * icon_mpesa_watch_32 = NULL;
+extern const void * icon_mpesa_watch_32_data;
 
 /*----------------
  * Global styles
@@ -616,6 +632,10 @@ lv_subject_t sb_stopwatch_button_reset_state;
 lv_subject_t sb_stopwatch_button_start_icon;
 lv_subject_t sb_stopwatch_button_reset_icon;
 lv_subject_t sb_health_finger_detect;
+lv_subject_t sb_mpesa_balance_hidden;
+lv_subject_t sb_mpesa_hidden_icon;
+lv_subject_t sb_mpesa_balance_text;
+lv_subject_t sb_mpesa_recent_text;
 
 /**********************
  *      MACROS
@@ -1320,6 +1340,38 @@ void helios_ui_init_gen(const char * asset_path)
         if (!img_finger_sensor) {
             img_finger_sensor = &img_finger_sensor_data;
         }
+        /* icon_arrow_red */
+        if (!icon_arrow_red) {
+            icon_arrow_red = &icon_arrow_red_data;
+        }
+        /* icon_arrow_green */
+        if (!icon_arrow_green) {
+            icon_arrow_green = &icon_arrow_green_data;
+        }
+        /* icon_arrow_red_64 */
+        if (!icon_arrow_red_64) {
+            icon_arrow_red_64 = &icon_arrow_red_64_data;
+        }
+        /* icon_arrow_green_64 */
+        if (!icon_arrow_green_64) {
+            icon_arrow_green_64 = &icon_arrow_green_64_data;
+        }
+        /* icon_text_hide */
+        if (!icon_text_hide) {
+            icon_text_hide = &icon_text_hide_data;
+        }
+        /* icon_text_show */
+        if (!icon_text_show) {
+            icon_text_show = &icon_text_show_data;
+        }
+        /* icon_mpesa_watch */
+        if (!icon_mpesa_watch) {
+            icon_mpesa_watch = &icon_mpesa_watch_data;
+        }
+        /* icon_mpesa_watch_32 */
+        if (!icon_mpesa_watch_32) {
+            icon_mpesa_watch_32 = &icon_mpesa_watch_32_data;
+        }
     }
     #endif
 
@@ -1602,7 +1654,7 @@ void helios_ui_init_gen(const char * asset_path)
                            UI_SUBJECT_STRING_LENGTH,
                            "2d 14h"
                           );
-    lv_subject_init_int(&sb_nav_icon, 0);
+    lv_subject_init_pointer(&sb_nav_icon, (void *)icon_turn_left);
     static char sb_nav_text_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_nav_text_prev_buf[UI_SUBJECT_STRING_LENGTH];
     lv_subject_init_string(&sb_nav_text,
@@ -1652,8 +1704,8 @@ void helios_ui_init_gen(const char * asset_path)
                            "Artist"
                           );
     lv_subject_init_int(&sb_music_state, 0);
-    lv_subject_init_int(&sb_music_state_icon, 0);
-    lv_subject_init_int(&sb_music_icon, 0);
+    lv_subject_init_pointer(&sb_music_state_icon, (void *)icon_music_play_32);
+    lv_subject_init_pointer(&sb_music_icon, (void *)icon_music);
     static char sb_music_package_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_music_package_prev_buf[UI_SUBJECT_STRING_LENGTH];
     lv_subject_init_string(&sb_music_package,
@@ -1702,7 +1754,7 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_int(&sb_weather_code, 0);
     lv_subject_set_min_value_int(&sb_weather_code, 0);
     lv_subject_set_max_value_int(&sb_weather_code, 7);
-    lv_subject_init_int(&sb_weather_icon, 0);
+    lv_subject_init_pointer(&sb_weather_icon, (void *)icon_weather);
     lv_subject_init_int(&sb_weather_temp, 23);
     static char sb_weather_location_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_weather_location_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -1751,9 +1803,27 @@ void helios_ui_init_gen(const char * asset_path)
                           );
     lv_subject_init_int(&sb_stopwatch_button_start_state, 0);
     lv_subject_init_int(&sb_stopwatch_button_reset_state, 0);
-    lv_subject_init_int(&sb_stopwatch_button_start_icon, 0);
-    lv_subject_init_int(&sb_stopwatch_button_reset_icon, 0);
+    lv_subject_init_pointer(&sb_stopwatch_button_start_icon, (void *)icon_timer_start);
+    lv_subject_init_pointer(&sb_stopwatch_button_reset_icon, (void *)icon_lap_time);
     lv_subject_init_int(&sb_health_finger_detect, 0);
+    lv_subject_init_int(&sb_mpesa_balance_hidden, 0);
+    lv_subject_init_pointer(&sb_mpesa_hidden_icon, (void *)icon_text_hide);
+    static char sb_mpesa_balance_text_buf[UI_SUBJECT_STRING_LENGTH];
+    static char sb_mpesa_balance_text_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&sb_mpesa_balance_text,
+                           sb_mpesa_balance_text_buf,
+                           sb_mpesa_balance_text_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH,
+                           "KSH 1,235"
+                          );
+    static char sb_mpesa_recent_text_buf[UI_SUBJECT_STRING_LENGTH];
+    static char sb_mpesa_recent_text_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&sb_mpesa_recent_text,
+                           sb_mpesa_recent_text_buf,
+                           sb_mpesa_recent_text_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH,
+                           "Recent"
+                          );
 
     /*----------------
      * Translations
@@ -1980,6 +2050,10 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "sb_stopwatch_button_start_icon", &sb_stopwatch_button_start_icon);
     lv_xml_register_subject(NULL, "sb_stopwatch_button_reset_icon", &sb_stopwatch_button_reset_icon);
     lv_xml_register_subject(NULL, "sb_health_finger_detect", &sb_health_finger_detect);
+    lv_xml_register_subject(NULL, "sb_mpesa_balance_hidden", &sb_mpesa_balance_hidden);
+    lv_xml_register_subject(NULL, "sb_mpesa_hidden_icon", &sb_mpesa_hidden_icon);
+    lv_xml_register_subject(NULL, "sb_mpesa_balance_text", &sb_mpesa_balance_text);
+    lv_xml_register_subject(NULL, "sb_mpesa_recent_text", &sb_mpesa_recent_text);
 
     /* Register callbacks */
     lv_xml_register_event_cb(NULL, "on_music_control_cb", on_music_control_cb);
@@ -2084,6 +2158,14 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_image(NULL, "img_heart_beat", img_heart_beat);
     lv_xml_register_image(NULL, "img_blood_oxygen", img_blood_oxygen);
     lv_xml_register_image(NULL, "img_finger_sensor", img_finger_sensor);
+    lv_xml_register_image(NULL, "icon_arrow_red", icon_arrow_red);
+    lv_xml_register_image(NULL, "icon_arrow_green", icon_arrow_green);
+    lv_xml_register_image(NULL, "icon_arrow_red_64", icon_arrow_red_64);
+    lv_xml_register_image(NULL, "icon_arrow_green_64", icon_arrow_green_64);
+    lv_xml_register_image(NULL, "icon_text_hide", icon_text_hide);
+    lv_xml_register_image(NULL, "icon_text_show", icon_text_show);
+    lv_xml_register_image(NULL, "icon_mpesa_watch", icon_mpesa_watch);
+    lv_xml_register_image(NULL, "icon_mpesa_watch_32", icon_mpesa_watch_32);
 #endif
 
 #if !defined(LV_USE_XML) || LV_USE_XML == 0

@@ -9,6 +9,7 @@
 
 #include "app_init.h"
 #include "app_screens.h"
+#include "mpesa/mpesa.h"
 #include "../events/events.h"
 
 /*********************
@@ -38,6 +39,7 @@ void helios_apps_init_all(void)
     helios_apps_init();
     helios_contacts_init();
     helios_notifications_init();
+    helios_mpesa_init();
     helios_stopwatch_init();
     helios_weather_init();
     helios_watchfaces_init_all();
@@ -63,6 +65,13 @@ void helios_apps_init_all(void)
                                            navigation_create,
                                            LV_SCR_LOAD_ANIM_OVER_LEFT,
                                            HELIOS_SCREEN_TRANSITION_APP_OPEN_LEFT);
+    helios_apps_register_simple_events_transition(icon_mpesa_watch,
+                                                  "M-Pesa",
+                                                  "M-PESA",
+                                                  helios_mpesa_screen_create,
+                                                  LV_SCR_LOAD_ANIM_OVER_LEFT,
+                                                  helios_mpesa_screen_events_cb,
+                                                  HELIOS_SCREEN_TRANSITION_APP_OPEN_LEFT);
     helios_apps_register_transition(icon_chat,
                                     "Notifications",
                                     "notifications",

@@ -254,6 +254,14 @@ extern const void * icon_restart;
 extern const void * img_heart_beat;
 extern const void * img_blood_oxygen;
 extern const void * img_finger_sensor;
+extern const void * icon_arrow_red;
+extern const void * icon_arrow_green;
+extern const void * icon_arrow_red_64;
+extern const void * icon_arrow_green_64;
+extern const void * icon_text_hide;
+extern const void * icon_text_show;
+extern const void * icon_mpesa_watch;
+extern const void * icon_mpesa_watch_32;
 
 /*----------------
  * Subjects
@@ -354,6 +362,10 @@ extern lv_subject_t sb_stopwatch_button_reset_state;
 extern lv_subject_t sb_stopwatch_button_start_icon;
 extern lv_subject_t sb_stopwatch_button_reset_icon;
 extern lv_subject_t sb_health_finger_detect;
+extern lv_subject_t sb_mpesa_balance_hidden;
+extern lv_subject_t sb_mpesa_hidden_icon;
+extern lv_subject_t sb_mpesa_balance_text;
+extern lv_subject_t sb_mpesa_recent_text;
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -383,6 +395,8 @@ void helios_ui_init_gen(const char * asset_path);
  **********************/
 
 /*Include all the widgets, components and screens of this library*/
+#include "components/apps/mpesa_details/mpesa_details_gen.h"
+#include "components/apps/mpesa_item/mpesa_item_gen.h"
 #include "components/control/control_bar/control_bar_gen.h"
 #include "components/control/control_button/control_button_gen.h"
 #include "components/control/control_group/control_group_gen.h"
@@ -438,6 +452,7 @@ void helios_ui_init_gen(const char * asset_path);
 #include "components/weather/daily_forecast/daily_forecast_gen.h"
 #include "components/weather/hourly_forecast/hourly_forecast_gen.h"
 #include "components/weather/weather_widget/weather_widget_gen.h"
+#include "screens/apps/sc_mpesa/sc_mpesa_gen.h"
 #include "screens/core/applications/applications_gen.h"
 #include "screens/core/boot/boot_gen.h"
 #include "screens/core/contacts/contacts_gen.h"

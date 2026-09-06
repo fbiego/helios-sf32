@@ -1,6 +1,5 @@
 project/build_*/
 project/*.pyc
 project/__pycache__/
-.codex/
-
 helios.py
+*.o

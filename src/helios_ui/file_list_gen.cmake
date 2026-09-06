@@ -1,6 +1,8 @@
 list(
   APPEND
   LV_EDITOR_PROJECT_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/components/apps/mpesa_details/mpesa_details_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/components/apps/mpesa_item/mpesa_item_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/control/control_bar/control_bar_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/control/control_button/control_button_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/control/control_group/control_group_gen.c
@@ -110,6 +112,10 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/helios_ui_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/helios_ui.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_application_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_arrow_green_64_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_arrow_green_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_arrow_red_64_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_arrow_red_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_arrow_up_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_back_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_brightness_empty_data.c
@@ -124,6 +130,8 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_lap_time_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_list_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_measurement_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_mpesa_watch_32_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_mpesa_watch_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_music_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_music_next_32_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_music_pause_32_data.c
@@ -172,6 +180,8 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_spotify_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_stop_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_stopwatch_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_text_hide_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_text_show_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_timer_cancel_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_timer_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_timer_pause_data.c
@@ -201,6 +211,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/img_finger_sensor_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_heart_beat_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_music_album_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/apps/sc_mpesa/sc_mpesa_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/applications/applications_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/boot/boot_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/contacts/contacts_gen.c

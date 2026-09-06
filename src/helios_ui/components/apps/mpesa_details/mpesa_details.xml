@@ -1,0 +1,78 @@
+<component>
+	<styles>
+		<style
+			name="style_cont"
+			bg_color="0x000000"
+			bg_opa="255"
+			width="100%"
+			height="100%"
+			flex_cross_place="center"
+			flex_track_place="center"
+			flex_main_place="center"
+			pad_row="12"
+		/>
+		<style name="style_cont_360" pad_row="8" />
+		<style name="style_cont_240" pad_row="4" />
+
+		<style name="style_col" flex_cross_place="center" flex_track_place="center" />
+
+		<style name="style_pad_row" pad_row="8" />
+		<style name="style_pad_row_360" pad_row="6" />
+		<style name="style_pad_row_240" pad_row="4" />
+	</styles>
+	<api>
+		<prop name="tx_name" type="string" default="Kenya Power" />
+		<prop name="tx_time" type="string" default="7:08 PM • 3/9/2026" />
+		<prop name="tx_amount" type="string" default="2,500" />
+		<prop name="tx_account" type="string" default="0712345678" />
+		<prop name="tx_id" type="string" default="UI24JHGDA2" />
+		<prop name="tx_in" type="bool" default="true" />
+		<prop name="tx_fee" type="string" default="KSH 33" />
+	</api>
+	<view extends="hs_column" scrollable="false">
+		<style name="style_cont" />
+		<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
+		<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+
+		<hs_column>
+			<style name="style_col" />
+			<bind_style name="style_pad_row" subject="sb_screen_size" ref_value="0" />
+			<bind_style name="style_pad_row_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_pad_row_240" subject="sb_screen_size" ref_value="2" />
+
+			<wd_image
+				src="icon_mpesa_watch"
+				scale_0="256"
+				scale_1="190"
+				scale_2="120"
+				size_1="55"
+				size_2="30"
+				bind_scale="sb_screen_size"
+				style_image_recolor="{tx_in ? 0x237028 : 0xD82628}"
+				style_image_recolor_opa="255"
+			/>
+			<hs_text_small
+				text="{tx_in ? 'Received' : 'Sent'}"
+				style_text_color="{tx_in ? 0x237028 : 0xD82628}"
+				style_text_opa="255"
+			/>
+		</hs_column>
+		<hs_card width="content">
+			<hs_text_normal text="$tx_id" style_text_letter_space="2" />
+		</hs_card>
+		<hs_text_normal text="$tx_amount" />
+		<hs_text_small width="90%" style_text_align="center" long_mode="scroll_circular" text="$tx_name" />
+
+		<hs_column>
+			<style name="style_col" />
+			<bind_style name="style_pad_row" subject="sb_screen_size" ref_value="0" />
+			<bind_style name="style_pad_row_360" subject="sb_screen_size" ref_value="1" />
+			<bind_style name="style_pad_row_240" subject="sb_screen_size" ref_value="2" />
+			<hs_text_small text="$tx_account" style_text_color="0xA2A2A2" />
+
+			<hs_text_small text="$tx_time" style_text_color="0xA2A2A2" />
+
+			<hs_text_small hidden="{tx_in}" text="{'Fee: ' . tx_fee}" style_text_color="0xA2A2A2" />
+		</hs_column>
+	</view>
+</component>

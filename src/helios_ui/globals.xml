@@ -71,7 +71,7 @@
 			src_path="fonts/raw/NotoSans-Medium.ttf"
 			bpp="4"
 			range="0x20-0x7f"
-			symbols="’°"
+			symbols="’°•"
 			as_file="false"
 			lv_fallback="NS_Medium_latin_14_data"
 		/>
@@ -82,7 +82,7 @@
 			src_path="fonts/raw/NotoSans-Medium.ttf"
 			bpp="4"
 			range="0x20-0x7f"
-			symbols="’°"
+			symbols="’°•"
 			as_file="false"
 			lv_fallback="NS_Medium_latin_16_data"
 		/>
@@ -93,7 +93,7 @@
 			src_path="fonts/raw/NotoSans-Medium.ttf"
 			bpp="4"
 			range="0x20-0x7f"
-			symbols="’°"
+			symbols="’°•"
 			as_file="false"
 			lv_fallback="NS_Medium_latin_18_data"
 		/>
@@ -104,7 +104,7 @@
 			src_path="fonts/raw/NotoSans-Medium.ttf"
 			bpp="4"
 			range="0x20-0x7f"
-			symbols="’°"
+			symbols="’°•"
 			as_file="false"
 			lv_fallback="NS_Medium_latin_20_data"
 		/>
@@ -115,7 +115,7 @@
 			src_path="fonts/raw/NotoSans-Medium.ttf"
 			bpp="4"
 			range="0x20-0x7f"
-			symbols="’°"
+			symbols="’°•"
 			as_file="false"
 			lv_fallback="NS_Medium_latin_30_data"
 		/>
@@ -126,7 +126,7 @@
 			src_path="fonts/raw/NotoSans-Medium.ttf"
 			bpp="4"
 			range="0x20-0x7f"
-			symbols="’°"
+			symbols="’°•"
 			as_file="false"
 			lv_fallback="NS_Medium_latin_40_data"
 		/>
@@ -683,6 +683,15 @@
 		<data name="img_heart_beat" src_path="images/generic/img_heart_beat.png" color_format="rgb565a8" />
 		<data name="img_blood_oxygen" src_path="images/generic/img_blood_oxygen.png" color_format="rgb565a8" />
 		<data name="img_finger_sensor" src_path="images/generic/img_finger_sensor.png" color_format="a8" />
+
+		<data name="icon_arrow_red" src_path="images/generic/icon_arrow_red.png" color_format="rgb565a8" />
+		<data name="icon_arrow_green" src_path="images/generic/icon_arrow_green.png" color_format="rgb565a8" />
+		<data name="icon_arrow_red_64" src_path="images/generic/icon_arrow_red_64.png" color_format="rgb565a8" />
+		<data name="icon_arrow_green_64" src_path="images/generic/icon_arrow_green_64.png" color_format="rgb565a8" />
+		<data name="icon_text_hide" src_path="images/generic/icon_text_hide.png" color_format="a8" />
+		<data name="icon_text_show" src_path="images/generic/icon_text_show.png" color_format="a8" />
+		<data name="icon_mpesa_watch" src_path="images/apps/icon_mpesa_watch.png" color_format="rgb565a8" />
+		<data name="icon_mpesa_watch_32" src_path="images/generic/icon_mpesa_watch_32.png" color_format="rgb565a8" />
 	</images>
 
 	<styles>
@@ -788,7 +797,7 @@
 		<string name="sb_battery_usage" value="2d 14h" help="[set] Battery Usage" />
 
 		<!-- Navigation data -->
-		<int name="sb_nav_icon" value="0" help="Current navigation icon [set]{pointer}(icon_turn_left)" />
+		<pointer name="sb_nav_icon" value="icon_turn_left" help="Current navigation icon [set]" />
 		<string
 			name="sb_nav_text"
 			value="10:20 ETA&#10;5 mins | 1.6km"
@@ -806,8 +815,8 @@
 		<string name="sb_music_track" value="Track" help="[set] Music track" />
 		<string name="sb_music_artist" value="Artist" help="[set] Music artist" />
 		<int name="sb_music_state" value="0" help="[set|change] Music state" />
-		<int name="sb_music_state_icon" value="0" help="[set]{pointer}(icon_music_play_32) Music play/pause ison" />
-		<int name="sb_music_icon" value="0" help="[set]{pointer}(icon_music) Music icon" />
+		<pointer name="sb_music_state_icon" value="icon_music_play_32" help="[set] Music play/pause icon" />
+		<pointer name="sb_music_icon" value="icon_music" help="[set] Music icon" />
 		<string name="sb_music_package" value="music" help="[set|change] Music app package" />
 		<int name="sb_music_album_color" value="0" help="[set]{color} Music album color" />
 
@@ -824,7 +833,7 @@
 
 		<!-- Weather app data -->
 		<int name="sb_weather_code" value="0" min_value="0" max_value="7" help="[set|change] Weather condition code" />
-		<int name="sb_weather_icon" value="0" help="[set]{pointer}(icon_weather) Weather icon" />
+		<pointer name="sb_weather_icon" value="icon_weather" help="[set] Weather icon" />
 		<int name="sb_weather_temp" value="23" help="[set] Weather temperature" />
 		<string name="sb_weather_location" value="Nairobi" help="[set] Weather location" />
 		<string name="sb_weather_condition" value="cloudy" help="[set] Weather condition" />
@@ -842,18 +851,20 @@
 		<int name="sb_stopwatch_button_start_state" value="0" help="[set|change] Stopwatch pause button state" />
 		<int name="sb_stopwatch_button_reset_state" value="0" help="[set|change] Stopwatch reset button state" />
 
-		<int
+		<pointer
 			name="sb_stopwatch_button_start_icon"
-			value="0"
-			help="[set]{pointer}(icon_timer_start) Stopwatch start button icon"
+			value="icon_timer_start"
+			help="[set] Stopwatch start button icon"
 		/>
-		<int
-			name="sb_stopwatch_button_reset_icon"
-			value="0"
-			help="[set]{pointer}(icon_lap_time) Stopwatch reset button icon"
-		/>
+		<pointer name="sb_stopwatch_button_reset_icon" value="icon_lap_time" help="[set] Stopwatch reset button icon" />
 
 		<!-- Health app data -->
 		<int name="sb_health_finger_detect" value="0" help="[set] Finger detect on sensor" />
+
+		<!-- Health app data -->
+		<int name="sb_mpesa_balance_hidden" value="0" help="[set|change] Mpesa Balance hidden" />
+		<pointer name="sb_mpesa_hidden_icon" value="icon_text_hide" help="[set]hide icon" />
+		<string name="sb_mpesa_balance_text" value="KSH 1,235" help="[set] Mpesa balance text" />
+		<string name="sb_mpesa_recent_text" value="Recent" help="[set] Mpesa recent text" />
 	</subjects>
 </globals>
