@@ -16,6 +16,7 @@
  *********************/
 
 #define HELIOS_WATCHFACES_OBSERVER_MAX 4
+#define HELIOS_WATCHFACE_DEFAULT_TAG "default"
 
 /**********************
  *      TYPEDEFS
@@ -63,6 +64,7 @@ static bool initializers_ran;
 static lv_obj_t * default_watchface_create(lv_obj_t * parent);
 static void notify_observers(helios_watchfaces_event_t event, const helios_watchface_t * watchface);
 static helios_watchface_t * find_watchface_by_tag(const char * tag);
+static uint32_t watchface_index_of(const helios_watchface_t * watchface);
 static void watchface_set_previews(helios_watchface_t * watchface,
                                    const helios_watchface_preview_t * previews,
                                    uint32_t preview_count);
@@ -86,7 +88,7 @@ void helios_watchfaces_init_all(void)
     if (builtins_registered) return;
     builtins_registered = true;
 
-    helios_watchfaces_register("Default", "default", default_watchface_create, NULL);
+    helios_watchfaces_register("Default", HELIOS_WATCHFACE_DEFAULT_TAG, default_watchface_create, NULL);
 
     helios_watchfaces_run_initializers();
 }
@@ -219,6 +221,12 @@ uint32_t helios_watchfaces_active_index(void)
     return active_index;
 }
 
+const char * helios_watchfaces_active_tag(void)
+{
+    const helios_watchface_t * watchface = helios_watchfaces_active();
+    return watchface ? watchface->tag : "";
+}
+
 const helios_watchface_t * helios_watchfaces_active(void)
 {
     if (watchface_count == 0) return NULL;
@@ -236,9 +244,47 @@ bool helios_watchfaces_set_active(uint32_t index)
     }
 
     active_index = index;
-    notify_observers(HELIOS_WATCHFACES_EVENT_CHANGED, &watchfaces[index]);
+    notify_observers(HELIOS_WATCHFACES_EVENT_ACTIVE_CHANGED, &watchfaces[index]);
+    helios_watchfaces_active_tag_changed(watchfaces[index].tag);
     lv_unlock();
     return true;
+}
+
+bool helios_watchfaces_set_active_tag(const char * tag)
+{
+    lv_lock();
+
+    helios_watchface_t * watchface = find_watchface_by_tag(tag);
+    bool found = watchface != NULL;
+
+    if (!watchface) {
+        watchface = find_watchface_by_tag(HELIOS_WATCHFACE_DEFAULT_TAG);
+    }
+
+    if (!watchface && watchface_count > 0) {
+        watchface = &watchfaces[0];
+    }
+
+    if (!watchface) {
+        lv_unlock();
+        return false;
+    }
+
+    active_index = watchface_index_of(watchface);
+    notify_observers(HELIOS_WATCHFACES_EVENT_ACTIVE_CHANGED, watchface);
+    helios_watchfaces_active_tag_changed(watchface->tag);
+    lv_unlock();
+    return found;
+}
+
+const helios_watchface_t * helios_watchfaces_find(const char * tag)
+{
+    return find_watchface_by_tag(tag);
+}
+
+void __attribute__((weak)) helios_watchfaces_active_tag_changed(const char * tag)
+{
+    LV_LOG_USER("Active watchface changed: %s", tag ? tag : "");
 }
 
 const void * helios_watchface_get_preview(const helios_watchface_t * watchface)
@@ -345,6 +391,17 @@ static helios_watchface_t * find_watchface_by_tag(const char * tag)
     return NULL;
 }
 
+static uint32_t watchface_index_of(const helios_watchface_t * watchface)
+{
+    if (!watchface) return 0;
+
+    for (uint32_t i = 0; i < watchface_count; i++) {
+        if (&watchfaces[i] == watchface) return i;
+    }
+
+    return 0;
+}
+
 static void watchface_set_previews(helios_watchface_t * watchface,
                                    const helios_watchface_preview_t * previews,
                                    uint32_t preview_count)
@@ -365,4 +422,5 @@ static void copy_text(char * dst, uint32_t dst_size, const char * src)
 
     if (!src) src = "";
     lv_strncpy(dst, src, dst_size);
+    dst[dst_size - 1] = '\0';
 }

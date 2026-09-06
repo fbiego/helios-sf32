@@ -73,6 +73,7 @@ typedef struct {
 typedef enum {
     HELIOS_WATCHFACES_EVENT_ADDED,
     HELIOS_WATCHFACES_EVENT_CHANGED,
+    HELIOS_WATCHFACES_EVENT_ACTIVE_CHANGED,
     HELIOS_WATCHFACES_EVENT_CLEARED,
 } helios_watchfaces_event_t;
 
@@ -131,8 +132,13 @@ void helios_watchfaces_run_initializers(void);
 void helios_watchfaces_clear(void);
 
 uint32_t helios_watchfaces_active_index(void);
+const char * helios_watchfaces_active_tag(void);
 const helios_watchface_t * helios_watchfaces_active(void);
 bool helios_watchfaces_set_active(uint32_t index);
+bool helios_watchfaces_set_active_tag(const char * tag);
+const helios_watchface_t * helios_watchfaces_find(const char * tag);
+
+void helios_watchfaces_active_tag_changed(const char * tag);
 
 const void * helios_watchface_get_preview(const helios_watchface_t * watchface);
 lv_obj_t * helios_watchface_create_active(lv_obj_t * parent);

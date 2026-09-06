@@ -20,6 +20,7 @@
 #include "helios_ble.h"
 #include "helios_chronos.h"
 #include "helios_platform.h"
+#include "helios_prefs.h"
 
 #define LOG_TAG "helios.app"
 #include "log.h"
@@ -819,6 +820,8 @@ void helios_subject_screen_brightness_change(int32_t value)
     g_screen_brightness = (uint8_t)value;
     if (g_screen_on)
         helios_screen_apply_brightness();
+
+    helios_prefs_save_screen_brightness(value);
 }
 
 void helios_subject_screen_timeout_change(int32_t value)
@@ -837,6 +840,7 @@ void helios_subject_screen_timeout_change(int32_t value)
         value = (int32_t)(sizeof(timeouts_ms) / sizeof(timeouts_ms[0])) - 1;
 
     helios_screen_set_timeout_ms(timeouts_ms[value]);
+    helios_prefs_save_screen_timeout(value);
 }
 
 static void helios_ui_refresh(lv_timer_t *timer)
@@ -940,6 +944,8 @@ static void helios_ui_entry(void *parameter)
     helios_subject_set_board_psram("8MB");
     helios_subject_set_board_flash("16MB");
 
+    helios_prefs_init();
+    helios_prefs_apply_saved_ui_settings();
 
     helios_screen_wake();
 

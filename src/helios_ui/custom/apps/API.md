@@ -184,7 +184,10 @@ bool helios_watchfaces_register(const char * name,
                                 const void * preview);
 
 bool helios_watchfaces_set_active(uint32_t index);
+bool helios_watchfaces_set_active_tag(const char * tag);
 uint32_t helios_watchfaces_active_index(void);
+const char * helios_watchfaces_active_tag(void);
+void helios_watchfaces_active_tag_changed(const char * tag);
 ```
 
 Use `helios_watchfaces_register()` for external watchfaces. External watchfaces use one preview image; the built-in default watchface uses the internal multi-preview API because it ships different previews for different screen resolutions.
@@ -196,6 +199,10 @@ HELIOS_REGISTER_WATCHFACE("My Face", "my_face", my_watchface_create_cb, img_my_f
 ```
 
 The home screen renders the active registered watchface. Long-pressing home opens the selector, which scrolls to the active watchface.
+
+For boot restore, call `helios_watchfaces_set_active_tag(saved_tag)` after watchfaces are registered. If `saved_tag` is not found, the manager selects the `default` watchface and returns `false`.
+
+Override `helios_watchfaces_active_tag_changed()` in platform code to persist the newly selected tag when the user picks a watchface.
 
 ## Stopwatch
 

@@ -160,16 +160,28 @@ uint32_t helios_watchfaces_count(void);
 const helios_watchface_t * helios_watchfaces_get(uint32_t index);
 
 uint32_t helios_watchfaces_active_index(void);
+const char * helios_watchfaces_active_tag(void);
 const helios_watchface_t * helios_watchfaces_active(void);
 bool helios_watchfaces_set_active(uint32_t index);
+bool helios_watchfaces_set_active_tag(const char * tag);
+const helios_watchface_t * helios_watchfaces_find(const char * tag);
+
+void helios_watchfaces_active_tag_changed(const char * tag);
 ```
 
-Use `helios_watchfaces_set_active()` if platform code restores the saved active watchface from flash. Store the active index or the watchface tag in platform storage, then set it after registering all watchfaces.
+Use `helios_watchfaces_set_active_tag()` if platform code restores the saved active watchface from flash. Call it after registering all watchfaces. If the requested tag is not found, the manager selects the `default` watchface and returns `false`.
+
+Override `helios_watchfaces_active_tag_changed()` in platform code to persist a user-picked watchface tag. The same tag can be read at any time with `helios_watchfaces_active_tag()`.
 
 Example:
 
 ```c
-helios_watchfaces_set_active(saved_watchface_index);
+helios_watchfaces_set_active_tag(saved_watchface_tag);
+
+void helios_watchfaces_active_tag_changed(const char * tag)
+{
+    platform_storage_set_watchface_tag(tag);
+}
 ```
 
 ## Notes
