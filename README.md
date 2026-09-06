@@ -19,7 +19,7 @@ This project is intended to live outside the SiFli SDK tree. Keep the `project/`
 - LVGL v9 watch UI imported under `src/helios_ui/`, including generated screens, components, widgets, fonts, images, custom app runtime code, subjects, events, and watchface manager code.
 - Built-in app surfaces for home/watchface, applications, settings, notifications, contacts, weather, music, stopwatch, timer, phone link, navigation, and health.
 - External watchface sources under `src/faces/`, currently including `174_390`, `228_390`, `1889_2_390`, and `1891_2_390`.
-- Board startup and app glue in `src/main.c` and `src/helios_app.c`.
+- Board startup in `src/main.c` and app glue in `src/core/helios_app.c`.
 - BLE advertising as `HELIOS-xxxxxx` while disconnected.
 - Nordic UART Service for Chronos-style phone sync:
   - Service: `6E400001-B5A3-F393-E0A9-E50E24DCCA9E`
@@ -44,19 +44,16 @@ https://github.com/fbiego/helios_ui
 .
 ├── project/                       SiFli/RT-Thread board build project
 ├── src/
+│   ├── apps/                      Hand-written app integrations outside UI sync
 │   ├── chronos_core/              Chronos protocol parser/state
+│   ├── core/                      Helios platform, BLE, iOS, sensor, and UI glue
 │   ├── faces/                     Imported external watchface sources/assets
 │   ├── helios_ui/                 Generated LVGL UI plus custom runtime code
-│   ├── helios_app.c               Platform-to-UI glue and async UI queueing
-│   ├── helios_ble.c               BLE advertising, NUS service, connection events
-│   ├── helios_chronos.c           Chronos transport bridge and callbacks
-│   ├── helios_ios.c               iOS ANCS/AMS client bridge
-│   ├── helios_max30100.c          MAX30100 heart-rate/SpO2 driver
-│   └── helios_platform.c          Board helper APIs
+│   └── main.c                     RT-Thread app entry point
 └── .codex/skills/SKILL.md         Codex project working notes
 ```
 
-`src/SConscript` pulls top-level app sources, Chronos core sources, the LVGL generated/custom source lists, custom app sources, and every `.c` file under `src/faces/`. Face folders also generate `ENABLE_FACE_<NAME>` defines for conditional registration.
+`src/SConscript` pulls `src/main.c`, core sources, app integrations, Chronos core sources, the LVGL generated/custom source lists, custom app sources, and every `.c` file under `src/faces/`. Face folders also generate `ENABLE_FACE_<NAME>` defines for conditional registration.
 
 ## UI Runtime
 
@@ -70,7 +67,7 @@ Important UI runtime areas:
 - `custom/watchfaces/`: watchface registry, selector behavior, and preview handling.
 - `widgets/`: generated custom widget library used by screens and watchfaces.
 
-Screens are created and deleted during navigation, so platform code should not keep long-lived `lv_obj_t *` pointers. Update UI state through `helios_subject_set_*()` functions or app runtime APIs, and use `lv_async_call()` or the wrappers in `src/helios_app.c` when data arrives from BLE/sensor tasks.
+Screens are created and deleted during navigation, so platform code should not keep long-lived `lv_obj_t *` pointers. Update UI state through `helios_subject_set_*()` functions or app runtime APIs, and use `lv_async_call()` or the wrappers in `src/core/helios_app.c` when data arrives from BLE/sensor tasks.
 
 ## Watchfaces
 
@@ -92,9 +89,9 @@ See `src/helios_ui/custom/watchfaces/README.md` for the full registry API.
 
 ## BLE and iOS Notes
 
-`src/helios_ble.c` owns the local Nordic UART Service registration and advertising data. Chronos protocol handling stays in `src/helios_chronos.c`; use `helios_ble_send()` for outbound packets and `helios_chronos_on_rx()` for inbound writes.
+`src/core/helios_ble.c` owns the local Nordic UART Service registration and advertising data. Chronos protocol handling stays in `src/core/helios_chronos.c`; use `helios_ble_send()` for outbound packets and `helios_chronos_on_rx()` for inbound writes.
 
-iOS ANCS and AMS are remote services exposed by the iPhone after a BLE connection. The watch acts as a GATT client for those services in `src/helios_ios.c`.
+iOS ANCS and AMS are remote services exposed by the iPhone after a BLE connection. The watch acts as a GATT client for those services in `src/core/helios_ios.c`.
 
 The expected iOS flow is:
 
@@ -107,7 +104,7 @@ Plain iOS Bluetooth Settings may not show arbitrary BLE-only peripherals before 
 
 ## Health Sensor
 
-`src/helios_max30100.c` initializes and samples the MAX30100 on the configured I2C bus. It publishes heart rate and SpO2 readings to the health UI, tracks finger presence, and keeps the last valid value for a configurable cache timeout so values do not instantly drop to zero when the finger is removed.
+`src/core/helios_max30100.c` initializes and samples the MAX30100 on the configured I2C bus. It publishes heart rate and SpO2 readings to the health UI, tracks finger presence, and keeps the last valid value for a configurable cache timeout so values do not instantly drop to zero when the finger is removed.
 
 Useful APIs:
 
@@ -121,7 +118,7 @@ Samples include raw red/IR values, `finger_detected`, `cached`, `beat_detected`,
 
 ## Platform Helpers
 
-`src/helios_platform.c` keeps board-specific access behind small helpers:
+`src/core/helios_platform.c` keeps board-specific access behind small helpers:
 
 - Battery: `helios_battery_read()`, using the board ADC channel.
 - Buttons: `helios_button_pressed()`.
@@ -136,11 +133,11 @@ Keep display and touch access abstracted through `littlevgl2rtt_init("lcd")`.
 - `project/proj.conf`: project feature/config flags, including Bluetooth, ANCS/AMS, FlashDB, LVGL, and button support.
 - `src/SConscript`: source discovery for top-level code, Chronos core, generated/custom UI, custom apps, and external faces.
 - `src/main.c`: RT-Thread app startup.
-- `src/helios_ble.c`: advertising, Nordic UART Service, connection, bonding, and BLE event glue.
-- `src/helios_chronos.c`: Chronos protocol bridge and fallback media commands.
-- `src/helios_ios.c`: iOS ANCS/AMS discovery, subscription refresh, notification mapping, and media updates.
-- `src/helios_app.c`: LVGL-safe app update queueing for notifications, music, weather, navigation, and health.
-- `src/helios_max30100.c`: MAX30100 sensor sampling, heart-rate/SpO2 calculation, finger detection, and cached readings.
-- `src/helios_platform.c`: board access helpers for battery, buttons, buses, and storage.
+- `src/core/helios_ble.c`: advertising, Nordic UART Service, connection, bonding, and BLE event glue.
+- `src/core/helios_chronos.c`: Chronos protocol bridge and fallback media commands.
+- `src/core/helios_ios.c`: iOS ANCS/AMS discovery, subscription refresh, notification mapping, and media updates.
+- `src/core/helios_app.c`: LVGL-safe app update queueing for notifications, music, weather, navigation, and health.
+- `src/core/helios_max30100.c`: MAX30100 sensor sampling, heart-rate/SpO2 calculation, finger detection, and cached readings.
+- `src/core/helios_platform.c`: board access helpers for battery, buttons, buses, and storage.
 - `src/helios_ui/custom/apps/API.md`: UI runtime API reference for platform-facing code.
 - `src/helios_ui/custom/watchfaces/README.md`: watchface registration and selection guide.

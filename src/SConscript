@@ -7,6 +7,7 @@ import re
 cwd = GetCurrentDir()
 src = Glob('*.c')
 
+core_dir = os.path.join(cwd, 'core')
 ui_dir = os.path.join(cwd, 'helios_ui')
 apps_dir = os.path.join(cwd, 'apps')
 chronos_core_dir = os.path.join(cwd, 'chronos_core')
@@ -24,6 +25,7 @@ src.extend([
     source for source in Glob(os.path.join(chronos_core_dir, '*.c'))
     if os.path.basename(str(source)) != 'watch_example.c'
 ])
+src.extend(Glob(os.path.join(core_dir, '*.c')))
 face_src = []
 face_defines = set()
 if os.path.isdir(faces_dir):
@@ -73,7 +75,7 @@ append_cmake_sources(os.path.join(ui_dir, 'user_config.cmake'), src)
 append_tree_sources(apps_dir, src)
 append_tree_sources(os.path.join(ui_dir, 'custom', 'apps', 'apps'), src)
 
-CPPPATH = [cwd, apps_dir, ui_dir, chronos_core_dir, faces_dir, str(Dir('#'))]
+CPPPATH = [cwd, core_dir, apps_dir, ui_dir, chronos_core_dir, faces_dir, str(Dir('#'))]
 
 group = [DefineGroup('helios_app', src, depend=[''], CPPPATH=CPPPATH, LOCAL_CCFLAGS='-DLV_LVGL_H_INCLUDE_SIMPLE')]
 
