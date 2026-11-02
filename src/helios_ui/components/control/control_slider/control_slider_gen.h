@@ -15,10 +15,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 /*********************
@@ -33,7 +31,7 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 
-lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, const void * icon_right);
+lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, const void * icon_right, const char * user_data);
 
 /**********************
  *      MACROS

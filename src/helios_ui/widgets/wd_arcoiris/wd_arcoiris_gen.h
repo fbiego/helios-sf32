@@ -16,10 +16,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 #include "../../helios_ui_gen.h"
@@ -44,7 +42,7 @@ extern "C" {
 lv_obj_t * wd_arcoiris_create(lv_obj_t * parent);
 /**
  * Thickness of the arc widget
- * @param obj   pointer to a wd_arcoiris
+ * @param wd_arcoiris   pointer to a wd_arcoiris
  * @param thickness  Thickness of the arc widget
  */
 void wd_arcoiris_set_thickness(lv_obj_t * wd_arcoiris, int32_t thickness);

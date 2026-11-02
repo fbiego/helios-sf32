@@ -88,7 +88,7 @@ lv_obj_t * navigation_create(void)
         wd_image_set_size_0(wd_image_0, 94);
         wd_image_set_size_1(wd_image_0, 72);
         wd_image_set_size_2(wd_image_0, 48);
-        wd_image_bind_src(wd_image_0, &sb_nav_icon);
+        lv_image_bind_src(wd_image_0, &sb_nav_icon);
         wd_image_bind_scale(wd_image_0, &sb_screen_size);
         lv_obj_set_style_image_recolor(wd_image_0, lv_color_hex(0xffffff), 0);
         lv_obj_set_style_image_recolor_opa(wd_image_0, 255, 0);

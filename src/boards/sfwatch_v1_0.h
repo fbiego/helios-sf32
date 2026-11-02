@@ -1,0 +1,46 @@
+#ifndef HELIOS_PROFILE_SFWATCH_V1_0_H
+#define HELIOS_PROFILE_SFWATCH_V1_0_H
+
+#define HELIOS_HAS_MAX30100 0
+#define HELIOS_HAS_BMI270 1
+#define HELIOS_HAS_BUZZER 1
+#define HELIOS_HAS_MOTOR 1 /* PA20 output ready for the planned motor connection. */
+#define HELIOS_HAS_CHARGE_DETECT 1
+#define HELIOS_DISPLAY_ROTATION_CW 90
+#define HELIOS_HAS_LOW_POWER 1
+#define HELIOS_DISPLAY_ENABLE_PIN 26
+
+#define HELIOS_BMI270_I2C_BUS "i2c2"
+#define HELIOS_BMI270_I2C_HZ 100000 /* Conservative bring-up speed. */
+#define HELIOS_BMI270_INT1_PIN 44
+#define HELIOS_BMI270_INT1_PAD PAD_PA44
+#define HELIOS_BMI270_INT1_GPIO GPIO_A44
+#define HELIOS_BMI270_INT2_PIN 43
+/* Watch frame after the display's clockwise mounting rotation:
+ * +X right, +Y toward the readable UI's top, +Z out of the display.
+ * Verified face-up (+sensor Z) and upright (-sensor X) gravity directions. */
+#define HELIOS_BMI270_MAP_X BMI2_Y
+#define HELIOS_BMI270_MAP_Y BMI2_NEG_X
+#define HELIOS_BMI270_MAP_Z BMI2_Z
+#define HELIOS_BUZZER_PIN 41
+#define HELIOS_BUZZER_PAD PAD_PA41
+#define HELIOS_BUZZER_GPIO GPIO_A41
+#define HELIOS_BUZZER_PWM_FUNCTION GPTIM2_CH2
+#define HELIOS_BUZZER_PWM_DEVICE "pwmt2"
+#define HELIOS_BUZZER_PWM_CHANNEL 2
+#define HELIOS_BUZZER_FREQUENCY_HZ 2000
+#define HELIOS_MOTOR_PIN 20
+#define HELIOS_MOTOR_PAD PAD_PA20
+#define HELIOS_MOTOR_GPIO GPIO_A20
+#define HELIOS_MOTOR_ACTIVE_HIGH 1
+#define HELIOS_CHARGE_DETECT_PIN 25
+#define HELIOS_CHARGE_DETECT_ACTIVE_LEVEL 0 /* Open-drain charger status, pulled up. */
+#define HELIOS_CHARGE_DETECT_PAD PAD_PA25
+#define HELIOS_CHARGE_DETECT_GPIO GPIO_A25
+#define HELIOS_3V3_ENABLE_PIN 10
+
+#define ENABLE_FACE_116_2_466 1
+#define ENABLE_FACE_PIXEL_RESIZED_466 1
+#define ENABLE_FACE_756_466 1
+
+#endif

@@ -90,10 +90,10 @@ lv_obj_t * settings_storage_create(lv_obj_t * parent)
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_360, LV_STATE_USER_1, &sb_screen_size, 1);
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_240, LV_STATE_USER_1, &sb_screen_size, 2);
         lv_obj_t * hs_card_0 = hs_card_create(wd_list_container_0);
-        hs_bar_create(hs_card_0, "Brightness", "system", &sb_battery_percent);
+        hs_bar_create(hs_card_0, "Brightness", "system", &sb_battery_percent, lv_color_hex(0xffffff));
 
         lv_obj_t * hs_card_1 = hs_card_create(wd_list_container_0);
-        hs_bar_create(hs_card_1, "LittleFS", "", &sb_battery_percent);
+        hs_bar_create(hs_card_1, "LittleFS", "", &sb_battery_percent, lv_color_hex(0xffffff));
 
         hs_line_create(hs_card_1);
 
@@ -111,7 +111,7 @@ lv_obj_t * settings_storage_create(lv_obj_t * parent)
         lv_obj_set_style_bg_color(hs_button_0, COLOR_BUTTON_DANGER, 0);
 
         lv_obj_t * hs_card_2 = hs_card_create(wd_list_container_0);
-        hs_bar_create(hs_card_2, "Brightness", "sd_card", &sb_battery_percent);
+        hs_bar_create(hs_card_2, "Brightness", "sd_card", &sb_battery_percent, lv_color_hex(0xffffff));
 
         hs_line_create(hs_card_2);
 

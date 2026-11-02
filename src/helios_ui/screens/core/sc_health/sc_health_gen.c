@@ -49,7 +49,7 @@ lv_obj_t * sc_health_create(void)
         lv_obj_set_style_flex_cross_place(hs_column_0, LV_FLEX_ALIGN_CENTER, 0);
         lv_obj_set_style_pad_row(hs_column_0, 30, 0);
         lv_obj_t * wd_image_0 = wd_image_create(hs_column_0);
-        wd_image_set_src(wd_image_0, img_finger_sensor);
+        lv_image_set_src(wd_image_0, img_finger_sensor);
         lv_obj_set_style_image_recolor(wd_image_0, lv_color_hex(0xffffff), 0);
         lv_obj_set_style_image_recolor_opa(wd_image_0, 255, 0);
         lv_obj_bind_flag_if_eq(wd_image_0, &sb_health_finger_detect, LV_OBJ_FLAG_HIDDEN, 1);

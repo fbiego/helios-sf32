@@ -30,7 +30,7 @@
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_obj_t * hs_slider_create(lv_obj_t * parent, const char * label, const char * tag, lv_subject_t * bind_value)
+lv_obj_t * hs_slider_create(lv_obj_t * parent, const char * label, const char * tag, lv_subject_t * bind_value, const char * user_data)
 {
     LV_TRACE_OBJ_CREATE("begin");
 
@@ -115,6 +115,7 @@ lv_obj_t * hs_slider_create(lv_obj_t * parent, const char * label, const char * 
         lv_obj_remove_style(lv_slider_0, NULL, LV_PART_KNOB);
         lv_obj_add_style(lv_slider_0, &style_indicator, LV_PART_INDICATOR);
         lv_obj_add_style(lv_slider_0, &style_disabled, LV_PART_INDICATOR | LV_STATE_DISABLED);
+        lv_obj_add_event_cb(lv_slider_0, on_slider_release, LV_EVENT_RELEASED, (void *)user_data);
         lv_obj_t * hs_text_small_0 = hs_text_small_create(lv_slider_0);
         lv_label_bind_text(hs_text_small_0, bind_value, "%d%%");
         lv_obj_set_align(hs_text_small_0, LV_ALIGN_LEFT_MID);

@@ -1,0 +1,37 @@
+<test>
+	<!-- Replace the "view" with an existing one. -->
+	<view extends="applications" />
+	<steps>
+		<!-- Define your test steps here. -->
+
+		<move_to x="233" y="200" />
+		<wait ms="1000" />
+
+		<press />
+		<wait ms="1000" />
+
+		<move_to x="233" y="100" />
+		<wait ms="100" />
+
+		<release />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+		<wait ms="50" />
+
+		<screenshot_compare path="applications.png" />
+	</steps>
+</test>

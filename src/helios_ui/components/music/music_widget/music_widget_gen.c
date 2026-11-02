@@ -90,7 +90,7 @@ lv_obj_t * music_widget_create(lv_obj_t * parent)
         lv_obj_remove_style_all(lv_obj_0);
         lv_obj_add_style(lv_obj_0, &style_base, 0);
         lv_obj_t * wd_image_0 = wd_image_create(lv_obj_0);
-        wd_image_set_src(wd_image_0, img_music_album);
+        lv_image_set_src(wd_image_0, img_music_album);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 190);
         wd_image_set_scale_2(wd_image_0, 120);
@@ -124,7 +124,7 @@ lv_obj_t * music_widget_create(lv_obj_t * parent)
         wd_image_set_size_1(wd_image_1, 55);
         wd_image_set_size_2(wd_image_1, 30);
         wd_image_bind_scale(wd_image_1, &sb_screen_size);
-        wd_image_bind_src(wd_image_1, &sb_music_icon);
+        lv_image_bind_src(wd_image_1, &sb_music_icon);
 
         lv_obj_t * hs_text_small_0 = hs_text_small_create(hs_column_0);
         lv_obj_set_width(hs_text_small_0, lv_pct(90));

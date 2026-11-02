@@ -292,7 +292,8 @@ static void render_one(lv_obj_t * list, const helios_mpesa_transaction_t * trans
                                         transaction->name,
                                         transaction->time,
                                         transaction->amount,
-                                        transaction->tx_in);
+                                        transaction->tx_in,
+                                        lv_color_hex(transaction->tx_in ? 0x237028 : 0xD82628));
     if (item) {
         lv_obj_add_event_cb(item, transaction_clicked_cb, LV_EVENT_CLICKED, (void *)transaction);
     }
@@ -330,7 +331,9 @@ static void open_details(const helios_mpesa_transaction_t * transaction,
                          transaction->account,
                          transaction->tx_id,
                          transaction->tx_in,
-                         transaction->fee);
+                         transaction->fee, 
+                         lv_color_hex(transaction->tx_in ? 0x237028 : 0xD82628),
+                         transaction->tx_in ? "Received" : "Sent");
 
     active_details_screen = screen;
     direct_return_screen = current;

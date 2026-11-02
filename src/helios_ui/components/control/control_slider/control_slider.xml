@@ -5,23 +5,92 @@
 		<preview width="200" style_bg_color="0x000" />
 	</previews>
 	<styles>
-		<style name="style_slider" width="235" height="110" radius="55" bg_color="0x282828" bg_opa="255" />
+		<style
+			name="style_slider"
+			width="235"
+			height="110"
+			bg_color="0x282828"
+			bg_opa="255"
+		/>
 		<style name="style_slider_360" width="190" height="90" />
 		<style name="style_slider_240" width="130" height="60" />
 		<style name="style_indicator" bg_color="0xffffff" bg_opa="255" />
 		<style name="style_disabled" bg_color="0x898989" />
+
+		<style
+			name="style_cap_left"
+			width="55"
+			height="110"
+			bg_image_src="img_slider_left_110"
+		/>
+		<style
+			name="style_cap_left_360"
+			width="45"
+			height="90"
+			bg_image_src="img_slider_left_90"
+		/>
+		<style
+			name="style_cap_left_240"
+			width="30"
+			height="60"
+			bg_image_src="img_slider_left_60"
+		/>
+		<style
+			name="style_cap_right"
+			width="55"
+			height="110"
+			bg_image_src="img_slider_right_110"
+			align="top_right"
+		/>
+		<style
+			name="style_cap_right_360"
+			width="45"
+			height="90"
+			bg_image_src="img_slider_right_90"
+		/>
+		<style
+			name="style_cap_right_240"
+			width="30"
+			height="60"
+			bg_image_src="img_slider_right_60"
+		/>
 	</styles>
 	<api>
 		<prop name="icon_left" type="image" default="icon_volume_high" />
 		<prop name="icon_right" type="image" default="icon_empty" />
+		<prop
+			name="user_data"
+			type="string"
+			default="none"
+			help="Identifier for the release event"
+		/>
 	</api>
-	<view extends="lv_slider" scrollable="false" event_bubble="true" scroll_on_focus="false">
+	<view
+		extends="lv_slider"
+		scrollable="false"
+		event_bubble="true"
+		scroll_on_focus="false"
+	>
 		<remove_style_all />
 		<style name="style_slider" />
 		<style name="style_indicator" selector="indicator" />
 		<style name="style_disabled" selector="disabled" />
-		<bind_style name="style_slider_360" subject="sb_screen_size" ref_value="1" />
-		<bind_style name="style_slider_240" subject="sb_screen_size" ref_value="2" />
+		<bind_style
+			name="style_slider_360"
+			subject="sb_screen_size"
+			ref_value="1"
+		/>
+		<bind_style
+			name="style_slider_240"
+			subject="sb_screen_size"
+			ref_value="2"
+		/>
+
+		<event_cb
+			callback="on_slider_release"
+			trigger="released"
+			user_data="$user_data"
+		/>
 
 		<wd_image
 			clickable="false"
@@ -58,5 +127,32 @@
 			style_image_recolor="0xffffff"
 			style_image_recolor_opa="255"
 		/>
+
+		<hs_container clickable="false">
+			<style name="style_cap_left" />
+			<bind_style
+				name="style_cap_left_360"
+				subject="sb_screen_size"
+				ref_value="1"
+			/>
+			<bind_style
+				name="style_cap_left_240"
+				subject="sb_screen_size"
+				ref_value="2"
+			/>
+		</hs_container>
+		<hs_container clickable="false">
+			<style name="style_cap_right" />
+			<bind_style
+				name="style_cap_right_360"
+				subject="sb_screen_size"
+				ref_value="1"
+			/>
+			<bind_style
+				name="style_cap_right_240"
+				subject="sb_screen_size"
+				ref_value="2"
+			/>
+		</hs_container>
 	</view>
 </component>

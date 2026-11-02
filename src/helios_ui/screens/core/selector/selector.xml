@@ -5,11 +5,14 @@
 	<view scrollbar_mode="off">
 		<style name="style_dark" />
 		<wd_panel name="selector_cont">
-			<wd_panel-container scroll_snap_x="center" style_flex_track_place="center">
+			<wd_panel-container
+				scroll_snap_x="center"
+				style_flex_track_place="center"
+			>
 				<style name="style_cont" />
-				<face_preview image="img_preview_466" />
-				<face_preview image="img_preview_466" />
-				<face_preview image="img_preview_466" />
+				<face_preview image="face_preview" />
+				<face_preview image="face_preview" />
+				<face_preview image="face_preview" />
 			</wd_panel-container>
 		</wd_panel>
 	</view>

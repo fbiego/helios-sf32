@@ -1,0 +1,113 @@
+<screen>
+	<styles>
+		<style name="style_base" width="100%" height="100%" />
+		<style name="style_list" bg_color="0x000000" bg_opa="255" />
+		<style name="style_cont" pad_ver="20" pad_row="10" pad_hor="24" />
+		<style name="style_cont_360" pad_ver="15" pad_row="8" pad_hor="18" />
+		<style name="style_cont_240" pad_ver="10" pad_row="4" pad_hor="12" />
+
+		<style name="style_pad_rect" pad_hor="20" />
+		<style name="style_pad_rect_360" pad_hor="16" />
+		<style name="style_pad_rect_240" pad_hor="12" />
+	</styles>
+
+	<view>
+		<style name="style_dark" />
+		<style name="style_base" />
+
+		<hs_container
+			width="100%"
+			height="100%"
+			style_layout="flex"
+			flex_flow="column"
+		>
+			<style name="style_cont" />
+			<bind_style
+				name="style_cont_360"
+				subject="sb_screen_size"
+				ref_value="1"
+			/>
+			<bind_style
+				name="style_cont_240"
+				subject="sb_screen_size"
+				ref_value="2"
+			/>
+
+			<bind_state_if_eq
+				subject="sb_screen_type"
+				ref_value="1"
+				state="user_2"
+			/>
+			<bind_style
+				name="style_pad_rect"
+				subject="sb_screen_size"
+				ref_value="0"
+				selector="user_2"
+			/>
+			<bind_style
+				name="style_pad_rect_360"
+				subject="sb_screen_size"
+				ref_value="1"
+				selector="user_2"
+			/>
+			<bind_style
+				name="style_pad_rect_240"
+				subject="sb_screen_size"
+				ref_value="2"
+				selector="user_2"
+			/>
+
+			<hs_column
+				style_flex_cross_place="center"
+				style_flex_track_place="center"
+				style_bg_color="0x000000"
+				style_bg_opa="200"
+				style_pad_top="14"
+				style_pad_bottom="10"
+			>
+				<style name="style_cont" />
+				<bind_style
+					name="style_cont_360"
+					subject="sb_screen_size"
+					ref_value="1"
+				/>
+				<bind_style
+					name="style_cont_240"
+					subject="sb_screen_size"
+					ref_value="2"
+				/>
+				<hs_title_pill tag="Diagnostics" width="content" />
+
+				<hs_card>
+					<hs_title label="BMI270" />
+					<hs_text_small bind_text="sb_diagnostic_bmi270" />
+				</hs_card>
+				<hs_card>
+					<hs_title label="Battery" />
+					<hs_text_small bind_text="sb_diagnostic_battery" />
+				</hs_card>
+				<hs_card>
+					<hs_title label="Haptics" />
+					<hs_row style_pad_column="10">
+						<hs_button_text text="Vibration">
+							<event_cb
+								callback="on_diagnostic_click"
+								trigger="clicked"
+								user_data="vibration"
+							/>
+						</hs_button_text>
+						<hs_button_text text="Buzzer">
+							<event_cb
+								callback="on_diagnostic_click"
+								trigger="clicked"
+								user_data="buzzer"
+							/>
+						</hs_button_text>
+					</hs_row>
+				</hs_card>
+				<hs_space />
+				<hs_space />
+			</hs_column>
+		</hs_container>
+	</view>
+</screen>

@@ -84,7 +84,7 @@ lv_obj_t * daily_forecast_create(lv_obj_t * parent)
         lv_obj_set_style_text_align(hs_text_normal_0, LV_TEXT_ALIGN_CENTER, 0);
 
         lv_obj_t * wd_image_0 = wd_image_create(lv_obj_0);
-        wd_image_set_src(wd_image_0, icon_weather);
+        lv_image_set_src(wd_image_0, icon_weather);
         wd_image_set_scale_0(wd_image_0, 120);
         wd_image_set_scale_1(wd_image_0, 110);
         wd_image_set_scale_2(wd_image_0, 70);

@@ -90,7 +90,7 @@ lv_obj_t * settings_battery_create(lv_obj_t * parent)
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_360, LV_STATE_USER_1, &sb_screen_size, 1);
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_240, LV_STATE_USER_1, &sb_screen_size, 2);
         lv_obj_t * hs_card_0 = hs_card_create(wd_list_container_0);
-        hs_bar_create(hs_card_0, "Brightness", "battery", &sb_battery_percent);
+        hs_bar_create(hs_card_0, "Brightness", "battery", &sb_battery_percent, lv_color_hex(0xffffff));
 
         hs_info_sb_create(hs_card_0, "Label", "voltage", &sb_battery_voltage, "%.2fV");
 

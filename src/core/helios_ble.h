@@ -17,5 +17,6 @@ int helios_ble_send(const uint8_t *data, uint16_t len);
 helios_ble_state_t helios_ble_get_state(void);
 uint16_t helios_ble_get_mtu(void);
 uint8_t helios_ble_is_connected(void);
+uint8_t helios_ble_can_notify(void);
 
 #endif

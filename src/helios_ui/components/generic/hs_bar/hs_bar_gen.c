@@ -30,7 +30,7 @@
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_obj_t * hs_bar_create(lv_obj_t * parent, const char * label, const char * tag, lv_subject_t * bind_value)
+lv_obj_t * hs_bar_create(lv_obj_t * parent, const char * label, const char * tag, lv_subject_t * bind_value, lv_color_t color)
 {
     LV_TRACE_OBJ_CREATE("begin");
 
@@ -71,7 +71,6 @@ lv_obj_t * hs_bar_create(lv_obj_t * parent, const char * label, const char * tag
         lv_style_set_height(&style_bar, 46);
         lv_style_set_text_color(&style_bar, lv_color_hex3(0xfff));
         lv_style_set_border_width(&style_bar, 1);
-        lv_style_set_border_color(&style_bar, lv_color_hex3(0xfff));
         lv_style_set_height(&style_bar_360, 36);
         lv_style_set_height(&style_bar_240, 24);
         lv_style_set_bg_color(&style_indicator, lv_color_hex(0xffffff));
@@ -99,6 +98,8 @@ lv_obj_t * hs_bar_create(lv_obj_t * parent, const char * label, const char * tag
 
         lv_obj_t * lv_bar_0 = lv_bar_create(lv_obj_0);
         lv_bar_bind_value(lv_bar_0, bind_value);
+        lv_obj_set_style_border_color(lv_bar_0, color, 0);
+        lv_obj_set_style_bg_color(lv_bar_0, color, 0);
         lv_obj_add_style(lv_bar_0, &style_bar, 0);
         lv_obj_bind_style(lv_bar_0, &style_bar_360, 0, &sb_screen_size, 1);
         lv_obj_bind_style(lv_bar_0, &style_bar_240, 0, &sb_screen_size, 2);

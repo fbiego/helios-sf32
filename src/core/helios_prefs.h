@@ -7,6 +7,7 @@
 
 bool helios_prefs_init(void);
 bool helios_prefs_ready(void);
+void helios_prefs_retry_save(void);
 
 bool helios_prefs_get_i32(const char *key, int32_t *value, int32_t fallback);
 bool helios_prefs_set_i32(const char *key, int32_t value);

@@ -56,7 +56,7 @@ lv_obj_t * control_panel_create(lv_obj_t * parent)
 
         lv_style_set_width(&style_control, lv_pct(100));
         lv_style_set_height(&style_control, lv_pct(100));
-        lv_style_set_bg_color(&style_control, lv_color_hex(0x0e0e0e));
+        lv_style_set_bg_color(&style_control, lv_color_hex(0x000000));
         lv_style_set_bg_opa(&style_control, 255);
         lv_style_set_pad_hor(&style_cont_360, 35);
         lv_style_set_pad_row(&style_cont_360, 10);
@@ -107,13 +107,13 @@ lv_obj_t * control_panel_create(lv_obj_t * parent)
         lv_obj_bind_style(wd_list_container_0, &style_cont_240, 0, &sb_screen_size, 2);
         lv_obj_bind_style(wd_list_container_0, &style_min_pad, 0, &sb_screen_type, 1);
         lv_obj_t * control_group_0 = control_group_create(wd_list_container_0);
-        lv_obj_t * control_slider_0 = control_slider_create(control_group_0, icon_brightness_full, icon_empty);
+        lv_obj_t * control_slider_0 = control_slider_create(control_group_0, icon_brightness_full, icon_empty, "brightness");
         lv_slider_bind_value(control_slider_0, &sb_screen_brightness);
 
         control_bar_create(control_group_0, &sb_battery_percent, "%d%%", icon_empty, false);
 
         lv_obj_t * control_group_1 = control_group_create(wd_list_container_0);
-        lv_obj_t * control_slider_1 = control_slider_create(control_group_1, icon_volume_high, icon_empty);
+        lv_obj_t * control_slider_1 = control_slider_create(control_group_1, icon_volume_high, icon_empty, "volume");
         lv_slider_bind_value(control_slider_1, &sb_sound_volume);
 
         lv_obj_t * control_switch_0 = control_switch_create(control_group_1, icon_connect);

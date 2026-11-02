@@ -11,7 +11,8 @@ The functions below acquire `lv_lock()` / `lv_unlock()` internally when they mut
 - Use `custom/watchfaces/watchface_manager.h` to register external watchfaces and restore the active watchface.
 - Do not keep returned item pointers outside the call site. The current storage is static RAM and may be changed by later API calls.
 - Data survives LVGL screen deletion because it is stored in `custom/apps`, not inside screen objects.
-- Data does not survive reboot unless your platform code reloads it into these APIs at startup.
+- Firmware restores weather, notifications and contacts through these APIs at startup;
+  see [file storage](../../../../docs/FILE_STORAGE.md) for persistence limits and schemas.
 
 ## Callbacks
 

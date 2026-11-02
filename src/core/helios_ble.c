@@ -333,6 +333,11 @@ uint8_t helios_ble_is_connected(void)
     return g_ble.connected;
 }
 
+uint8_t helios_ble_can_notify(void)
+{
+    return g_ble.connected && g_ble.svc_handle && (g_ble.tx_cccd & 0x0001);
+}
+
 static int helios_ble_event_handler(uint16_t event_id, uint8_t *data, uint16_t len, uint32_t context)
 {
     (void)len;

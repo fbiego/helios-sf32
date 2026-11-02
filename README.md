@@ -12,7 +12,24 @@ cd project
 scons --board=sf32lb52-lcd_n16r8 -j8
 ```
 
+For the custom 410x502 board:
+
+```bash
+scons --board=sf32lb52-lcd_custom_410x502 -j8
+```
+
+For the custom board wired to a 466x466 CO5300 AMOLED with CST820 touch:
+
+```bash
+scons --board=sf32lb52-lcd_custom_466x466_co5300 -j8
+```
+
 This project is intended to live outside the SiFli SDK tree. Keep the `project/` and `src/` folders together, and build from `project/` so the local SCons files can find the application sources.
+
+See [docs/BOARD_SETUP.md](docs/BOARD_SETUP.md) for the SDK board-package requirement, custom-board memory-map override, and board capability flags such as `HELIOS_HAS_MAX30100`.
+
+Persistent JSON settings, weather, notifications, contacts, QR links and hourly
+battery/step histories are documented in [docs/FILE_STORAGE.md](docs/FILE_STORAGE.md).
 
 ## What Is Included
 
@@ -30,6 +47,7 @@ This project is intended to live outside the SiFli SDK tree. Keep the `project/`
 - iOS ANCS app-id to notification-icon mapping for common apps such as WhatsApp, Telegram, Instagram, Gmail, Mail, Messages, Calendar, Snapchat, TikTok, and PayPal.
 - MAX30100 heart-rate and SpO2 sampling with finger detection and a configurable last-valid-value cache.
 - Basic RT-Thread access helpers for buttons, battery ADC, DFS storage, I2C, and SPI.
+- Board capability flags from `src/SConscript`, including `HELIOS_HAS_MAX30100` so custom boards can skip unpopulated hardware.
 - Weather, navigation, contacts, notification, music, health, battery, and connectivity updates are routed into the UI through subject setters or app-runtime queues.
 
 ### Helios UI
@@ -53,7 +71,7 @@ https://github.com/fbiego/helios_ui
 └── .codex/skills/SKILL.md         Codex project working notes
 ```
 
-`src/SConscript` pulls `src/main.c`, core sources, app integrations, Chronos core sources, the LVGL generated/custom source lists, custom app sources, and every `.c` file under `src/faces/`. Face folders also generate `ENABLE_FACE_<NAME>` defines for conditional registration.
+`src/SConscript` pulls `src/main.c`, core sources, app integrations, Chronos core sources, the LVGL generated/custom source lists, custom app sources, and enabled watchface folders under `src/faces/`. Each board's `src/boards/` header selects faces with literal `#define ENABLE_FACE_<NAME> 1` declarations; unselected faces and their assets are excluded.
 
 ## UI Runtime
 
@@ -71,7 +89,7 @@ Screens are created and deleted during navigation, so platform code should not k
 
 ## Watchfaces
 
-External watchfaces are stored in `src/faces/<face_name>/` with a `.c`/`.h` pair, `items.txt`, `watchface.png`, `preview.png`, and generated image assets. These sources are compiled automatically by `src/SConscript`.
+External watchfaces are stored in `src/faces/<face_name>/` with a `.c`/`.h` pair, `items.txt`, `watchface.png`, `preview.png`, and generated image assets. SCons compiles only faces explicitly enabled in the selected board header. The existing 390-resolution faces are enabled only for `sf32lb52-lcd_n16r8`; SFWatch currently uses the built-in default face.
 
 The active watchface is managed by the UI watchface manager in `src/helios_ui/custom/watchfaces/`. The home screen creates the active registered watchface, and a long press opens the selector screen.
 
@@ -81,9 +99,10 @@ The active watchface is managed by the UI watchface manager in `src/helios_ui/cu
 When adding a new watchface:
 
 1. Put its source and assets under `src/faces/<stable_tag>/`.
-2. Register it through `HELIOS_REGISTER_WATCHFACE(...)` or `helios_watchfaces_register(...)`.
-3. Use a stable tag if platform storage will persist the selected watchface.
-4. Keep preview images optional for firmware builds unless the selector needs them in flash.
+2. Enable it with `#define ENABLE_FACE_<STABLE_TAG> 1` in each compatible board's `src/boards/` header.
+3. Register it through `HELIOS_REGISTER_WATCHFACE(...)` or `helios_watchfaces_register(...)`.
+4. Use a stable tag if platform storage will persist the selected watchface.
+5. Keep preview images optional for firmware builds unless the selector needs them in flash.
 
 See `src/helios_ui/custom/watchfaces/README.md` for the full registry API.
 

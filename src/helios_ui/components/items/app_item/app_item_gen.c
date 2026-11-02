@@ -135,7 +135,7 @@ lv_obj_t * app_item_create(lv_obj_t * parent, const void * icon, const char * ap
         lv_obj_bind_style(lv_obj_0, &style_grid_mode_240, LV_STATE_USER_1, &sb_screen_size, 2);
         lv_obj_t * wd_image_0 = wd_image_create(lv_obj_0);
         lv_obj_set_flag(wd_image_0, LV_OBJ_FLAG_CLICKABLE, false);
-        wd_image_set_src(wd_image_0, icon);
+        lv_image_set_src(wd_image_0, icon);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 190);
         wd_image_set_scale_2(wd_image_0, 120);

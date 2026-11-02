@@ -579,10 +579,28 @@ void helios_subject_set_mpesa_balance_text(const char * value);
  */
 void helios_subject_set_mpesa_recent_text(const char * value);
 
+/**
+ * BMI270 data set function.
+ * @param value    New value
+ */
+void helios_subject_set_diagnostic_bmi270(const char * value);
+
+/**
+ * Battery data set function.
+ * @param value    New value
+ */
+void helios_subject_set_diagnostic_battery(const char * value);
+
 
 /**********************
  * GET FUNCTIONS
  **********************/
+
+/**
+ * Raise to wake get function.
+ * @return         Current value
+ */
+int32_t helios_subject_get_screen_rtw(void);
 
 
 /**********************

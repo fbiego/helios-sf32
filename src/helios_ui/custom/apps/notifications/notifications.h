@@ -68,6 +68,7 @@ bool helios_notifications_add(const void * icon,
                               const char * message);
 
 void helios_notifications_clear(void);
+bool helios_notifications_set_read(uint32_t id, bool read);
 
 bool helios_notifications_observer_add(helios_notifications_observer_cb_t cb, void * user_data);
 void helios_notifications_observer_remove(helios_notifications_observer_cb_t cb, void * user_data);

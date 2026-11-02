@@ -126,6 +126,8 @@ lv_obj_t * applications_create(void)
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_240, LV_STATE_USER_2, &sb_screen_size, 2);
         app_item_create(wd_list_container_0, icon_contacts, "Contacts", "contacts");
 
+        app_item_create(wd_list_container_0, icon_diagnostics, "Diagnostics", "Diagnostics");
+
         app_item_create(wd_list_container_0, icon_folder, "Files", "files");
 
         app_item_create(wd_list_container_0, icon_running, "Fitness", "fitness");

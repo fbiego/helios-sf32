@@ -16,10 +16,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 #include "../../helios_ui_gen.h"
@@ -44,21 +42,21 @@ extern "C" {
 lv_obj_t * wd_dropdown_create(lv_obj_t * parent);
 /**
  * wd_dropdown options
- * @param obj   pointer to a wd_dropdown
+ * @param wd_dropdown   pointer to a wd_dropdown
  * @param options  options
  */
 void wd_dropdown_set_options(lv_obj_t * wd_dropdown, const char * options);
 
 /**
  * The current selected item, -1 for none
- * @param obj   pointer to a wd_dropdown
+ * @param wd_dropdown   pointer to a wd_dropdown
  * @param selected  The current selected item, -1 for none
  */
 void wd_dropdown_set_selected(lv_obj_t * wd_dropdown, int32_t selected);
 
 /**
  * The subject to bind the selected item
- * @param obj   pointer to a wd_dropdown
+ * @param wd_dropdown   pointer to a wd_dropdown
  * @param bind_value  The subject to bind the selected item
  */
 void wd_dropdown_bind_value(lv_obj_t * wd_dropdown, lv_subject_t * bind_value);

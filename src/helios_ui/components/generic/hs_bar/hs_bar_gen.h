@@ -15,10 +15,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 /*********************
@@ -33,7 +31,7 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 
-lv_obj_t * hs_bar_create(lv_obj_t * parent, const char * label, const char * tag, lv_subject_t * bind_value);
+lv_obj_t * hs_bar_create(lv_obj_t * parent, const char * label, const char * tag, lv_subject_t * bind_value, lv_color_t color);
 
 /**********************
  *      MACROS

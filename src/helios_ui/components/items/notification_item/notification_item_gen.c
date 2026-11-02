@@ -129,7 +129,7 @@ lv_obj_t * notification_item_create(lv_obj_t * parent, const void * icon, const 
         lv_obj_set_flag(hs_container_0, LV_OBJ_FLAG_CLICKABLE, false);
         lv_obj_add_style(hs_container_0, &style_title_cont, 0);
         lv_obj_t * wd_image_0 = wd_image_create(hs_container_0);
-        wd_image_set_src(wd_image_0, icon);
+        lv_image_set_src(wd_image_0, icon);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 200);
         wd_image_set_scale_2(wd_image_0, 140);

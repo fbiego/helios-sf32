@@ -63,7 +63,7 @@ lv_obj_t * hs_text_icon_normal_create(lv_obj_t * parent, const void * icon, cons
         lv_obj_remove_style_all(lv_obj_0);
         lv_obj_add_style(lv_obj_0, &style_base, 0);
         lv_obj_t * wd_image_0 = wd_image_create(lv_obj_0);
-        wd_image_set_src(wd_image_0, icon);
+        lv_image_set_src(wd_image_0, icon);
         wd_image_set_scale_1(wd_image_0, 240);
         wd_image_set_scale_2(wd_image_0, 160);
         wd_image_set_size_1(wd_image_0, 30);

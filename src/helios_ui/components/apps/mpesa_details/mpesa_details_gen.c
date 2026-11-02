@@ -30,7 +30,7 @@
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_obj_t * mpesa_details_create(lv_obj_t * parent, const char * tx_name, const char * tx_time, const char * tx_amount, const char * tx_account, const char * tx_id, bool tx_in, const char * tx_fee)
+lv_obj_t * mpesa_details_create(lv_obj_t * parent, const char * tx_name, const char * tx_time, const char * tx_amount, const char * tx_account, const char * tx_id, bool tx_in, const char * tx_fee, lv_color_t tx_color, const char * tx_type)
 {
     LV_TRACE_OBJ_CREATE("begin");
 
@@ -78,8 +78,6 @@ lv_obj_t * mpesa_details_create(lv_obj_t * parent, const char * tx_name, const c
 
     #if HELIOS_UI_CHECK_COMPILE_TARGET(HELIOS_UI_TARGET_ALL)
     if (helios_ui_check_target(HELIOS_UI_TARGET_ALL)) {
-        char eval_buf_1[LV_XML_EVAL_STRING_BUF_SIZE];
-
         lv_obj_t * hs_column_0 = hs_column_create(parent);
         lv_obj_set_name_static(hs_column_0, "mpesa_details_#");
         lv_obj_set_flag(hs_column_0, LV_OBJ_FLAG_SCROLLABLE, false);
@@ -93,19 +91,19 @@ lv_obj_t * mpesa_details_create(lv_obj_t * parent, const char * tx_name, const c
         lv_obj_bind_style(hs_column_1, &style_pad_row_360, 0, &sb_screen_size, 1);
         lv_obj_bind_style(hs_column_1, &style_pad_row_240, 0, &sb_screen_size, 2);
         lv_obj_t * wd_image_0 = wd_image_create(hs_column_1);
-        wd_image_set_src(wd_image_0, icon_mpesa_watch);
+        lv_image_set_src(wd_image_0, icon_mpesa_watch);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 190);
         wd_image_set_scale_2(wd_image_0, 120);
         wd_image_set_size_1(wd_image_0, 55);
         wd_image_set_size_2(wd_image_0, 30);
         wd_image_bind_scale(wd_image_0, &sb_screen_size);
-        lv_obj_set_style_image_recolor(wd_image_0, tx_in ? lv_color_hex(0x237028) : lv_color_hex(0xD82628), 0);
+        lv_obj_set_style_image_recolor(wd_image_0, tx_color, 0);
         lv_obj_set_style_image_recolor_opa(wd_image_0, 255, 0);
 
         lv_obj_t * hs_text_small_0 = hs_text_small_create(hs_column_1);
-        lv_label_set_text(hs_text_small_0, tx_in ? "Received" : "Sent");
-        lv_obj_set_style_text_color(hs_text_small_0, tx_in ? lv_color_hex(0x237028) : lv_color_hex(0xD82628), 0);
+        lv_label_set_text(hs_text_small_0, tx_type);
+        lv_obj_set_style_text_color(hs_text_small_0, tx_color, 0);
         lv_obj_set_style_text_opa(hs_text_small_0, 255, 0);
 
         lv_obj_t * hs_card_0 = hs_card_create(hs_column_0);
@@ -137,9 +135,8 @@ lv_obj_t * mpesa_details_create(lv_obj_t * parent, const char * tx_name, const c
         lv_obj_set_style_text_color(hs_text_small_3, lv_color_hex(0xA2A2A2), 0);
 
         lv_obj_t * hs_text_small_4 = hs_text_small_create(hs_column_2);
-        lv_obj_set_flag(hs_text_small_4, LV_OBJ_FLAG_HIDDEN, tx_in);
-        lv_snprintf(eval_buf_1, sizeof(eval_buf_1), "%s%s", "Fee: ", tx_fee);
-        lv_label_set_text(hs_text_small_4, eval_buf_1);
+        lv_obj_set_flag(hs_text_small_4, LV_OBJ_FLAG_HIDDEN, false);
+        lv_label_set_text(hs_text_small_4, tx_fee);
         lv_obj_set_style_text_color(hs_text_small_4, lv_color_hex(0xA2A2A2), 0);
 
         the_root = hs_column_0;

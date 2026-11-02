@@ -121,7 +121,7 @@ lv_obj_t * sc_mpesa_create(void)
         lv_obj_set_style_text_color(hs_text_normal_0, lv_color_hex(0x2d942f), 0);
 
         lv_obj_t * wd_image_0 = wd_image_create(hs_row_0);
-        wd_image_set_src(wd_image_0, icon_mpesa_watch_32);
+        lv_image_set_src(wd_image_0, icon_mpesa_watch_32);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 180);
         wd_image_set_scale_2(wd_image_0, 150);
@@ -159,7 +159,7 @@ lv_obj_t * sc_mpesa_create(void)
         lv_obj_bind_flag_if_eq(hs_text_normal_3, &sb_mpesa_balance_hidden, LV_OBJ_FLAG_HIDDEN, 0);
 
         lv_obj_t * wd_image_1 = wd_image_create(hs_row_1);
-        wd_image_bind_src(wd_image_1, &sb_mpesa_hidden_icon);
+        lv_image_bind_src(wd_image_1, &sb_mpesa_hidden_icon);
         wd_image_set_scale_0(wd_image_1, 256);
         wd_image_set_scale_1(wd_image_1, 180);
         wd_image_set_scale_2(wd_image_1, 160);

@@ -16,10 +16,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 #include "../../helios_ui_gen.h"
@@ -44,14 +42,14 @@ extern "C" {
 lv_obj_t * wd_panel_create(lv_obj_t * parent);
 /**
  * wd_panel container
- * @param obj   pointer to a wd_panel
+ * @param wd_panel   pointer to a wd_panel
 
  */
 lv_obj_t * wd_panel_get_container(lv_obj_t * wd_panel);
 
 /**
  * wd_panel dot
- * @param obj   pointer to a wd_panel
+ * @param wd_panel   pointer to a wd_panel
 
  */
 lv_obj_t * wd_panel_get_dot(lv_obj_t * wd_panel);

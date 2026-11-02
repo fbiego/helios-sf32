@@ -1,6 +1,6 @@
 <test>
-	<view extends="home" />
+	<view extends="music" />
 	<steps>
-		<screenshot_compare path="watchface_410.png" />
+		<screenshot_compare path="music.png" />
 	</steps>
 </test>

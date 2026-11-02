@@ -16,10 +16,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 #include "../../helios_ui_gen.h"
@@ -44,21 +42,21 @@ extern "C" {
 lv_obj_t * wf_item_create(lv_obj_t * parent);
 /**
  * The array containing the image digits
- * @param obj   pointer to a wf_item
+ * @param wf_item   pointer to a wf_item
  * @param image_array  The array containing the image digits
  */
 void wf_item_set_image_array(lv_obj_t * wf_item, const void * image_array[], uint32_t image_array_count);
 
 /**
  * The watchface subject to attach the item
- * @param obj   pointer to a wf_item
+ * @param wf_item   pointer to a wf_item
  * @param bind_subject  The watchface subject to attach the item
  */
 void wf_item_bind_subject(lv_obj_t * wf_item, lv_subject_t * bind_subject);
 
 /**
  * The place value to show on this item
- * @param obj   pointer to a wf_item
+ * @param wf_item   pointer to a wf_item
  * @param place_value  The place value to show on this item
  */
 void wf_item_set_place_value(lv_obj_t * wf_item, int32_t place_value);

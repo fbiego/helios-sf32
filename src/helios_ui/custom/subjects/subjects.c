@@ -686,9 +686,28 @@ void helios_subject_set_mpesa_recent_text(const char * value)
     lv_unlock();
 }
 
+void helios_subject_set_diagnostic_bmi270(const char * value)
+{
+    lv_lock();
+    lv_subject_copy_string(&sb_diagnostic_bmi270, value);
+    lv_unlock();
+}
+
+void helios_subject_set_diagnostic_battery(const char * value)
+{
+    lv_lock();
+    lv_subject_copy_string(&sb_diagnostic_battery, value);
+    lv_unlock();
+}
+
 /**********************
  * GET FUNCTIONS
  **********************/
+
+int32_t helios_subject_get_screen_rtw(void)
+{
+    return lv_subject_get_int(&sb_screen_rtw);
+}
 
 /**********************
  * WEAK FUNCTIONS

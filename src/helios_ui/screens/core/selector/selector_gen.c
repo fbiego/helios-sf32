@@ -65,11 +65,11 @@ lv_obj_t * selector_create(void)
         lv_obj_set_scroll_snap_x(wd_panel_container_0, LV_SCROLL_SNAP_CENTER);
         lv_obj_set_style_flex_track_place(wd_panel_container_0, LV_FLEX_ALIGN_CENTER, 0);
         lv_obj_add_style(wd_panel_container_0, &style_cont, 0);
-        face_preview_create(wd_panel_container_0, img_preview_466, "Default");
+        face_preview_create(wd_panel_container_0, face_preview, "Default");
 
-        face_preview_create(wd_panel_container_0, img_preview_466, "Default");
+        face_preview_create(wd_panel_container_0, face_preview, "Default");
 
-        face_preview_create(wd_panel_container_0, img_preview_466, "Default");
+        face_preview_create(wd_panel_container_0, face_preview, "Default");
 
         the_root = lv_obj_0;
     }

@@ -30,6 +30,11 @@ extern bool notifications_to_apps;
 **********************/
 static lv_obj_t * notifications_app_create(void);
 
+void __attribute__((weak)) helios_diagnostic_screen_event(lv_event_t *e)
+{
+    (void)e;
+}
+
 /**********************
 *   GLOBAL FUNCTIONS
 **********************/
@@ -50,6 +55,13 @@ void helios_apps_init_all(void)
                                     screen_contacts,
                                     LV_SCR_LOAD_ANIM_OVER_LEFT,
                                     HELIOS_SCREEN_TRANSITION_APP_OPEN_LEFT);
+    helios_apps_register_simple_events_transition(icon_diagnostics,
+                                           "Diagnostics",
+                                           "Diagnostics",
+                                           diagnostics_create,
+                                           LV_SCR_LOAD_ANIM_OVER_LEFT,
+                                           helios_diagnostic_screen_event,
+                                           HELIOS_SCREEN_TRANSITION_APP_OPEN_LEFT);
     helios_apps_register(icon_folder, "Files", "files", NULL, LV_SCR_LOAD_ANIM_OVER_LEFT);
     helios_apps_register(icon_running, "Fitness", "fitness", NULL, LV_SCR_LOAD_ANIM_OVER_LEFT);
     // helios_apps_register(icon_measurement, "Health", "health", NULL, LV_SCR_LOAD_ANIM_OVER_LEFT);

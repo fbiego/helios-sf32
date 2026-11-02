@@ -1,8 +1,23 @@
 <component>
 	<previews>
-		<preview width="466" height="466" style_radius="233" style_bg_color="0x000000" />
-		<preview width="360" height="360" style_radius="180" style_bg_color="0x000" />
-		<preview width="240" height="240" style_radius="120" style_bg_color="0x000" />
+		<preview
+			width="466"
+			height="466"
+			style_radius="233"
+			style_bg_color="0x000000"
+		/>
+		<preview
+			width="360"
+			height="360"
+			style_radius="180"
+			style_bg_color="0x000"
+		/>
+		<preview
+			width="240"
+			height="240"
+			style_radius="120"
+			style_bg_color="0x000"
+		/>
 	</previews>
 
 	<api>
@@ -51,13 +66,40 @@
 
 		<hs_container>
 			<style name="style_cont" />
-			<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
-			<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+			<bind_style
+				name="style_cont_360"
+				subject="sb_screen_size"
+				ref_value="1"
+			/>
+			<bind_style
+				name="style_cont_240"
+				subject="sb_screen_size"
+				ref_value="2"
+			/>
 
-			<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_2" />
-			<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_2" />
-			<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_2" />
-			<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_2" />
+			<bind_state_if_eq
+				subject="sb_screen_type"
+				ref_value="1"
+				state="user_2"
+			/>
+			<bind_style
+				name="style_pad_rect"
+				subject="sb_screen_size"
+				ref_value="0"
+				selector="user_2"
+			/>
+			<bind_style
+				name="style_pad_rect_360"
+				subject="sb_screen_size"
+				ref_value="1"
+				selector="user_2"
+			/>
+			<bind_style
+				name="style_pad_rect_240"
+				subject="sb_screen_size"
+				ref_value="2"
+				selector="user_2"
+			/>
 
 			<hs_column
 				style_flex_cross_place="center"
@@ -67,7 +109,11 @@
 				style_bg_opa="200"
 				style_pad_bottom="10"
 			>
-				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				<bind_flag_if_eq
+					subject="sb_system_connection"
+					flag="hidden"
+					ref_value="0"
+				/>
 				<wd_image
 					scale_0="256"
 					scale_1="190"
@@ -96,25 +142,49 @@
 				style_bg_opa="200"
 				style_pad_bottom="10"
 			>
-				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="1" />
+				<bind_flag_if_eq
+					subject="sb_system_connection"
+					flag="hidden"
+					ref_value="1"
+				/>
 
-				<hs_text_normal width="90%" translation_tag="disconnected" style_text_align="center" />
+				<hs_text_normal
+					width="90%"
+					translation_tag="disconnected"
+					style_text_align="center"
+				/>
 			</hs_column>
 
 			<hs_text_small bind_text="sb_time_string">
-				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="1" />
+				<bind_flag_if_eq
+					subject="sb_system_connection"
+					flag="hidden"
+					ref_value="1"
+				/>
 			</hs_text_small>
 
 			<hs_row width="90%" style_flex_cross_place="center">
-				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				<bind_flag_if_eq
+					subject="sb_system_connection"
+					flag="hidden"
+					ref_value="0"
+				/>
 				<hs_button_icon flex_grow="1" icon="icon_vol_down_32">
-					<subject_increment_event subject="sb_sound_volume" trigger="clicked" step="-10" />
+					<subject_increment_event
+						subject="sb_sound_volume"
+						trigger="clicked"
+						step="-10"
+					/>
 				</hs_button_icon>
 				<hs_container flex_grow="3">
 					<simple_bar bind_value="sb_sound_volume" />
 				</hs_container>
 				<hs_button_icon flex_grow="1" icon="icon_vol_up_32">
-					<subject_increment_event subject="sb_sound_volume" trigger="clicked" step="10" />
+					<subject_increment_event
+						subject="sb_sound_volume"
+						trigger="clicked"
+						step="10"
+					/>
 				</hs_button_icon>
 			</hs_row>
 
@@ -126,7 +196,11 @@
 				style_bg_color="0x000000"
 				style_bg_opa="200"
 			>
-				<bind_flag_if_eq subject="sb_system_connection" flag="hidden" ref_value="0" />
+				<bind_flag_if_eq
+					subject="sb_system_connection"
+					flag="hidden"
+					ref_value="0"
+				/>
 				<hs_text_normal
 					width="90%"
 					bind_text="sb_music_track"
@@ -141,19 +215,42 @@
 				/>
 				<hs_row style_flex_main_place="center" style_pad_column="10">
 					<hs_container flex_grow="1">
-						<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+						<bind_flag_if_eq
+							flag="hidden"
+							subject="sb_screen_type"
+							ref_value="1"
+						/>
 					</hs_container>
 					<hs_button_icon flex_grow="1" icon="icon_music_previous_32">
-						<event_cb callback="on_music_control_cb" trigger="clicked" user_data="previous" />
+						<event_cb
+							callback="on_music_control_cb"
+							trigger="clicked"
+							user_data="previous"
+						/>
 					</hs_button_icon>
-					<hs_button_icon flex_grow="1" bind_icon="sb_music_state_icon">
-						<event_cb callback="on_music_control_cb" trigger="clicked" user_data="toggle" />
+					<hs_button_icon
+						flex_grow="1"
+						bind_icon="sb_music_state_icon"
+					>
+						<event_cb
+							callback="on_music_control_cb"
+							trigger="clicked"
+							user_data="toggle"
+						/>
 					</hs_button_icon>
 					<hs_button_icon flex_grow="1" icon="icon_music_next_32">
-						<event_cb callback="on_music_control_cb" trigger="clicked" user_data="next" />
+						<event_cb
+							callback="on_music_control_cb"
+							trigger="clicked"
+							user_data="next"
+						/>
 					</hs_button_icon>
 					<hs_container flex_grow="1">
-						<bind_flag_if_eq flag="hidden" subject="sb_screen_type" ref_value="1" />
+						<bind_flag_if_eq
+							flag="hidden"
+							subject="sb_screen_type"
+							ref_value="1"
+						/>
 					</hs_container>
 				</hs_row>
 				<hs_text_small bind_text="sb_time_string" />

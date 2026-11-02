@@ -30,7 +30,7 @@
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, const void * icon_right)
+lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, const void * icon_right, const char * user_data)
 {
     LV_TRACE_OBJ_CREATE("begin");
 
@@ -39,6 +39,12 @@ lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, cons
     static lv_style_t style_slider_240;
     static lv_style_t style_indicator;
     static lv_style_t style_disabled;
+    static lv_style_t style_cap_left;
+    static lv_style_t style_cap_left_360;
+    static lv_style_t style_cap_left_240;
+    static lv_style_t style_cap_right;
+    static lv_style_t style_cap_right_360;
+    static lv_style_t style_cap_right_240;
 
     static bool style_inited = false;
 
@@ -49,10 +55,15 @@ lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, cons
         lv_style_init(&style_slider_240);
         lv_style_init(&style_indicator);
         lv_style_init(&style_disabled);
+        lv_style_init(&style_cap_left);
+        lv_style_init(&style_cap_left_360);
+        lv_style_init(&style_cap_left_240);
+        lv_style_init(&style_cap_right);
+        lv_style_init(&style_cap_right_360);
+        lv_style_init(&style_cap_right_240);
 
         lv_style_set_width(&style_slider, 235);
         lv_style_set_height(&style_slider, 110);
-        lv_style_set_radius(&style_slider, 55);
         lv_style_set_bg_color(&style_slider, lv_color_hex(0x282828));
         lv_style_set_bg_opa(&style_slider, 255);
         lv_style_set_width(&style_slider_360, 190);
@@ -62,6 +73,25 @@ lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, cons
         lv_style_set_bg_color(&style_indicator, lv_color_hex(0xffffff));
         lv_style_set_bg_opa(&style_indicator, 255);
         lv_style_set_bg_color(&style_disabled, lv_color_hex(0x898989));
+        lv_style_set_width(&style_cap_left, 55);
+        lv_style_set_height(&style_cap_left, 110);
+        lv_style_set_bg_image_src(&style_cap_left, img_slider_left_110);
+        lv_style_set_width(&style_cap_left_360, 45);
+        lv_style_set_height(&style_cap_left_360, 90);
+        lv_style_set_bg_image_src(&style_cap_left_360, img_slider_left_90);
+        lv_style_set_width(&style_cap_left_240, 30);
+        lv_style_set_height(&style_cap_left_240, 60);
+        lv_style_set_bg_image_src(&style_cap_left_240, img_slider_left_60);
+        lv_style_set_width(&style_cap_right, 55);
+        lv_style_set_height(&style_cap_right, 110);
+        lv_style_set_bg_image_src(&style_cap_right, img_slider_right_110);
+        lv_style_set_align(&style_cap_right, LV_ALIGN_TOP_RIGHT);
+        lv_style_set_width(&style_cap_right_360, 45);
+        lv_style_set_height(&style_cap_right_360, 90);
+        lv_style_set_bg_image_src(&style_cap_right_360, img_slider_right_90);
+        lv_style_set_width(&style_cap_right_240, 30);
+        lv_style_set_height(&style_cap_right_240, 60);
+        lv_style_set_bg_image_src(&style_cap_right_240, img_slider_right_60);
 
         style_inited = true;
     }
@@ -83,10 +113,11 @@ lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, cons
         lv_obj_add_style(lv_slider_0, &style_disabled, LV_STATE_DISABLED);
         lv_obj_bind_style(lv_slider_0, &style_slider_360, 0, &sb_screen_size, 1);
         lv_obj_bind_style(lv_slider_0, &style_slider_240, 0, &sb_screen_size, 2);
+        lv_obj_add_event_cb(lv_slider_0, on_slider_release, LV_EVENT_RELEASED, (void *)user_data);
         lv_obj_t * wd_image_0 = wd_image_create(lv_slider_0);
         lv_obj_set_flag(wd_image_0, LV_OBJ_FLAG_CLICKABLE, false);
         lv_obj_set_align(wd_image_0, LV_ALIGN_LEFT_MID);
-        wd_image_set_src(wd_image_0, icon_left);
+        lv_image_set_src(wd_image_0, icon_left);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 190);
         wd_image_set_scale_2(wd_image_0, 130);
@@ -103,7 +134,7 @@ lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, cons
         lv_obj_t * wd_image_1 = wd_image_create(lv_slider_0);
         lv_obj_set_flag(wd_image_1, LV_OBJ_FLAG_CLICKABLE, false);
         lv_obj_set_align(wd_image_1, LV_ALIGN_RIGHT_MID);
-        wd_image_set_src(wd_image_1, icon_right);
+        lv_image_set_src(wd_image_1, icon_right);
         wd_image_set_scale_0(wd_image_1, 256);
         wd_image_set_scale_1(wd_image_1, 190);
         wd_image_set_scale_2(wd_image_1, 130);
@@ -116,6 +147,18 @@ lv_obj_t * control_slider_create(lv_obj_t * parent, const void * icon_left, cons
         lv_obj_set_style_blend_mode(wd_image_1, LV_BLEND_MODE_DIFFERENCE, 0);
         lv_obj_set_style_image_recolor(wd_image_1, lv_color_hex(0xffffff), 0);
         lv_obj_set_style_image_recolor_opa(wd_image_1, 255, 0);
+
+        lv_obj_t * hs_container_0 = hs_container_create(lv_slider_0);
+        lv_obj_set_flag(hs_container_0, LV_OBJ_FLAG_CLICKABLE, false);
+        lv_obj_add_style(hs_container_0, &style_cap_left, 0);
+        lv_obj_bind_style(hs_container_0, &style_cap_left_360, 0, &sb_screen_size, 1);
+        lv_obj_bind_style(hs_container_0, &style_cap_left_240, 0, &sb_screen_size, 2);
+
+        lv_obj_t * hs_container_1 = hs_container_create(lv_slider_0);
+        lv_obj_set_flag(hs_container_1, LV_OBJ_FLAG_CLICKABLE, false);
+        lv_obj_add_style(hs_container_1, &style_cap_right, 0);
+        lv_obj_bind_style(hs_container_1, &style_cap_right_360, 0, &sb_screen_size, 1);
+        lv_obj_bind_style(hs_container_1, &style_cap_right_240, 0, &sb_screen_size, 2);
 
         the_root = lv_slider_0;
     }

@@ -21,23 +21,74 @@ excluded_ui_sources = {
     'watchface_previews.c',
 }
 
+def current_board_name():
+    board = getattr(rtconfig, 'BOARD', None)
+    if board:
+        return board
+
+    output_dir = getattr(rtconfig, 'OUTPUT_DIR', '')
+    match = re.search(r'build_(.+?)_hcpu', output_dir)
+    if match:
+        return match.group(1)
+
+    return ''
+
+def helios_board_flags(board):
+    normalized = re.sub(r'[^0-9A-Za-z_]', '_', board).upper()
+    flags = []
+
+    if normalized:
+        flags.append('-DHELIOS_BOARD_%s=1' % normalized)
+        flags.append('-DHELIOS_BOARD_NAME=\\"%s\\"' % board)
+
+    return flags
+
 src.extend([
     source for source in Glob(os.path.join(chronos_core_dir, '*.c'))
     if os.path.basename(str(source)) != 'watch_example.c'
 ])
 src.extend(Glob(os.path.join(core_dir, '*.c')))
+# Sensor sources are omitted entirely when the selected board lacks the device.
+board = current_board_name()
+if board == 'sf32lb52-lcd_custom_466x466_co5300':
+    excluded_ui_sources.discard('img_preview_466_data.c')
+    excluded_ui_sources.add('img_preview_390_data.c')
+
+board_profiles = {
+    'sf32lb52-lcd_n16r8': 'sf32lb52_lcd_n16r8.h',
+    'sf32lb52-lcd_custom_410x502': 'sf32lb52_lcd_custom_410x502.h',
+    'sf32lb52-lcd_custom_466x466_co5300': 'sfwatch_v1_0.h',
+}
+profile_text = ''
+if board in board_profiles:
+    with open(os.path.join(cwd, 'boards', board_profiles[board])) as profile:
+        profile_text = profile.read()
+
+def board_has(capability):
+    return re.search(r'^\s*#define\s+' + capability + r'\s+1\b', profile_text, re.MULTILINE) is not None
+
+if not board_has('HELIOS_HAS_MAX30100'):
+    src = [source for source in src if os.path.basename(str(source)) != 'helios_max30100.c']
+if board_has('HELIOS_HAS_BMI270'):
+    src.extend(Glob(os.path.join(cwd, 'drivers', 'bmi270', '*.c')))
+else:
+    src = [source for source in src if os.path.basename(str(source)) != 'helios_bmi270.c']
 face_src = []
 face_defines = set()
 if os.path.isdir(faces_dir):
-    for root, dirs, files in os.walk(faces_dir):
-        dirs[:] = [directory for directory in dirs if not directory.startswith('.')]
-        rel_root = os.path.relpath(root, faces_dir)
-        face_name = rel_root.split(os.sep, 1)[0]
-        if face_name != '.':
-            face_defines.add('ENABLE_FACE_' + re.sub(r'[^0-9A-Za-z_]', '_', face_name).upper())
-        for filename in files:
-            if filename.endswith('.c'):
-                face_src.append(File(os.path.join(root, filename)))
+    for face_name in sorted(os.listdir(faces_dir)):
+        face_dir = os.path.join(faces_dir, face_name)
+        if face_name.startswith('.') or not os.path.isdir(face_dir):
+            continue
+        define = 'ENABLE_FACE_' + re.sub(r'[^0-9A-Za-z_]', '_', face_name).upper()
+        if not board_has(define):
+            continue
+        face_defines.add(define)
+        for root, dirs, files in os.walk(face_dir):
+            dirs[:] = [directory for directory in dirs if not directory.startswith('.')]
+            for filename in files:
+                if filename.endswith('.c'):
+                    face_src.append(File(os.path.join(root, filename)))
 
 def append_cmake_sources(path, sources):
     if not os.path.exists(path):
@@ -76,13 +127,17 @@ append_tree_sources(apps_dir, src)
 append_tree_sources(os.path.join(ui_dir, 'custom', 'apps', 'apps'), src)
 
 CPPPATH = [cwd, core_dir, apps_dir, ui_dir, chronos_core_dir, faces_dir, str(Dir('#'))]
+helios_flags = '-DLV_LVGL_H_INCLUDE_SIMPLE'
+board_flags = helios_board_flags(current_board_name())
+if board_flags:
+    helios_flags += ' ' + ' '.join(board_flags)
 
-group = [DefineGroup('helios_app', src, depend=[''], CPPPATH=CPPPATH, LOCAL_CCFLAGS='-DLV_LVGL_H_INCLUDE_SIMPLE')]
+group = [DefineGroup('helios_app', src, depend=[''], CPPPATH=CPPPATH, LOCAL_CCFLAGS=helios_flags)]
 
 if face_src:
     face_flags = '-DLV_LVGL_H_INCLUDE_SIMPLE'
     if face_defines:
-        face_flags += ' ' + ' '.join('-D' + define for define in sorted(face_defines))
+        face_flags += ' ' + ' '.join('-D' + define + '=1' for define in sorted(face_defines))
     group.append(DefineGroup('helios_faces',
                              face_src,
                              depend=[''],

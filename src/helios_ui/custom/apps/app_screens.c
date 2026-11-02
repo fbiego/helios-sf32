@@ -21,13 +21,22 @@
 /**********************
  *      TYPEDEFS
  **********************/
+typedef enum {
+    CONTROL_TOUCH_IDLE,
+    CONTROL_TOUCH_PENDING,
+    CONTROL_TOUCH_NAVIGATION,
+    CONTROL_TOUCH_DRAGGING,
+} control_touch_t;
+
 typedef struct {
+    lv_obj_t * home;
     lv_obj_t * obj;
     lv_obj_t * drag_obj;
-    int32_t start_y;
+    lv_point_t start;
     int32_t panel_y;
     int32_t height;
-    bool drag;
+    control_touch_t touch;
+    bool moved;
     bool open;
 } control_panel_t;
 
@@ -68,6 +77,10 @@ bool notifications_to_apps = false;
 lv_obj_t * screen_home(void)
 {
     lv_obj_t * home = home_create();
+    /* Keep the original touch target until release, even as children move under it.
+     * This screen's vertical movement is handled by the panel, not native scrolling. */
+    lv_obj_add_flag(home, LV_OBJ_FLAG_PRESS_LOCK);
+    lv_obj_remove_flag(home, LV_OBJ_FLAG_SCROLLABLE);
 
     lv_obj_t * watchface_cont = lv_obj_find_by_name(home, "watchface_cont");
     if (watchface_cont) {
@@ -84,10 +97,15 @@ lv_obj_t * screen_home(void)
 
     lv_obj_add_event_cb(home, screen_gesture_event_cb, LV_EVENT_GESTURE, &gestures);
 
+    control_widget_home = (control_panel_t){0};
+    control_widget_home.home = home;
     control_widget_home.obj = control_panel_create(home);
+    lv_obj_remove_flag(control_widget_home.obj, LV_OBJ_FLAG_SCROLLABLE);
 
     control_widget_home.drag_obj = lv_obj_find_by_name(control_widget_home.obj, "drag_control");
     if (control_widget_home.drag_obj) {
+        lv_obj_add_flag(control_widget_home.drag_obj, LV_OBJ_FLAG_PRESS_LOCK);
+        lv_obj_remove_flag(control_widget_home.drag_obj, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_CHAIN_VER);
         lv_obj_add_event_cb(control_widget_home.drag_obj, on_control_drag_cb, LV_EVENT_ALL, home);
     }
 
@@ -101,6 +119,7 @@ lv_obj_t * screen_home(void)
 
     lv_obj_set_align(control_widget_home.obj, LV_ALIGN_TOP_MID);
 
+    lv_obj_update_layout(home);
     control_widget_home.height = lv_obj_get_height(home);
     lv_obj_set_y(control_widget_home.obj, -control_widget_home.height);
 
@@ -405,45 +424,48 @@ static void control_widget_cb(void * var, int32_t value)
 
 static void on_control_drag_cb(lv_event_t * e)
 {
-    lv_obj_t *cont = lv_event_get_target(e);
     lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t * home = lv_event_get_user_data(e);
-
-    if (code == LV_EVENT_PRESSED) {
-        panel_events_cb(LV_EVENT_PRESSED);
-    }
-
-    if (code == LV_EVENT_PRESSING) {
-        panel_events_cb(LV_EVENT_PRESSING);
-    }
-
-    if (code == LV_EVENT_RELEASED || code == LV_EVENT_PRESS_LOST) {
-        panel_events_cb(LV_EVENT_RELEASED);
-    }
-
+    panel_events_cb(code);
 }
- static void panel_events_cb(lv_event_code_t code)
+static void panel_events_cb(lv_event_code_t code)
 {
-
     lv_indev_t * indev = lv_indev_active();
 
     if (code == LV_EVENT_PRESSED) {
-        if(indev == NULL)  return;
-        lv_point_t p;
-        lv_indev_get_point(indev, &p);
-
-        control_widget_home.start_y = p.y;
+        if (indev == NULL) return;
+        lv_indev_get_point(indev, &control_widget_home.start);
+        lv_anim_delete(control_widget_home.obj, control_widget_cb);
         control_widget_home.panel_y = lv_obj_get_y_aligned(control_widget_home.obj);
-        control_widget_home.drag = true;
+        control_widget_home.touch = CONTROL_TOUCH_PENDING;
+        control_widget_home.moved = false;
     }
 
-    if (code == LV_EVENT_PRESSING && control_widget_home.drag) {
+    if (code == LV_EVENT_PRESSING && control_widget_home.touch != CONTROL_TOUCH_IDLE) {
+        if (indev == NULL) return;
+        lv_point_t point;
+        lv_indev_get_point(indev, &point);
+        int32_t dx = point.x - control_widget_home.start.x;
+        int32_t dy = point.y - control_widget_home.start.y;
+        int32_t slop = lv_dpx(12);
 
-        if(indev == NULL)  return;
-        lv_point_t vect;
-        lv_indev_get_vect(indev, &vect);
+        /* Use total displacement so even a slow drag cancels the long press. */
+        if (LV_ABS(dx) >= slop || LV_ABS(dy) >= slop) {
+            control_widget_home.moved = true;
+        }
 
-        int32_t new_y = lv_obj_get_y_aligned(control_widget_home.obj) + vect.y;
+        if (control_widget_home.touch == CONTROL_TOUCH_PENDING && control_widget_home.moved) {
+            if (LV_ABS(dx) >= LV_ABS(dy)) {
+                control_widget_home.touch = CONTROL_TOUCH_NAVIGATION;
+            }
+            else if (LV_ABS(dy) * 2 >= LV_ABS(dx) * 3) {
+                bool toward_panel = control_widget_home.open ? dy < 0 : dy > 0;
+                control_widget_home.touch = toward_panel ? CONTROL_TOUCH_DRAGGING : CONTROL_TOUCH_NAVIGATION;
+            }
+        }
+
+        /* Once selected, the direction stays locked until the touch ends. */
+        if (control_widget_home.touch != CONTROL_TOUCH_DRAGGING) return;
+        int32_t new_y = control_widget_home.panel_y + dy;
 
         if (new_y > 0) new_y = 0;
         if (new_y < -control_widget_home.height) new_y = -control_widget_home.height;
@@ -454,21 +476,22 @@ static void on_control_drag_cb(lv_event_t * e)
         lv_obj_set_y(control_widget_home.obj, new_y);
     }
 
-    if (code == LV_EVENT_RELEASED && control_widget_home.drag) {
-
-        control_widget_home.drag = false;
+    if ((code == LV_EVENT_RELEASED || code == LV_EVENT_PRESS_LOST) &&
+        control_widget_home.touch != CONTROL_TOUCH_IDLE) {
+        bool dragged = control_widget_home.touch == CONTROL_TOUCH_DRAGGING;
+        control_widget_home.touch = CONTROL_TOUCH_IDLE;
 
         int32_t y = lv_obj_get_y_aligned(control_widget_home.obj);
         int32_t threshold = control_widget_home.height / 5;
 
         /* Determine if drag exceeded threshold */
-        if (LV_ABS(y - control_widget_home.panel_y) > threshold) {
+        if (code == LV_EVENT_RELEASED && dragged && LV_ABS(y - control_widget_home.panel_y) > threshold) {
             control_widget_home.open = !control_widget_home.open;
         }
 
         /* Animate to final state */
         int32_t target_y = control_widget_home.open ? 0 : -control_widget_home.height;
-        lv_obj_animate_y(control_widget_home.obj, y, target_y, 200);
+        if (y != target_y) lv_obj_animate_y(control_widget_home.obj, y, target_y, 200);
 
     }
 }
@@ -476,8 +499,15 @@ static void on_control_drag_cb(lv_event_t * e)
 static void home_screen_event_cb(lv_event_t * e)
 {
     lv_event_code_t code = lv_event_get_code(e);
+    /* Panel controls have their own handlers; don't process bubbled touches twice. */
+    if (lv_event_get_target(e) != lv_event_get_current_target(e)) return;
 
     if (code == LV_EVENT_LONG_PRESSED) {
+        if (control_widget_home.touch != CONTROL_TOUCH_PENDING ||
+            control_widget_home.moved || control_widget_home.open) return;
+        control_widget_home.touch = CONTROL_TOUCH_IDLE;
+        lv_indev_t * indev = lv_indev_active();
+        if (indev) lv_indev_wait_release(indev);
         helios_screen_load_transition(screen_selector(),
                                       LV_SCR_LOAD_ANIM_FADE_ON,
                                       HELIOS_SCREEN_TRANSITION_TIME,
@@ -486,7 +516,7 @@ static void home_screen_event_cb(lv_event_t * e)
         return;
     }
     
-    if (code == LV_EVENT_PRESSED) {
+    if (code == LV_EVENT_PRESSED && !control_widget_home.open) {
         panel_events_cb(LV_EVENT_PRESSED);
     }
 
@@ -495,7 +525,7 @@ static void home_screen_event_cb(lv_event_t * e)
     }
 
     if (code == LV_EVENT_RELEASED || code == LV_EVENT_PRESS_LOST) {
-        panel_events_cb(LV_EVENT_RELEASED);
+        panel_events_cb(code);
     }
 
 }
@@ -537,6 +567,9 @@ static void screen_gesture_event_cb(lv_event_t * e)
 
     gesture_map_t * data = lv_event_get_user_data(e);
     if (!data) return;   // protect user_data
+
+    if (lv_event_get_current_target(e) == control_widget_home.home &&
+        (control_widget_home.open || control_widget_home.touch == CONTROL_TOUCH_DRAGGING)) return;
 
     lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_active());
 

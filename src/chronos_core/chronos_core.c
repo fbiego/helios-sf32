@@ -1824,9 +1824,9 @@ chronos_status_t chronos_core_send_battery(uint8_t level, bool charging)
 {
     uint8_t packet[CHRONOS_CORE_MAX_PACKET_SIZE];
     size_t length = 0;
-    return send_built_packet(
-        chronos_core_build_battery(level, charging, packet, sizeof(packet), &length),
-        packet, length, false);
+    chronos_status_t status = chronos_core_build_battery(
+        level, charging, packet, sizeof(packet), &length);
+    return send_built_packet(status, packet, length, false);
 }
 
 chronos_status_t chronos_core_send_sync_request(void)
@@ -1861,9 +1861,8 @@ chronos_status_t chronos_core_send_realtime_steps(uint32_t steps, uint32_t calor
 {
     uint8_t packet[CHRONOS_CORE_MAX_PACKET_SIZE];
     size_t length = 0;
-    return send_built_packet(
-        chronos_core_build_realtime_steps(steps, calories, packet, sizeof(packet), &length),
-        packet, length, false);
+    chronos_status_t status = chronos_core_build_realtime_steps(steps, calories, packet, sizeof(packet), &length);
+    return send_built_packet(status, packet, length, false);
 }
 
 chronos_status_t chronos_core_send_info(uint8_t screen)

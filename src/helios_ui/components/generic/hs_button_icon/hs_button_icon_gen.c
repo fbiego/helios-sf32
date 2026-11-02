@@ -101,15 +101,15 @@ lv_obj_t * hs_button_icon_create(lv_obj_t * parent, const void * icon, int32_t r
         lv_obj_t * wd_image_0 = wd_image_create(lv_obj_0);
         lv_obj_set_flag(wd_image_0, LV_OBJ_FLAG_CLICKABLE, false);
         lv_obj_set_align(wd_image_0, LV_ALIGN_CENTER);
-        wd_image_set_src(wd_image_0, icon);
+        lv_image_set_src(wd_image_0, icon);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 190);
         wd_image_set_scale_2(wd_image_0, 130);
         wd_image_set_size_1(wd_image_0, 60);
         wd_image_set_size_2(wd_image_0, 40);
-        wd_image_set_rotation(wd_image_0, rotation);
+        lv_image_set_rotation(wd_image_0, rotation);
         wd_image_bind_scale(wd_image_0, &sb_screen_size);
-        wd_image_bind_src(wd_image_0, bind_icon);
+        lv_image_bind_src(wd_image_0, bind_icon);
         lv_obj_add_style(wd_image_0, &style_image, 0);
         lv_obj_add_style(wd_image_0, &style_image_disabled, LV_STATE_DISABLED);
 

@@ -95,8 +95,8 @@ lv_obj_t * weather_widget_create(lv_obj_t * parent)
 
         lv_obj_t * wd_image_0 = wd_image_create(lv_obj_0);
         lv_obj_set_flag(wd_image_0, LV_OBJ_FLAG_CLICKABLE, false);
-        wd_image_set_src(wd_image_0, icon_weather);
-        wd_image_bind_src(wd_image_0, &sb_weather_icon);
+        lv_image_set_src(wd_image_0, icon_weather);
+        lv_image_bind_src(wd_image_0, &sb_weather_icon);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 190);
         wd_image_set_scale_2(wd_image_0, 120);

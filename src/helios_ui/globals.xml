@@ -584,114 +584,556 @@
 	<images>
 		<!-- Add <file> or <data> tags here -->
 
-		<data name="icon_empty" src_path="images/actions/empty.png" color_format="a8" />
-		<data name="icon_wifi" src_path="images/actions/wifi.png" color_format="a8" />
-		<data name="icon_list" src_path="images/actions/list.png" color_format="a8" />
-		<data name="icon_brightness_full" src_path="images/actions/brightness-full.png" color_format="a8" />
-		<data name="icon_brightness_empty" src_path="images/actions/brightness-empty.png" color_format="a8" />
-		<data name="icon_volume_high" src_path="images/actions/volume_high.png" color_format="a8" />
-		<data name="icon_volume_low" src_path="images/actions/volume_low.png" color_format="a8" />
-		<data name="icon_mute" src_path="images/actions/mute.png" color_format="a8" />
-		<data name="icon_play" src_path="images/actions/play.png" color_format="a8" />
-		<data name="icon_back" src_path="images/actions/back.png" color_format="a8" />
-		<data name="icon_next" src_path="images/actions/next.png" color_format="a8" />
+		<data
+			name="icon_empty"
+			src_path="images/actions/empty.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_wifi"
+			src_path="images/actions/wifi.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_list"
+			src_path="images/actions/list.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_brightness_full"
+			src_path="images/actions/brightness-full.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_brightness_empty"
+			src_path="images/actions/brightness-empty.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_volume_high"
+			src_path="images/actions/volume_high.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_volume_low"
+			src_path="images/actions/volume_low.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_mute"
+			src_path="images/actions/mute.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_play"
+			src_path="images/actions/play.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_back"
+			src_path="images/actions/back.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_next"
+			src_path="images/actions/next.png"
+			color_format="a8"
+		/>
 
-		<data name="icon_connect" src_path="images/actions/connect.png" color_format="a8" />
-		<data name="icon_vibration" src_path="images/actions/vibration.png" color_format="a8" />
-		<data name="icon_dnd" src_path="images/actions/dnd.png" color_format="a8" />
-		<data name="icon_qr" src_path="images/actions/qr_icon.png" color_format="a8" />
-		<data name="icon_arrow_up" src_path="images/actions/up-arrow.png" color_format="a8" />
-		<data name="icon_turn_left" src_path="images/actions/turn_left.png" color_format="a1" />
+		<data
+			name="icon_connect"
+			src_path="images/actions/connect.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_vibration"
+			src_path="images/actions/vibration.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_dnd"
+			src_path="images/actions/dnd.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_qr"
+			src_path="images/actions/qr_icon.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_arrow_up"
+			src_path="images/actions/up-arrow.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_turn_left"
+			src_path="images/actions/turn_left.png"
+			color_format="a1"
+		/>
 
-		<data name="icon_settings_harddisk" src_path="images/settings/005-harddisk.png" color_format="rgb565a8" />
-		<data name="icon_settings_brightness" src_path="images/settings/007-brightness.png" color_format="rgb565a8" />
-		<data name="icon_settings_monitor" src_path="images/settings/001-monitor.png" color_format="rgb565a8" />
-		<data name="icon_settings_information" src_path="images/settings/004-information.png" color_format="rgb565a8" />
-		<data name="icon_settings_smartwatch" src_path="images/settings/006-smartwatch.png" color_format="rgb565a8" />
-		<data name="icon_settings_rotate" src_path="images/settings/008-rotate.png" color_format="rgb565a8" />
-		<data name="icon_settings_power" src_path="images/settings/003-power.png" color_format="rgb565a8" />
-		<data name="icon_settings_bell" src_path="images/settings/002-bell.png" color_format="rgb565a8" />
+		<data
+			name="icon_settings_harddisk"
+			src_path="images/settings/005-harddisk.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_settings_brightness"
+			src_path="images/settings/007-brightness.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_settings_monitor"
+			src_path="images/settings/001-monitor.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_settings_information"
+			src_path="images/settings/004-information.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_settings_smartwatch"
+			src_path="images/settings/006-smartwatch.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_settings_rotate"
+			src_path="images/settings/008-rotate.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_settings_power"
+			src_path="images/settings/003-power.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_settings_bell"
+			src_path="images/settings/002-bell.png"
+			color_format="rgb565a8"
+		/>
 
-		<data name="icon_application" src_path="images/apps/application.png" color_format="rgb565a8" />
-		<data name="icon_chat" src_path="images/apps/chat.png" color_format="rgb565a8" />
-		<data name="icon_weather" src_path="images/apps/weather.png" color_format="rgb565a8" />
-		<data name="icon_gear" src_path="images/apps/gear.png" color_format="rgb565a8" />
-		<data name="icon_measurement" src_path="images/apps/measurement.png" color_format="rgb565a8" />
-		<data name="icon_stopwatch" src_path="images/apps/stopwatch.png" color_format="rgb565a8" />
-		<data name="icon_contacts" src_path="images/apps/contacts.png" color_format="rgb565a8" />
-		<data name="icon_navigation" src_path="images/apps/navigation.png" color_format="rgb565a8" />
-		<data name="icon_timer" src_path="images/apps/timer.png" color_format="rgb565a8" />
-		<data name="icon_music" src_path="images/apps/music.png" color_format="rgb565a8" />
-		<data name="icon_folder" src_path="images/apps/folder.png" color_format="rgb565a8" />
-		<data name="icon_running" src_path="images/apps/running.png" color_format="rgb565a8" />
-		<data name="icon_sleep" src_path="images/apps/sleep.png" color_format="rgb565a8" />
-		<data name="icon_user" src_path="images/apps/user.png" color_format="rgb565a8" />
-		<data name="icon_spotify" src_path="images/apps/icon_spotify.png" color_format="rgb565a8" />
-		<data name="icon_phone_link" src_path="images/apps/icon_phone_link.png" color_format="rgb565a8" />
+		<data
+			name="icon_application"
+			src_path="images/apps/application.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_chat"
+			src_path="images/apps/chat.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_weather"
+			src_path="images/apps/weather.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_gear"
+			src_path="images/apps/gear.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_measurement"
+			src_path="images/apps/measurement.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_stopwatch"
+			src_path="images/apps/stopwatch.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_contacts"
+			src_path="images/apps/contacts.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_navigation"
+			src_path="images/apps/navigation.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_timer"
+			src_path="images/apps/timer.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_music"
+			src_path="images/apps/music.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_folder"
+			src_path="images/apps/folder.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_running"
+			src_path="images/apps/running.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_sleep"
+			src_path="images/apps/sleep.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_user"
+			src_path="images/apps/user.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_spotify"
+			src_path="images/apps/icon_spotify.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_phone_link"
+			src_path="images/apps/icon_phone_link.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_diagnostics"
+			src_path="images/apps/diagnostics.png"
+			color_format="rgb565a8"
+		/>
 
-		<data name="icon_weather_humidity_icon" src_path="images/weather/humidity_icon.png" color_format="rgb565a8" />
-		<data name="icon_weather_temp_up_icon" src_path="images/weather/temp_up_icon.png" color_format="rgb565a8" />
-		<data name="icon_weather_temp_down_icon" src_path="images/weather/temp_down_icon.png" color_format="rgb565a8" />
-		<data name="icon_weather_uv_icon" src_path="images/weather/uv_icon.png" color_format="rgb565a8" />
+		<data
+			name="icon_weather_humidity_icon"
+			src_path="images/weather/humidity_icon.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_weather_temp_up_icon"
+			src_path="images/weather/temp_up_icon.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_weather_temp_down_icon"
+			src_path="images/weather/temp_down_icon.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_weather_uv_icon"
+			src_path="images/weather/uv_icon.png"
+			color_format="rgb565a8"
+		/>
 
-		<data name="icon_nt_messenger" src_path="images/notifications/001-messenger.png" color_format="rgb565a8" />
-		<data name="icon_nt_whatsapp" src_path="images/notifications/002-whatsapp.png" color_format="rgb565a8" />
-		<data name="icon_nt_twitter" src_path="images/notifications/003-twitter.png" color_format="rgb565a8" />
-		<data name="icon_nt_mail" src_path="images/notifications/004-mail.png" color_format="rgb565a8" />
-		<data name="icon_nt_qq" src_path="images/notifications/005-china.png" color_format="rgb565a8" />
-		<data name="icon_nt_skype" src_path="images/notifications/006-skype.png" color_format="rgb565a8" />
-		<data name="icon_nt_line" src_path="images/notifications/007-line.png" color_format="rgb565a8" />
-		<data name="icon_nt_weibo" src_path="images/notifications/008-weibo.png" color_format="rgb565a8" />
-		<data name="icon_nt_kakao" src_path="images/notifications/009-kakao-talk.png" color_format="rgb565a8" />
-		<data name="icon_nt_viber" src_path="images/notifications/010-viber.png" color_format="rgb565a8" />
-		<data name="icon_nt_vk" src_path="images/notifications/011-vk.png" color_format="rgb565a8" />
-		<data name="icon_nt_wechat" src_path="images/notifications/012-wechat.png" color_format="rgb565a8" />
-		<data name="icon_nt_paypal" src_path="images/notifications/013-paypal.png" color_format="rgb565a8" />
-		<data name="icon_nt_chat" src_path="images/notifications/014-chat.png" color_format="rgb565a8" />
-		<data name="icon_nt_telegram" src_path="images/notifications/015-telegram.png" color_format="rgb565a8" />
-		<data name="icon_nt_instagram" src_path="images/notifications/016-instagram.png" color_format="rgb565a8" />
-		<data name="icon_nt_calendar" src_path="images/notifications/017-calendar.png" color_format="rgb565a8" />
-		<data name="icon_nt_hangouts" src_path="images/notifications/018-google-hangouts.png" color_format="rgb565a8" />
-		<data name="icon_nt_download" src_path="images/notifications/019-download.png" color_format="rgb565a8" />
-		<data name="icon_nt_facebook" src_path="images/notifications/020-facebook.png" color_format="rgb565a8" />
-		<data name="icon_nt_snapchat" src_path="images/notifications/021-logo.png" color_format="rgb565a8" />
-		<data name="icon_nt_tiktok" src_path="images/notifications/022-social-media.png" color_format="rgb565a8" />
-		<data name="icon_nt_dingtalk" src_path="images/notifications/023-dingtalk.png" color_format="rgb565a8" />
+		<data
+			name="icon_nt_messenger"
+			src_path="images/notifications/001-messenger.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_whatsapp"
+			src_path="images/notifications/002-whatsapp.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_twitter"
+			src_path="images/notifications/003-twitter.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_mail"
+			src_path="images/notifications/004-mail.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_qq"
+			src_path="images/notifications/005-china.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_skype"
+			src_path="images/notifications/006-skype.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_line"
+			src_path="images/notifications/007-line.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_weibo"
+			src_path="images/notifications/008-weibo.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_kakao"
+			src_path="images/notifications/009-kakao-talk.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_viber"
+			src_path="images/notifications/010-viber.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_vk"
+			src_path="images/notifications/011-vk.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_wechat"
+			src_path="images/notifications/012-wechat.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_paypal"
+			src_path="images/notifications/013-paypal.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_chat"
+			src_path="images/notifications/014-chat.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_telegram"
+			src_path="images/notifications/015-telegram.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_instagram"
+			src_path="images/notifications/016-instagram.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_calendar"
+			src_path="images/notifications/017-calendar.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_hangouts"
+			src_path="images/notifications/018-google-hangouts.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_download"
+			src_path="images/notifications/019-download.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_facebook"
+			src_path="images/notifications/020-facebook.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_snapchat"
+			src_path="images/notifications/021-logo.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_tiktok"
+			src_path="images/notifications/022-social-media.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_nt_dingtalk"
+			src_path="images/notifications/023-dingtalk.png"
+			color_format="rgb565a8"
+		/>
 
-		<data name="icon_wt_sun_cloud" src_path="images/weather/001-cloudy.png" color_format="rgb565a8" />
-		<data name="icon_wt_sun" src_path="images/weather/002-sun.png" color_format="rgb565a8" />
-		<data name="icon_wt_rain" src_path="images/weather/003-rain.png" color_format="rgb565a8" />
-		<data name="icon_wt_cloud" src_path="images/weather/004-cloud.png" color_format="rgb565a8" />
-		<data name="icon_wt_tornado" src_path="images/weather/005-tornado.png" color_format="rgb565a8" />
-		<data name="icon_wt_snow" src_path="images/weather/006-snow.png" color_format="rgb565a8" />
-		<data name="icon_wt_wind" src_path="images/weather/007-wind.png" color_format="rgb565a8" />
-		<data name="icon_wt_haze" src_path="images/weather/008-haze.png" color_format="rgb565a8" />
+		<data
+			name="icon_wt_sun_cloud"
+			src_path="images/weather/001-cloudy.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_wt_sun"
+			src_path="images/weather/002-sun.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_wt_rain"
+			src_path="images/weather/003-rain.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_wt_cloud"
+			src_path="images/weather/004-cloud.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_wt_tornado"
+			src_path="images/weather/005-tornado.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_wt_snow"
+			src_path="images/weather/006-snow.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_wt_wind"
+			src_path="images/weather/007-wind.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_wt_haze"
+			src_path="images/weather/008-haze.png"
+			color_format="rgb565a8"
+		/>
 
-		<data name="img_music_album" src_path="images/generic/img_music_album.png" color_format="a8" />
-		<data name="icon_vol_down_32" src_path="images/music/icon_vol_down_32.png" color_format="a8" />
-		<data name="icon_vol_up_32" src_path="images/music/icon_vol_up_32.png" color_format="a8" />
-		<data name="icon_music_play_32" src_path="images/music/icon_music_play_32.png" color_format="a8" />
-		<data name="icon_music_pause_32" src_path="images/music/icon_music_pause_32.png" color_format="a8" />
-		<data name="icon_music_next_32" src_path="images/music/icon_music_next_32.png" color_format="a8" />
-		<data name="icon_music_previous_32" src_path="images/music/icon_music_previous_32.png" color_format="a8" />
-		<data name="icon_stop" src_path="images/actions/icon_music_stop.png" color_format="a8" />
-		<data name="icon_timer_cancel" src_path="images/actions/icon_timer_cancel.png" color_format="a8" />
-		<data name="icon_timer_start" src_path="images/actions/icon_timer_start.png" color_format="a8" />
-		<data name="icon_timer_pause" src_path="images/actions/icon_timer_pause.png" color_format="a8" />
-		<data name="icon_lap_time" src_path="images/actions/icon_lap_time.png" color_format="a8" />
-		<data name="icon_restart" src_path="images/actions/icon_restart.png" color_format="a8" />
-		<data name="img_heart_beat" src_path="images/generic/img_heart_beat.png" color_format="rgb565a8" />
-		<data name="img_blood_oxygen" src_path="images/generic/img_blood_oxygen.png" color_format="rgb565a8" />
-		<data name="img_finger_sensor" src_path="images/generic/img_finger_sensor.png" color_format="a8" />
+		<data
+			name="img_music_album"
+			src_path="images/generic/img_music_album.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_vol_down_32"
+			src_path="images/music/icon_vol_down_32.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_vol_up_32"
+			src_path="images/music/icon_vol_up_32.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_music_play_32"
+			src_path="images/music/icon_music_play_32.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_music_pause_32"
+			src_path="images/music/icon_music_pause_32.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_music_next_32"
+			src_path="images/music/icon_music_next_32.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_music_previous_32"
+			src_path="images/music/icon_music_previous_32.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_stop"
+			src_path="images/actions/icon_music_stop.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_timer_cancel"
+			src_path="images/actions/icon_timer_cancel.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_timer_start"
+			src_path="images/actions/icon_timer_start.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_timer_pause"
+			src_path="images/actions/icon_timer_pause.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_lap_time"
+			src_path="images/actions/icon_lap_time.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_restart"
+			src_path="images/actions/icon_restart.png"
+			color_format="a8"
+		/>
+		<data
+			name="img_heart_beat"
+			src_path="images/generic/img_heart_beat.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="img_blood_oxygen"
+			src_path="images/generic/img_blood_oxygen.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="img_finger_sensor"
+			src_path="images/generic/img_finger_sensor.png"
+			color_format="a8"
+		/>
 
-		<data name="icon_arrow_red" src_path="images/generic/icon_arrow_red.png" color_format="rgb565a8" />
-		<data name="icon_arrow_green" src_path="images/generic/icon_arrow_green.png" color_format="rgb565a8" />
-		<data name="icon_arrow_red_64" src_path="images/generic/icon_arrow_red_64.png" color_format="rgb565a8" />
-		<data name="icon_arrow_green_64" src_path="images/generic/icon_arrow_green_64.png" color_format="rgb565a8" />
-		<data name="icon_text_hide" src_path="images/generic/icon_text_hide.png" color_format="a8" />
-		<data name="icon_text_show" src_path="images/generic/icon_text_show.png" color_format="a8" />
-		<data name="icon_mpesa_watch" src_path="images/apps/icon_mpesa_watch.png" color_format="rgb565a8" />
-		<data name="icon_mpesa_watch_32" src_path="images/generic/icon_mpesa_watch_32.png" color_format="rgb565a8" />
+		<data
+			name="icon_arrow_red"
+			src_path="images/generic/icon_arrow_red.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_arrow_green"
+			src_path="images/generic/icon_arrow_green.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_arrow_red_64"
+			src_path="images/generic/icon_arrow_red_64.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_arrow_green_64"
+			src_path="images/generic/icon_arrow_green_64.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_text_hide"
+			src_path="images/generic/icon_text_hide.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_text_show"
+			src_path="images/generic/icon_text_show.png"
+			color_format="a8"
+		/>
+		<data
+			name="icon_mpesa_watch"
+			src_path="images/apps/icon_mpesa_watch.png"
+			color_format="rgb565a8"
+		/>
+		<data
+			name="icon_mpesa_watch_32"
+			src_path="images/generic/icon_mpesa_watch_32.png"
+			color_format="rgb565a8"
+		/>
+
+		<data
+			name="face_preview"
+			src_path="images/preview/preview.png"
+			color_format="rgb565a8"
+		/>
+
+		<data
+			name="img_slider_left_60"
+			src_path="images/slider_caps/slider_cap_left_60.png"
+			color_format="a8"
+		/>
+		<data
+			name="img_slider_left_90"
+			src_path="images/slider_caps/slider_cap_left_90.png"
+			color_format="a8"
+		/>
+		<data
+			name="img_slider_left_110"
+			src_path="images/slider_caps/slider_cap_left_110.png"
+			color_format="a8"
+		/>
+		<data
+			name="img_slider_right_60"
+			src_path="images/slider_caps/slider_cap_right_60.png"
+			color_format="a8"
+		/>
+		<data
+			name="img_slider_right_90"
+			src_path="images/slider_caps/slider_cap_right_90.png"
+			color_format="a8"
+		/>
+		<data
+			name="img_slider_right_110"
+			src_path="images/slider_caps/slider_cap_right_110.png"
+			color_format="a8"
+		/>
 	</images>
 
 	<styles>
@@ -727,8 +1169,20 @@
 		<string name="sb_lvgl_version" value="v9.0.0" />
 
 		<!-- System settings -->
-		<int name="sb_app_list_mode" value="0" min_value="0" max_value="1" help="[set|change] Grid mode" />
-		<int name="sb_list_circular_mode" value="1" min_value="0" max_value="1" help="[set|change] Circular mode" />
+		<int
+			name="sb_app_list_mode"
+			value="0"
+			min_value="0"
+			max_value="1"
+			help="[set|change] Grid mode"
+		/>
+		<int
+			name="sb_list_circular_mode"
+			value="1"
+			min_value="0"
+			max_value="1"
+			help="[set|change] Circular mode"
+		/>
 		<int
 			name="sb_screen_brightness"
 			value="100"
@@ -736,33 +1190,99 @@
 			max_value="100"
 			help="[set|change] Screen brightness"
 		/>
-		<int name="sb_screen_rotation" value="0" min_value="0" max_value="3" help="[set|change] Screen rotation" />
-		<int name="sb_screen_timeout" value="0" min_value="0" max_value="4" help="[set|change] Screen timeout" />
-		<int name="sb_screen_rtw" value="1" min_value="0" max_value="1" help="[set|change] Raise to wake" />
+		<int
+			name="sb_screen_rotation"
+			value="0"
+			min_value="0"
+			max_value="3"
+			help="[set|change] Screen rotation"
+		/>
+		<int
+			name="sb_screen_timeout"
+			value="0"
+			min_value="0"
+			max_value="4"
+			help="[set|change] Screen timeout"
+		/>
+		<int
+			name="sb_screen_rtw"
+			value="1"
+			min_value="0"
+			max_value="1"
+			help="[set|get|change] Raise to wake"
+		/>
 		<int name="sb_language" value="0" help="[set|change] System Language" />
 
-		<int name="sb_sound_volume" value="40" min_value="0" max_value="100" help="[set|change] Music volume" />
-		<int name="sb_focusable" value="1" min_value="0" max_value="1" help="[set|change] Collapsed notifications" />
+		<int
+			name="sb_sound_volume"
+			value="40"
+			min_value="0"
+			max_value="100"
+			help="[set|change] Music volume"
+		/>
+		<int
+			name="sb_focusable"
+			value="1"
+			min_value="0"
+			max_value="1"
+			help="[set|change] Collapsed notifications"
+		/>
 
 		<!-- Clock -->
 		<string name="sb_time_string" value="12:45" help="[set] Time string" />
-		<string name="sb_date_string" value="Sun 5 Oct" help="[set] Date string" />
+		<string
+			name="sb_date_string"
+			value="Sun 5 Oct"
+			help="[set] Date string"
+		/>
 		<int name="sb_time_hour" value="12" help="[set] Hour" />
 		<int name="sb_time_minute" value="45" help="[set] Minute" />
 		<int name="sb_time_seconds" value="23" help="[set] Seconds" />
-		<int name="sb_time_hour_analog" value="3150" help="[set] Hour rotation" />
-		<int name="sb_time_minute_analog" value="450" help="[set] Minute rotation" />
-		<int name="sb_time_seconds_analog" value="1800" help="[set] Seconds rotation" />
+		<int
+			name="sb_time_hour_analog"
+			value="3150"
+			help="[set] Hour rotation"
+		/>
+		<int
+			name="sb_time_minute_analog"
+			value="450"
+			help="[set] Minute rotation"
+		/>
+		<int
+			name="sb_time_seconds_analog"
+			value="1800"
+			help="[set] Seconds rotation"
+		/>
 		<string name="sb_time_am_pm" value="am" help="[set] am/pm" />
 		<int name="sb_time_am" value="-1" help="[set] -1 24hr, 0 am, 1 pm" />
 		<int name="sb_time_day" value="5" help="[set] Day" />
 		<int name="sb_time_month" value="10" help="[set|change] Month" />
 		<int name="sb_time_year" value="2025" help="[set] Year" />
-		<string name="sb_time_month_short" value="oct" help="Month short, set internally with sb_time_month" />
-		<string name="sb_time_month_long" value="october" help="Month long, set internally with sb_time_month" />
-		<int name="sb_time_weekday" value="0" help="[set|change] Weekday index" />
-		<string name="sb_time_weekday_short" value="sun" help="Weekday short, set internally with sb_time_weekday" />
-		<string name="sb_time_weekday_long" value="sunday" help="Weekday long, set internally with sb_time_weekday" />
+		<string
+			name="sb_time_month_short"
+			value="oct"
+			help="Month short, set internally with sb_time_month"
+		/>
+		<string
+			name="sb_time_month_long"
+			value="october"
+			help="Month long, set internally with sb_time_month"
+		/>
+		<int
+			name="sb_time_weekday"
+			value="0"
+			help="[set|change] Weekday index"
+		/>
+		<string
+			name="sb_time_weekday_short"
+			value="sun"
+			help="Weekday short, set internally with sb_time_weekday"
+		/>
+		<string
+			name="sb_time_weekday_long"
+			value="sunday"
+			help="Weekday long, set internally with sb_time_weekday"
+		/>
 
 		<!-- Watchface -->
 		<int name="sb_activity_steps" value="2735" help="[set] Step count" />
@@ -772,7 +1292,11 @@
 		<int name="sb_health_oxygen" value="98" help="[set] SP02" />
 
 		<!-- System Information -->
-		<int name="sb_system_connection" value="0" help="[set|change] System ble connection" />
+		<int
+			name="sb_system_connection"
+			value="0"
+			help="[set|change] System ble connection"
+		/>
 		<string
 			name="sb_system_connection_str"
 			value="disconnected"
@@ -780,32 +1304,108 @@
 		/>
 		<string name="sb_os_name" value="OS" help="OS name [set]" />
 		<string name="sb_os_version" value="v0.0.1" help="OS version [set]" />
-		<string name="sb_chronos_esp_version" value="v1.9.0" help="Chronos library version [set]" />
-		<string name="sb_chronos_app_version" value="v3.8.5" help="Chronos app version [set]" />
-		<string name="sb_firmware_version" value="v1.0.0" help="Helios Firmware version [set]" />
-		<string name="sb_board_oem" value="LVGL" help="Helios board OEM [set]" />
-		<string name="sb_board_name" value="Editor" help="Helios board name [set]" />
-		<string name="sb_board_type" value="ESP32-S3" help="Helios board type [set]" />
-		<string name="sb_board_mac" value="34:54:56:23:43:32" help="Helios board MAC address [set]" />
-		<string name="sb_board_ram" value="384KB" help="Helios board RAM [set]" />
-		<string name="sb_board_psram" value="16MB" help="Helios board PSRAM [set]" />
-		<string name="sb_board_flash" value="16MB" help="Helios board Flash [set]" />
-		<string name="sb_display_type" value="AMOLED" help="Helios display type [set]" />
+		<string
+			name="sb_chronos_esp_version"
+			value="v1.9.0"
+			help="Chronos library version [set]"
+		/>
+		<string
+			name="sb_chronos_app_version"
+			value="v3.8.5"
+			help="Chronos app version [set]"
+		/>
+		<string
+			name="sb_firmware_version"
+			value="v1.0.0"
+			help="Helios Firmware version [set]"
+		/>
+		<string
+			name="sb_board_oem"
+			value="LVGL"
+			help="Helios board OEM [set]"
+		/>
+		<string
+			name="sb_board_name"
+			value="Editor"
+			help="Helios board name [set]"
+		/>
+		<string
+			name="sb_board_type"
+			value="ESP32-S3"
+			help="Helios board type [set]"
+		/>
+		<string
+			name="sb_board_mac"
+			value="34:54:56:23:43:32"
+			help="Helios board MAC address [set]"
+		/>
+		<string
+			name="sb_board_ram"
+			value="384KB"
+			help="Helios board RAM [set]"
+		/>
+		<string
+			name="sb_board_psram"
+			value="16MB"
+			help="Helios board PSRAM [set]"
+		/>
+		<string
+			name="sb_board_flash"
+			value="16MB"
+			help="Helios board Flash [set]"
+		/>
+		<string
+			name="sb_display_type"
+			value="AMOLED"
+			help="Helios display type [set]"
+		/>
 
-		<int name="sb_battery_percent" value="70" min_value="0" max_value="100" help="[set] Battery percentage" />
-		<int name="sb_battery_charging" value="0" min_value="0" max_value="1" help="[set] Battery Charging" />
-		<float name="sb_battery_voltage" value="3.92" help="[set] Battery Voltage" />
-		<float name="sb_battery_temp" value="32.6" help="[set] Battery Temperature" />
-		<string name="sb_battery_usage" value="2d 14h" help="[set] Battery Usage" />
+		<int
+			name="sb_battery_percent"
+			value="70"
+			min_value="0"
+			max_value="100"
+			help="[set] Battery percentage"
+		/>
+		<int
+			name="sb_battery_charging"
+			value="0"
+			min_value="0"
+			max_value="1"
+			help="[set] Battery Charging"
+		/>
+		<float
+			name="sb_battery_voltage"
+			value="3.92"
+			help="[set] Battery Voltage"
+		/>
+		<float
+			name="sb_battery_temp"
+			value="32.6"
+			help="[set] Battery Temperature"
+		/>
+		<string
+			name="sb_battery_usage"
+			value="2d 14h"
+			help="[set] Battery Usage"
+		/>
 
 		<!-- Navigation data -->
-		<pointer name="sb_nav_icon" value="icon_turn_left" help="Current navigation icon [set]" />
+		<pointer
+			name="sb_nav_icon"
+			value="icon_turn_left"
+			help="Current navigation icon [set]"
+		/>
 		<string
 			name="sb_nav_text"
 			value="10:20 ETA&#10;5 mins | 1.6km"
 			help="Navigation text (eta\nduration distance) [set]"
 		/>
-		<string name="sb_nav_title" value="100m" help="Navigation title [set]" />
+		<string
+			name="sb_nav_title"
+			value="100m"
+			help="Navigation title [set]"
+		/>
 		<string
 			name="sb_nav_directions"
 			value="Turn left towards Kenyatta avenue at the round about"
@@ -815,58 +1415,196 @@
 		<!-- Music app data -->
 		<string name="sb_music_app" value="Music" help="[set] Music app" />
 		<string name="sb_music_track" value="Track" help="[set] Music track" />
-		<string name="sb_music_artist" value="Artist" help="[set] Music artist" />
+		<string
+			name="sb_music_artist"
+			value="Artist"
+			help="[set] Music artist"
+		/>
 		<int name="sb_music_state" value="0" help="[set|change] Music state" />
-		<pointer name="sb_music_state_icon" value="icon_music_play_32" help="[set] Music play/pause icon" />
-		<pointer name="sb_music_icon" value="icon_music" help="[set] Music icon" />
-		<string name="sb_music_package" value="music" help="[set|change] Music app package" />
-		<int name="sb_music_album_color" value="0" help="[set]{color} Music album color" />
+		<pointer
+			name="sb_music_state_icon"
+			value="icon_music_play_32"
+			help="[set] Music play/pause icon"
+		/>
+		<pointer
+			name="sb_music_icon"
+			value="icon_music"
+			help="[set] Music icon"
+		/>
+		<string
+			name="sb_music_package"
+			value="music"
+			help="[set|change] Music app package"
+		/>
+		<int
+			name="sb_music_album_color"
+			value="0"
+			help="[set]{color} Music album color"
+		/>
 
 		<!-- Phone Link app -->
-		<string name="sb_phone_manufacturer" value="Google" help="[set] Phone manufacturer" />
-		<string name="sb_phone_model" value="Pixel 7" help="[set] Phone model" />
+		<string
+			name="sb_phone_manufacturer"
+			value="Google"
+			help="[set] Phone manufacturer"
+		/>
+		<string
+			name="sb_phone_model"
+			value="Pixel 7"
+			help="[set] Phone model"
+		/>
 		<int name="sb_phone_sdk" value="37" help="[set] Phone SDK version" />
 		<int name="sb_phone_battery" value="50" help="[set] Phone battery" />
-		<int name="sb_phone_charging" value="0" help="[set|change] Phone charging" />
-		<string name="sb_phone_charging_str" value="no" help="[set] Phone charging string yes/no" />
+		<int
+			name="sb_phone_charging"
+			value="0"
+			help="[set|change] Phone charging"
+		/>
+		<string
+			name="sb_phone_charging_str"
+			value="no"
+			help="[set] Phone charging string yes/no"
+		/>
 
-		<int name="sb_chronos_app_code" value="53" help="[set] Chronos App code" />
-		<string name="sb_phone_last_sync" value="2d 4h" help="[set] Phone last sync" />
+		<int
+			name="sb_chronos_app_code"
+			value="53"
+			help="[set] Chronos App code"
+		/>
+		<string
+			name="sb_phone_last_sync"
+			value="2d 4h"
+			help="[set] Phone last sync"
+		/>
 
 		<!-- Weather app data -->
-		<int name="sb_weather_code" value="0" min_value="0" max_value="7" help="[set|change] Weather condition code" />
-		<pointer name="sb_weather_icon" value="icon_weather" help="[set] Weather icon" />
-		<int name="sb_weather_temp" value="23" help="[set] Weather temperature" />
-		<string name="sb_weather_location" value="Nairobi" help="[set] Weather location" />
-		<string name="sb_weather_condition" value="cloudy" help="[set] Weather condition" />
-		<string name="sb_weather_update_time" value="10:20" help="[set] Weather update time" />
-		<string name="sb_weather_temp_unit" value="C" help="[set] Weather update date" />
-		<int name="sb_weather_humidity" value="45" help="[set] Weather humidity" />
+		<int
+			name="sb_weather_code"
+			value="0"
+			min_value="0"
+			max_value="7"
+			help="[set|change] Weather condition code"
+		/>
+		<pointer
+			name="sb_weather_icon"
+			value="icon_weather"
+			help="[set] Weather icon"
+		/>
+		<int
+			name="sb_weather_temp"
+			value="23"
+			help="[set] Weather temperature"
+		/>
+		<string
+			name="sb_weather_location"
+			value="Nairobi"
+			help="[set] Weather location"
+		/>
+		<string
+			name="sb_weather_condition"
+			value="cloudy"
+			help="[set] Weather condition"
+		/>
+		<string
+			name="sb_weather_update_time"
+			value="10:20"
+			help="[set] Weather update time"
+		/>
+		<string
+			name="sb_weather_temp_unit"
+			value="C"
+			help="[set] Weather update date"
+		/>
+		<int
+			name="sb_weather_humidity"
+			value="45"
+			help="[set] Weather humidity"
+		/>
 		<int name="sb_weather_uv" value="3" help="[set] Weather UV index" />
-		<int name="sb_weather_temp_high" value="30" help="[set] Weather high temperature" />
-		<int name="sb_weather_temp_low" value="20" help="[set] Weather low temperature" />
+		<int
+			name="sb_weather_temp_high"
+			value="30"
+			help="[set] Weather high temperature"
+		/>
+		<int
+			name="sb_weather_temp_low"
+			value="20"
+			help="[set] Weather low temperature"
+		/>
 
 		<!-- Stopwatch app data -->
-		<int name="sb_stopwatch_state" value="0" help="[set|change] Stopwatch state" />
-		<string name="sb_stopwatch_time" value="00:00:00" help="[set] Stopwatch time" />
+		<int
+			name="sb_stopwatch_state"
+			value="0"
+			help="[set|change] Stopwatch state"
+		/>
+		<string
+			name="sb_stopwatch_time"
+			value="00:00:00"
+			help="[set] Stopwatch time"
+		/>
 
-		<int name="sb_stopwatch_button_start_state" value="0" help="[set|change] Stopwatch pause button state" />
-		<int name="sb_stopwatch_button_reset_state" value="0" help="[set|change] Stopwatch reset button state" />
+		<int
+			name="sb_stopwatch_button_start_state"
+			value="0"
+			help="[set|change] Stopwatch pause button state"
+		/>
+		<int
+			name="sb_stopwatch_button_reset_state"
+			value="0"
+			help="[set|change] Stopwatch reset button state"
+		/>
 
 		<pointer
 			name="sb_stopwatch_button_start_icon"
 			value="icon_timer_start"
 			help="[set] Stopwatch start button icon"
 		/>
-		<pointer name="sb_stopwatch_button_reset_icon" value="icon_lap_time" help="[set] Stopwatch reset button icon" />
+		<pointer
+			name="sb_stopwatch_button_reset_icon"
+			value="icon_lap_time"
+			help="[set] Stopwatch reset button icon"
+		/>
 
 		<!-- Health app data -->
-		<int name="sb_health_finger_detect" value="0" help="[set] Finger detect on sensor" />
+		<int
+			name="sb_health_finger_detect"
+			value="0"
+			help="[set] Finger detect on sensor"
+		/>
 
-		<!-- Health app data -->
-		<int name="sb_mpesa_balance_hidden" value="0" help="[set|change] Mpesa Balance hidden" />
-		<pointer name="sb_mpesa_hidden_icon" value="icon_text_hide" help="[set]hide icon" />
-		<string name="sb_mpesa_balance_text" value="KSH 1,235" help="[set] Mpesa balance text" />
-		<string name="sb_mpesa_recent_text" value="Recent" help="[set] Mpesa recent text" />
+		<!-- MPESA app data -->
+		<int
+			name="sb_mpesa_balance_hidden"
+			value="0"
+			help="[set|change] Mpesa Balance hidden"
+		/>
+		<pointer
+			name="sb_mpesa_hidden_icon"
+			value="icon_text_hide"
+			help="[set]hide icon"
+		/>
+		<string
+			name="sb_mpesa_balance_text"
+			value="KSH 1,235"
+			help="[set] Mpesa balance text"
+		/>
+		<string
+			name="sb_mpesa_recent_text"
+			value="Recent"
+			help="[set] Mpesa recent text"
+		/>
+
+		<!-- Diagnostic app data-->
+		<string
+			name="sb_diagnostic_bmi270"
+			value="Accel: X:4   Y:5   Z:2&#10;Gyro: X:4   Y:5   Z:2&#10;Steps: 243&#10;Wake event:"
+			help="[set] BMI270 data"
+		/>
+		<string
+			name="sb_diagnostic_battery"
+			value="4027 mV&#10;82%&#10;Charge detect: Yes"
+			help="[set] Battery data"
+		/>
 	</subjects>
 </globals>

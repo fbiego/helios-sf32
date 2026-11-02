@@ -67,7 +67,6 @@ lv_obj_t * hourly_forecast_create(lv_obj_t * parent)
         lv_label_set_text(hs_text_small_0, "12:00");
 
         lv_obj_t * wd_image_0 = wd_image_create(lv_obj_0);
-        wd_image_set_src(wd_image_0, icon_weather);
         wd_image_set_scale_0(wd_image_0, 120);
         wd_image_set_scale_1(wd_image_0, 110);
         wd_image_set_scale_2(wd_image_0, 70);

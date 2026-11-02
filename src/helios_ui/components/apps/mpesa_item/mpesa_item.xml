@@ -24,21 +24,47 @@
 		<prop name="tx_time" type="string" default="Today 10:42" />
 		<prop name="tx_amount" type="string" default="-2,500" />
 		<prop name="tx_in" type="bool" default="true" />
+		<prop name="tx_color" type="color" default="0x237028" />
 	</api>
 	<view extends="hs_card">
 		<style name="style_container" />
 		<style name="style_cont_pressed" selector="pressed" />
-		<bind_style name="style_cont_360" subject="sb_screen_size" ref_value="1" />
-		<bind_style name="style_cont_240" subject="sb_screen_size" ref_value="2" />
+		<bind_style
+			name="style_cont_360"
+			subject="sb_screen_size"
+			ref_value="1"
+		/>
+		<bind_style
+			name="style_cont_240"
+			subject="sb_screen_size"
+			ref_value="2"
+		/>
 
 		<hs_column flex_grow="1" clickable="false">
 			<style name="style_text_cont" />
-			<bind_style name="style_text_cont_360" subject="sb_screen_size" ref_value="1" />
-			<bind_style name="style_text_cont_240" subject="sb_screen_size" ref_value="2" />
-			<hs_text_small width="100%" long_mode="scroll_circular" text="$tx_name" />
-			<hs_text_small width="100%" long_mode="scroll_circular" text="$tx_time" style_text_color="0xbbbbbb" />
+			<bind_style
+				name="style_text_cont_360"
+				subject="sb_screen_size"
+				ref_value="1"
+			/>
+			<bind_style
+				name="style_text_cont_240"
+				subject="sb_screen_size"
+				ref_value="2"
+			/>
+			<hs_text_small
+				width="100%"
+				long_mode="scroll_circular"
+				text="$tx_name"
+			/>
+			<hs_text_small
+				width="100%"
+				long_mode="scroll_circular"
+				text="$tx_time"
+				style_text_color="0xbbbbbb"
+			/>
 		</hs_column>
 
-		<hs_text_normal text="$tx_amount" style_text_color="{tx_in ? 0x237028 : 0xD82628}" />
+		<hs_text_normal text="$tx_amount" style_text_color="$tx_color" />
 	</view>
 </component>

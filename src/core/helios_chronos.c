@@ -7,11 +7,42 @@
 #include "helios_app.h"
 #include "helios_ble.h"
 #include "helios_ios.h"
+#include "helios_platform.h"
 
 #define LOG_TAG "helios.proto"
 #include "log.h"
 
 static uint8_t g_chronos_ready;
+
+void helios_chronos_update_battery(uint8_t percent, uint8_t charging)
+{
+    if (!g_chronos_ready || !helios_ble_can_notify())
+        return;
+
+    chronos_status_t status = chronos_core_send_battery(percent, charging != 0);
+    if (status != CHRONOS_STATUS_OK)
+        LOG_W("battery report failed status=%d", status);
+}
+
+static void helios_chronos_send_watch_battery(void)
+{
+    if (!helios_ble_can_notify())
+        return;
+
+    helios_battery_t battery;
+    rt_err_t err = helios_battery_read(&battery);
+    if (err == RT_EOK)
+        helios_chronos_update_battery(battery.percent, battery.charging);
+    else
+        LOG_W("battery report skipped: ADC error=%d", err);
+}
+
+void helios_chronos_update_activity(uint32_t steps, uint32_t calories)
+{
+    if (!g_chronos_ready || !helios_ble_can_notify()) return;
+    chronos_status_t status = chronos_core_send_realtime_steps(steps, calories);
+    if (status != CHRONOS_STATUS_OK) LOG_W("activity report failed status=%d", status);
+}
 
 static void helios_chronos_tx(uint8_t *data, size_t length)
 {
@@ -79,14 +110,13 @@ static void helios_chronos_config(chronos_config_t config, uint32_t a, uint32_t 
         case CHRONOS_CONFIG_DEVICE_INFO_REQUEST: 
         {
             LOG_I("device info request received");
-            chronos_status_t status = chronos_core_send_info(1);
+            chronos_status_t status = chronos_core_send_info(0x88);
             LOG_I("info request status=%d", status);
 
             status = chronos_core_send_notify_battery(true);
             LOG_I("notify battery request status=%d", status);
 
-            status = chronos_core_send_battery(75, false);
-            LOG_I("battery request status=%d", status);
+            helios_chronos_send_watch_battery();
         }
 
         break;
@@ -98,8 +128,13 @@ static void helios_chronos_config(chronos_config_t config, uint32_t a, uint32_t 
 
 static void helios_chronos_init_once(void)
 {
-    if (g_chronos_ready)
+    /* Both BLE callbacks and UI startup can prepare the protocol now that
+     * stored contacts/QR are restored before the first connection. */
+    rt_enter_critical();
+    if (g_chronos_ready) {
+        rt_exit_critical();
         return;
+    }
 
     chronos_core_init();
     chronos_core_set_tx_cb(helios_chronos_tx);
@@ -110,6 +145,7 @@ static void helios_chronos_init_once(void)
     helios_app_chronos_init();
 
     g_chronos_ready = 1;
+    rt_exit_critical();
 }
 
 void helios_chronos_on_connected(void)
@@ -118,6 +154,11 @@ void helios_chronos_on_connected(void)
     chronos_core_reset_rx(chronos_core_get_state());
     chronos_core_set_connection_status(true, false);
     LOG_I("Chronos connected");
+}
+
+void helios_chronos_prepare(void)
+{
+    helios_chronos_init_once();
 }
 
 void helios_chronos_on_disconnected(void)
@@ -136,14 +177,13 @@ void helios_chronos_on_subscribed(void)
     chronos_status_t status = chronos_core_send_sync_request();
     LOG_I("sync request status=%d", status);
 
-    status = chronos_core_send_info(1);
+    status = chronos_core_send_info(0x88);
     LOG_I("info request status=%d", status);
 
     status = chronos_core_send_notify_battery(true);
     LOG_I("notify battery request status=%d", status);
 
-    status = chronos_core_send_battery(75, false);
-    LOG_I("battery request status=%d", status);
+    helios_chronos_send_watch_battery();
 }
 
 void helios_chronos_on_rx(const uint8_t *data, uint16_t len)

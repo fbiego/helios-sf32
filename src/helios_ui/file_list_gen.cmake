@@ -111,6 +111,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/fonts/NS_Medium_zh_40_data.c
   ${CMAKE_CURRENT_LIST_DIR}/helios_ui_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/helios_ui.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/face_preview_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_application_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_arrow_green_64_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_arrow_green_data.c
@@ -123,6 +124,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_chat_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_connect_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_contacts_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_diagnostics_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_dnd_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_empty_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_folder_data.c
@@ -211,10 +213,17 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/img_finger_sensor_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_heart_beat_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_music_album_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/img_slider_left_60_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/img_slider_left_90_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/img_slider_left_110_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/img_slider_right_60_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/img_slider_right_90_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/img_slider_right_110_data.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/apps/sc_mpesa/sc_mpesa_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/applications/applications_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/boot/boot_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/contacts/contacts_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/core/diagnostics/diagnostics_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/home/home_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/music/music_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/navigation/navigation_gen.c

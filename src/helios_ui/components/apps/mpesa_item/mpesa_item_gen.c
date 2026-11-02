@@ -30,7 +30,7 @@
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_obj_t * mpesa_item_create(lv_obj_t * parent, const char * tx_name, const char * tx_time, const char * tx_amount, bool tx_in)
+lv_obj_t * mpesa_item_create(lv_obj_t * parent, const char * tx_name, const char * tx_time, const char * tx_amount, bool tx_in, lv_color_t tx_color)
 {
     LV_TRACE_OBJ_CREATE("begin");
 
@@ -99,7 +99,7 @@ lv_obj_t * mpesa_item_create(lv_obj_t * parent, const char * tx_name, const char
 
         lv_obj_t * hs_text_normal_0 = hs_text_normal_create(hs_card_0);
         lv_label_set_text(hs_text_normal_0, tx_amount);
-        lv_obj_set_style_text_color(hs_text_normal_0, tx_in ? lv_color_hex(0x237028) : lv_color_hex(0xD82628), 0);
+        lv_obj_set_style_text_color(hs_text_normal_0, tx_color, 0);
 
         the_root = hs_card_0;
     }

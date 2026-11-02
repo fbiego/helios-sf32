@@ -86,7 +86,7 @@ lv_obj_t * control_bar_create(lv_obj_t * parent, lv_subject_t * bind_subject, co
         lv_obj_t * wd_image_0 = wd_image_create(lv_bar_0);
         lv_obj_set_flag(wd_image_0, LV_OBJ_FLAG_CLICKABLE, false);
         lv_obj_set_align(wd_image_0, LV_ALIGN_CENTER);
-        wd_image_set_src(wd_image_0, icon);
+        lv_image_set_src(wd_image_0, icon);
         wd_image_set_scale_0(wd_image_0, 256);
         wd_image_set_scale_1(wd_image_0, 190);
         wd_image_set_scale_2(wd_image_0, 130);

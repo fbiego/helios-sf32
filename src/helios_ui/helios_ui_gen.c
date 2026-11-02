@@ -6,7 +6,7 @@
  *      INCLUDES
  *********************/
 
-#include "helios_ui_gen.h"
+#include "helios_ui.h"
 
 #if defined(LV_USE_XML) && LV_USE_XML
 #include "widgets/wd_arcoiris/wd_arcoiris_private_gen.h"
@@ -39,7 +39,7 @@ static void check_font(lv_font_t ** font, const char * name);
  *  STATIC VARIABLES
  **********************/
 
-static uint32_t helios_ui_target = HELIOS_UI_TARGET_ALL;
+static uint32_t helios_ui_target = HELIOS_UI_COMPILE_TARGET;
 
 /*----------------
  * Translations
@@ -47,7 +47,7 @@ static uint32_t helios_ui_target = HELIOS_UI_TARGET_ALL;
 
 #ifndef LV_EDITOR_PREVIEW
     static const char * translation_languages[] = {"en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", NULL};
-    static const char * translation_tags[] = {"id", "locale", "sun", "mon", "tue", "wed", "thur", "fri", "sat", "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sept", "oct", "nov", "dec", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december", "contacts", "files", "fitness", "health", "music", "navigation", "notifications", "settings", "sleep", "stopwatch", "timer", "weather", "display", "system", "alerts", "battery", "about", "storage", "brightness", "timeout", "rotation", "raise_to_wake", "circular_scroll", "grid_mode", "language", "reboot", "shutdown", "factory_reset", "sound", "vibration", "wake_screen", "dnd", "voltage", "temperature", "usage", "format", "firmware", "hourly_forecast", "daily_forecast", "timeout_5", "timeout_10", "timeout_20", "timeout_30", "always_on", "updated_at", "cloudy", "ram", "psram", "flash", "type", "steps", "watchfaces", "sd_card", "clear_all", "no_notifications", "camera", "music_control", "reset", "inactive", "connected", "disconnected", "nav_info", "nav_start", "navio_info", "en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", "proceed", "cancel", "reset_info", "reset_title", "icon_size", "system_time", "arrival_time", "directions", "applications", "phone_link", "status", "last_sync", "charging", "yes", "no", "find_phone", "version", "code", "sun_cloud", "sunny", "snow", "rainy", "tornado", "wind", "haze", "ai", "unique", NULL};
+    static const char * translation_tags[] = {"id", "locale", "sun", "mon", "tue", "wed", "thur", "fri", "sat", "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sept", "oct", "nov", "dec", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december", "contacts", "files", "fitness", "health", "music", "navigation", "notifications", "settings", "sleep", "stopwatch", "timer", "weather", "display", "system", "alerts", "battery", "about", "storage", "brightness", "timeout", "rotation", "raise_to_wake", "circular_scroll", "grid_mode", "language", "reboot", "shutdown", "factory_reset", "sound", "vibration", "wake_screen", "dnd", "voltage", "temperature", "usage", "format", "firmware", "hourly_forecast", "daily_forecast", "timeout_5", "timeout_10", "timeout_20", "timeout_30", "always_on", "updated_at", "cloudy", "ram", "psram", "flash", "type", "steps", "watchfaces", "sd_card", "clear_all", "no_notifications", "camera", "music_control", "reset", "inactive", "connected", "disconnected", "nav_info", "nav_start", "navio_info", "en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", "proceed", "cancel", "reset_info", "reset_title", "icon_size", "system_time", "arrival_time", "directions", "large_text", "applications", "phone_link", "status", "last_sync", "charging", "yes", "no", "find_phone", "version", "code", "sun_cloud", "sunny", "snow", "rainy", "tornado", "wind", "haze", "helios_info", NULL};
     static const char * translation_texts[] = {
         "en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", /* id */
         "English", "Portuguese", "German", "Spanish", "French", "Hungarian", "Russian", "Greek", "Thai", "Chinese", "Japanese", "Hindi", "Vietnamese", /* locale */
@@ -173,6 +173,7 @@ static uint32_t helios_ui_target = HELIOS_UI_TARGET_ALL;
         "System time", "Hora do sistema", "Systemzeit", "Hora del sistema", "Heure système", "Rendszeridő", "Системное время", "Ώρα συστήματος", "เวลาของระบบ", "系统时间", "システム時刻", "सिस्टम समय", "Thời gian hệ thống", /* system_time */
         "Arrival time", "Hora de chegada", "Ankunftszeit", "Hora de llegada", "Heure d'arrivée", "Érkezési idő", "Время прибытия", "Ώρα άφιξης", "เวลาที่มาถึง", "到达时间", "到着時間", "आगमन समय", "Thời gian đến", /* arrival_time */
         "Directions", "Instruções", "Wegbeschreibung", "Instrucciones", "Instructions", "Útvonalterv", "Направления", "Οδηγίες", "ทิศทาง", "方向", "方向", "दिशा-निर्देश", "Hướng dẫn", /* directions */
+        "Large text", "Texto grande", "Großer Text", "Texto grande", "Texte en gros caractères", "Nagy szöveg", "Крупный текст", "Μεγάλο κείμενο", "ข้อความขนาดใหญ่", "大字", "大きな文字", "बड़ी किताब", "Chữ lớn", /* large_text */
         "Applications", "Aplicações", "Anwendungen", "Aplicaciones", "Applications", "Alkalmazások", "Приложения", "Εφαρμογές", "แอปพลิเคชัน", "应用程序", "アプリケーション", "आवेदन", "Ứng dụng", /* applications */
         "Phone Link", "Ligação telefônica", "Telefonverbindung", "Enlace telefónico", "Lien téléphonique", "Telefonkapcsolat", "Телефонная ссылка", "Τηλεφωνική σύνδεση", "โทรศัพท์เชื่อมต่อ", "电话链接", "電話回線", "फ़ोन लिंक", "Kết nối điện thoại", /* phone_link */
         "Status", "Status", "Status", "Estado", "Statut", "Állapot", "Статус", "Κατάσταση", "สถานะ", "地位", "状態", "स्थिति", "Trạng thái", /* status */
@@ -190,8 +191,7 @@ static uint32_t helios_ui_target = HELIOS_UI_TARGET_ALL;
         "Tornado", "Tornado", "Tornado", "Tornado", "Tornade", "Tornádó", "Торнадо", "Ανεμοστρόβιλος", "พายุทอร์นาโด", "龙卷风", "竜巻", "बवंडर", "Lốc xoáy", /* tornado */
         "Windy", "Ventoso", "Windig", "Ventoso", "Venteux", "Szeles", "Ветрено", "Ανεμώδης", "ลมแรง", "风", "風が強い", "तूफ़ानी", "Có gió", /* wind */
         "Haze", "Confusão", "Dunst", "Bruma", "Brume", "Köd", "Туман", "Ομίχλη", "หมอก", "阴霾", "ヘイズ", "धुंध", "Sương mù", /* haze */
-        "AI generated", "Generado por IA", "KI-generiert", "Gerado por IA", "Généré par l'IA", "Mesterséges intelligencia által generált", "Сгенерировано ИИ", "Δημιουργήθηκε από AI", "สร้างโดย AI", "AI生成", "AI生成", "AI GENERATED", NULL, /* ai */
-        "️ ,?.♥🛠", "️ -,?.♥áâãçêíóôõúÚ🛠", "️ -,?.♥äößü🛠", "️ ,?¿.♥áéíñóúÚ🛠", "️  -,?.'♥ÀàÉéèÊôû🛠", "️ -,:?.♥áÁéÉíóÓöÖőúÚüÜ🛠", "️ -,?.«»♥аАбБВвгДдеЕжЗзиИйкКлмМнНоОПпрРСстТуУфФХхцЦчЧшШщыьЭюяЯ🛠", "️ ,;.♥αΑάβΒγΓΔδεΕέΈζηΗΉήθΘιΙίκΚλΛμΜΝνξοΟόΠπρΡςΣσΤτυΥύφΦχΧψωΩώΏ🛠", "️็่้์ ?.♥ๆกขคฆงจชซฎณดตถทธนบปฝพฟภมยรฤลวศษสหฬอะัาำิีึืุูเแโใไ🛠", "️ ，？。♥一七三上不乐九二于云五亚亮代件位使俊倾停健光全八六关内出到制动勿十卡卷厂压取可同后向吗启周和唤器四固图圆在地型基声备复多大天太始媚存定导将小尼屏展已幕并序库应度康开式形态恢您情所手打扰找报振据接控收数文断新方旋无日时明星是暂更月有期本机查标格模次步每气池法活消清温版状用由电的盘相看睡知码确示秒程稍类系终统继续网置联肯能航行表要觉言设话语请警贮费起跃跑身转轴达这进连逐通造部醒重链闪闭间阳阴除雪雷霾非音预风骤龙🛠", "️ 、？。♥々ーァアあイィいウェえォおカかがキクくグケゲげこコごさサシしジスすズセせタたダだチちッつっづテてでデトとドどナにニネのはバビフブプヘべほマまみムむめメモもャやュョよラらリりルるレれロろをンん上予作使健充先円最出切別到刻動去同向回土圧基報場天太始定寝工巻常度康式強形後態所手持振探接断新方日時晴曇曜更月期木楽気水法消済温火状用画着知確秒竜終絡続線荷行言設話認語起転輝込通連進金開間陽雨雪電非面音順風🛠", "️़ँं -,?।♥अआइईउएऐऔकखगघचछजटठडढणतथदधनपफबभमयरलवशषसहािीुूृेैॉोौ्🛠", NULL, /* unique */
+        "A smartwatch UI made with ♥️ in Kenya using LVGL Pro by fbiego 🛠️", "Uma interface de smartwatch feita com ♥️ no Quênia usando LVGL Pro da fbiego 🛠️", "Eine mit ♥️ in Kenia mit LVGL Pro von fbiego entwickelte Smartwatch-Benutzeroberfläche 🛠️", "Una interfaz de usuario para reloj inteligente hecha con ♥️ en Kenia usando LVGL Pro de fbiego 🛠️", "Une interface utilisateur pour smartwatch conçue avec ♥️ au Kenya à l'aide de LVGL Pro par fbiego 🛠️", "Egy okosóra felhasználói felület, amelyet ♥️-val készítettek Kenyában az fbiego 🛠️ LVGL Pro használatával", "Пользовательский интерфейс для умных часов, созданный с любовью в Кении с использованием LVGL Pro от fbiego 🛠️", "Ένα περιβάλλον χρήστη smartwatch φτιαγμένο με ♥️ στην Κένυα χρησιμοποιώντας LVGL Pro από την fbiego 🛠️", "อินเทอร์เฟซผู้ใช้สำหรับสมาร์ทวอทช์ สร้างสรรค์ด้วย ♥️ ในประเทศเคนยา โดยใช้ LVGL Pro จาก fbiego 🛠️", "一款由fbiego在肯尼亚使用LVGL Pro精心打造的智能手表用户界面🛠️", "ケニアでfbiegoのLVGL Proを使って♥️を込めて作られたスマートウォッチUI🛠️", "केन्या में fbiego के LVGL Pro का उपयोग करके प्यार से बनाया गया एक स्मार्टवॉच यूआई 🛠️", "Giao diện người dùng đồng hồ thông minh được tạo ra bằng ♥️ tại Kenya bằng LVGL Pro của fbiego 🛠️", /* helios_info */
     };
 #endif
 
@@ -397,6 +397,8 @@ const void * icon_spotify = NULL;
 extern const void * icon_spotify_data;
 const void * icon_phone_link = NULL;
 extern const void * icon_phone_link_data;
+const void * icon_diagnostics = NULL;
+extern const void * icon_diagnostics_data;
 const void * icon_weather_humidity_icon = NULL;
 extern const void * icon_weather_humidity_icon_data;
 const void * icon_weather_temp_up_icon = NULL;
@@ -515,6 +517,20 @@ const void * icon_mpesa_watch = NULL;
 extern const void * icon_mpesa_watch_data;
 const void * icon_mpesa_watch_32 = NULL;
 extern const void * icon_mpesa_watch_32_data;
+const void * face_preview = NULL;
+extern const void * face_preview_data;
+const void * img_slider_left_60 = NULL;
+extern const void * img_slider_left_60_data;
+const void * img_slider_left_90 = NULL;
+extern const void * img_slider_left_90_data;
+const void * img_slider_left_110 = NULL;
+extern const void * img_slider_left_110_data;
+const void * img_slider_right_60 = NULL;
+extern const void * img_slider_right_60_data;
+const void * img_slider_right_90 = NULL;
+extern const void * img_slider_right_90_data;
+const void * img_slider_right_110 = NULL;
+extern const void * img_slider_right_110_data;
 
 /*----------------
  * Global styles
@@ -638,6 +654,8 @@ lv_subject_t sb_mpesa_balance_hidden;
 lv_subject_t sb_mpesa_hidden_icon;
 lv_subject_t sb_mpesa_balance_text;
 lv_subject_t sb_mpesa_recent_text;
+lv_subject_t sb_diagnostic_bmi270;
+lv_subject_t sb_diagnostic_battery;
 
 /**********************
  *      MACROS
@@ -1138,6 +1156,10 @@ void helios_ui_init_gen(const char * asset_path)
         if (!icon_phone_link) {
             icon_phone_link = &icon_phone_link_data;
         }
+        /* icon_diagnostics */
+        if (!icon_diagnostics) {
+            icon_diagnostics = &icon_diagnostics_data;
+        }
         /* icon_weather_humidity_icon */
         if (!icon_weather_humidity_icon) {
             icon_weather_humidity_icon = &icon_weather_humidity_icon_data;
@@ -1374,6 +1396,34 @@ void helios_ui_init_gen(const char * asset_path)
         if (!icon_mpesa_watch_32) {
             icon_mpesa_watch_32 = &icon_mpesa_watch_32_data;
         }
+        /* face_preview */
+        if (!face_preview) {
+            face_preview = &face_preview_data;
+        }
+        /* img_slider_left_60 */
+        if (!img_slider_left_60) {
+            img_slider_left_60 = &img_slider_left_60_data;
+        }
+        /* img_slider_left_90 */
+        if (!img_slider_left_90) {
+            img_slider_left_90 = &img_slider_left_90_data;
+        }
+        /* img_slider_left_110 */
+        if (!img_slider_left_110) {
+            img_slider_left_110 = &img_slider_left_110_data;
+        }
+        /* img_slider_right_60 */
+        if (!img_slider_right_60) {
+            img_slider_right_60 = &img_slider_right_60_data;
+        }
+        /* img_slider_right_90 */
+        if (!img_slider_right_90) {
+            img_slider_right_90 = &img_slider_right_90_data;
+        }
+        /* img_slider_right_110 */
+        if (!img_slider_right_110) {
+            img_slider_right_110 = &img_slider_right_110_data;
+        }
     }
     #endif
 
@@ -1424,28 +1474,16 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_int(&sb_screen_height, 466);
     static char sb_screen_res_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_screen_res_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_screen_res,
-                           sb_screen_res_buf,
-                           sb_screen_res_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "466x466"
-                          );
+    lv_subject_init_string(&sb_screen_res, sb_screen_res_buf, sb_screen_res_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "466x466");
     static char sb_placeholder_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_placeholder_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_placeholder,
-                           sb_placeholder_buf,
-                           sb_placeholder_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           ""
-                          );
+    lv_subject_init_string(&sb_placeholder, sb_placeholder_buf, sb_placeholder_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "");
     static char sb_lvgl_version_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_lvgl_version_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_lvgl_version,
-                           sb_lvgl_version_buf,
-                           sb_lvgl_version_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "v9.0.0"
-                          );
+    lv_subject_init_string(&sb_lvgl_version, sb_lvgl_version_buf, sb_lvgl_version_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "v9.0.0");
     lv_subject_init_int(&sb_app_list_mode, 0);
     lv_subject_set_min_value_int(&sb_app_list_mode, 0);
     lv_subject_set_max_value_int(&sb_app_list_mode, 1);
@@ -1473,20 +1511,12 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_set_max_value_int(&sb_focusable, 1);
     static char sb_time_string_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_time_string_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_time_string,
-                           sb_time_string_buf,
-                           sb_time_string_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "12:45"
-                          );
+    lv_subject_init_string(&sb_time_string, sb_time_string_buf, sb_time_string_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "12:45");
     static char sb_date_string_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_date_string_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_date_string,
-                           sb_date_string_buf,
-                           sb_date_string_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Sun 5 Oct"
-                          );
+    lv_subject_init_string(&sb_date_string, sb_date_string_buf, sb_date_string_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Sun 5 Oct");
     lv_subject_init_int(&sb_time_hour, 12);
     lv_subject_init_int(&sb_time_minute, 45);
     lv_subject_init_int(&sb_time_seconds, 23);
@@ -1495,49 +1525,29 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_int(&sb_time_seconds_analog, 1800);
     static char sb_time_am_pm_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_time_am_pm_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_time_am_pm,
-                           sb_time_am_pm_buf,
-                           sb_time_am_pm_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "am"
-                          );
+    lv_subject_init_string(&sb_time_am_pm, sb_time_am_pm_buf, sb_time_am_pm_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "am");
     lv_subject_init_int(&sb_time_am, -1);
     lv_subject_init_int(&sb_time_day, 5);
     lv_subject_init_int(&sb_time_month, 10);
     lv_subject_init_int(&sb_time_year, 2025);
     static char sb_time_month_short_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_time_month_short_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_time_month_short,
-                           sb_time_month_short_buf,
-                           sb_time_month_short_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "oct"
-                          );
+    lv_subject_init_string(&sb_time_month_short, sb_time_month_short_buf, sb_time_month_short_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "oct");
     static char sb_time_month_long_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_time_month_long_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_time_month_long,
-                           sb_time_month_long_buf,
-                           sb_time_month_long_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "october"
-                          );
+    lv_subject_init_string(&sb_time_month_long, sb_time_month_long_buf, sb_time_month_long_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "october");
     lv_subject_init_int(&sb_time_weekday, 0);
     static char sb_time_weekday_short_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_time_weekday_short_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_time_weekday_short,
-                           sb_time_weekday_short_buf,
-                           sb_time_weekday_short_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "sun"
-                          );
+    lv_subject_init_string(&sb_time_weekday_short, sb_time_weekday_short_buf, sb_time_weekday_short_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "sun");
     static char sb_time_weekday_long_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_time_weekday_long_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_time_weekday_long,
-                           sb_time_weekday_long_buf,
-                           sb_time_weekday_long_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "sunday"
-                          );
+    lv_subject_init_string(&sb_time_weekday_long, sb_time_weekday_long_buf, sb_time_weekday_long_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "sunday");
     lv_subject_init_int(&sb_activity_steps, 2735);
     lv_subject_init_int(&sb_activity_kcal, 163);
     lv_subject_init_int(&sb_activity_distance, 157);
@@ -1546,116 +1556,60 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_int(&sb_system_connection, 0);
     static char sb_system_connection_str_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_system_connection_str_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_system_connection_str,
-                           sb_system_connection_str_buf,
-                           sb_system_connection_str_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "disconnected"
-                          );
+    lv_subject_init_string(&sb_system_connection_str, sb_system_connection_str_buf, sb_system_connection_str_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "disconnected");
     static char sb_os_name_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_os_name_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_os_name,
-                           sb_os_name_buf,
-                           sb_os_name_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "OS"
-                          );
+    lv_subject_init_string(&sb_os_name, sb_os_name_buf, sb_os_name_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "OS");
     static char sb_os_version_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_os_version_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_os_version,
-                           sb_os_version_buf,
-                           sb_os_version_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "v0.0.1"
-                          );
+    lv_subject_init_string(&sb_os_version, sb_os_version_buf, sb_os_version_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "v0.0.1");
     static char sb_chronos_esp_version_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_chronos_esp_version_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_chronos_esp_version,
-                           sb_chronos_esp_version_buf,
-                           sb_chronos_esp_version_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "v1.9.0"
-                          );
+    lv_subject_init_string(&sb_chronos_esp_version, sb_chronos_esp_version_buf, sb_chronos_esp_version_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "v1.9.0");
     static char sb_chronos_app_version_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_chronos_app_version_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_chronos_app_version,
-                           sb_chronos_app_version_buf,
-                           sb_chronos_app_version_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "v3.8.5"
-                          );
+    lv_subject_init_string(&sb_chronos_app_version, sb_chronos_app_version_buf, sb_chronos_app_version_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "v3.8.5");
     static char sb_firmware_version_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_firmware_version_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_firmware_version,
-                           sb_firmware_version_buf,
-                           sb_firmware_version_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "v1.0.0"
-                          );
+    lv_subject_init_string(&sb_firmware_version, sb_firmware_version_buf, sb_firmware_version_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "v1.0.0");
     static char sb_board_oem_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_board_oem_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_board_oem,
-                           sb_board_oem_buf,
-                           sb_board_oem_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "LVGL"
-                          );
+    lv_subject_init_string(&sb_board_oem, sb_board_oem_buf, sb_board_oem_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "LVGL");
     static char sb_board_name_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_board_name_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_board_name,
-                           sb_board_name_buf,
-                           sb_board_name_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Editor"
-                          );
+    lv_subject_init_string(&sb_board_name, sb_board_name_buf, sb_board_name_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Editor");
     static char sb_board_type_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_board_type_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_board_type,
-                           sb_board_type_buf,
-                           sb_board_type_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "ESP32-S3"
-                          );
+    lv_subject_init_string(&sb_board_type, sb_board_type_buf, sb_board_type_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "ESP32-S3");
     static char sb_board_mac_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_board_mac_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_board_mac,
-                           sb_board_mac_buf,
-                           sb_board_mac_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "34:54:56:23:43:32"
-                          );
+    lv_subject_init_string(&sb_board_mac, sb_board_mac_buf, sb_board_mac_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "34:54:56:23:43:32");
     static char sb_board_ram_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_board_ram_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_board_ram,
-                           sb_board_ram_buf,
-                           sb_board_ram_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "384KB"
-                          );
+    lv_subject_init_string(&sb_board_ram, sb_board_ram_buf, sb_board_ram_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "384KB");
     static char sb_board_psram_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_board_psram_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_board_psram,
-                           sb_board_psram_buf,
-                           sb_board_psram_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "16MB"
-                          );
+    lv_subject_init_string(&sb_board_psram, sb_board_psram_buf, sb_board_psram_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "16MB");
     static char sb_board_flash_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_board_flash_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_board_flash,
-                           sb_board_flash_buf,
-                           sb_board_flash_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "16MB"
-                          );
+    lv_subject_init_string(&sb_board_flash, sb_board_flash_buf, sb_board_flash_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "16MB");
     static char sb_display_type_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_display_type_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_display_type,
-                           sb_display_type_buf,
-                           sb_display_type_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "AMOLED"
-                          );
+    lv_subject_init_string(&sb_display_type, sb_display_type_buf, sb_display_type_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "AMOLED");
     lv_subject_init_int(&sb_battery_percent, 70);
     lv_subject_set_min_value_int(&sb_battery_percent, 0);
     lv_subject_set_max_value_int(&sb_battery_percent, 100);
@@ -1666,109 +1620,61 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_float(&sb_battery_temp, 32.6);
     static char sb_battery_usage_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_battery_usage_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_battery_usage,
-                           sb_battery_usage_buf,
-                           sb_battery_usage_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "2d 14h"
-                          );
+    lv_subject_init_string(&sb_battery_usage, sb_battery_usage_buf, sb_battery_usage_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "2d 14h");
     lv_subject_init_pointer(&sb_nav_icon, (void *)icon_turn_left);
     static char sb_nav_text_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_nav_text_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_nav_text,
-                           sb_nav_text_buf,
-                           sb_nav_text_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "10:20 ETA\n5 mins | 1.6km"
-                          );
+    lv_subject_init_string(&sb_nav_text, sb_nav_text_buf, sb_nav_text_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "10:20 ETA\n5 mins | 1.6km");
     static char sb_nav_title_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_nav_title_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_nav_title,
-                           sb_nav_title_buf,
-                           sb_nav_title_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "100m"
-                          );
+    lv_subject_init_string(&sb_nav_title, sb_nav_title_buf, sb_nav_title_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "100m");
     static char sb_nav_directions_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_nav_directions_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_nav_directions,
-                           sb_nav_directions_buf,
-                           sb_nav_directions_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Turn left towards Kenyatta avenue at the round about"
-                          );
+    lv_subject_init_string(&sb_nav_directions, sb_nav_directions_buf, sb_nav_directions_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Turn left towards Kenyatta avenue at the round about");
     static char sb_music_app_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_music_app_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_music_app,
-                           sb_music_app_buf,
-                           sb_music_app_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Music"
-                          );
+    lv_subject_init_string(&sb_music_app, sb_music_app_buf, sb_music_app_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Music");
     static char sb_music_track_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_music_track_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_music_track,
-                           sb_music_track_buf,
-                           sb_music_track_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Track"
-                          );
+    lv_subject_init_string(&sb_music_track, sb_music_track_buf, sb_music_track_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Track");
     static char sb_music_artist_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_music_artist_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_music_artist,
-                           sb_music_artist_buf,
-                           sb_music_artist_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Artist"
-                          );
+    lv_subject_init_string(&sb_music_artist, sb_music_artist_buf, sb_music_artist_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Artist");
     lv_subject_init_int(&sb_music_state, 0);
     lv_subject_init_pointer(&sb_music_state_icon, (void *)icon_music_play_32);
     lv_subject_init_pointer(&sb_music_icon, (void *)icon_music);
     static char sb_music_package_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_music_package_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_music_package,
-                           sb_music_package_buf,
-                           sb_music_package_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "music"
-                          );
+    lv_subject_init_string(&sb_music_package, sb_music_package_buf, sb_music_package_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "music");
     lv_subject_init_int(&sb_music_album_color, 0);
     static char sb_phone_manufacturer_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_phone_manufacturer_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_phone_manufacturer,
-                           sb_phone_manufacturer_buf,
-                           sb_phone_manufacturer_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Google"
-                          );
+    lv_subject_init_string(&sb_phone_manufacturer, sb_phone_manufacturer_buf, sb_phone_manufacturer_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Google");
     static char sb_phone_model_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_phone_model_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_phone_model,
-                           sb_phone_model_buf,
-                           sb_phone_model_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Pixel 7"
-                          );
+    lv_subject_init_string(&sb_phone_model, sb_phone_model_buf, sb_phone_model_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Pixel 7");
     lv_subject_init_int(&sb_phone_sdk, 37);
     lv_subject_init_int(&sb_phone_battery, 50);
     lv_subject_init_int(&sb_phone_charging, 0);
     static char sb_phone_charging_str_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_phone_charging_str_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_phone_charging_str,
-                           sb_phone_charging_str_buf,
-                           sb_phone_charging_str_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "no"
-                          );
+    lv_subject_init_string(&sb_phone_charging_str, sb_phone_charging_str_buf, sb_phone_charging_str_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "no");
     lv_subject_init_int(&sb_chronos_app_code, 53);
     static char sb_phone_last_sync_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_phone_last_sync_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_phone_last_sync,
-                           sb_phone_last_sync_buf,
-                           sb_phone_last_sync_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "2d 4h"
-                          );
+    lv_subject_init_string(&sb_phone_last_sync, sb_phone_last_sync_buf, sb_phone_last_sync_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "2d 4h");
     lv_subject_init_int(&sb_weather_code, 0);
     lv_subject_set_min_value_int(&sb_weather_code, 0);
     lv_subject_set_max_value_int(&sb_weather_code, 7);
@@ -1776,36 +1682,20 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_int(&sb_weather_temp, 23);
     static char sb_weather_location_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_weather_location_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_weather_location,
-                           sb_weather_location_buf,
-                           sb_weather_location_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Nairobi"
-                          );
+    lv_subject_init_string(&sb_weather_location, sb_weather_location_buf, sb_weather_location_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Nairobi");
     static char sb_weather_condition_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_weather_condition_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_weather_condition,
-                           sb_weather_condition_buf,
-                           sb_weather_condition_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "cloudy"
-                          );
+    lv_subject_init_string(&sb_weather_condition, sb_weather_condition_buf, sb_weather_condition_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "cloudy");
     static char sb_weather_update_time_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_weather_update_time_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_weather_update_time,
-                           sb_weather_update_time_buf,
-                           sb_weather_update_time_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "10:20"
-                          );
+    lv_subject_init_string(&sb_weather_update_time, sb_weather_update_time_buf, sb_weather_update_time_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "10:20");
     static char sb_weather_temp_unit_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_weather_temp_unit_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_weather_temp_unit,
-                           sb_weather_temp_unit_buf,
-                           sb_weather_temp_unit_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "C"
-                          );
+    lv_subject_init_string(&sb_weather_temp_unit, sb_weather_temp_unit_buf, sb_weather_temp_unit_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "C");
     lv_subject_init_int(&sb_weather_humidity, 45);
     lv_subject_init_int(&sb_weather_uv, 3);
     lv_subject_init_int(&sb_weather_temp_high, 30);
@@ -1813,12 +1703,8 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_int(&sb_stopwatch_state, 0);
     static char sb_stopwatch_time_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_stopwatch_time_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_stopwatch_time,
-                           sb_stopwatch_time_buf,
-                           sb_stopwatch_time_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "00:00:00"
-                          );
+    lv_subject_init_string(&sb_stopwatch_time, sb_stopwatch_time_buf, sb_stopwatch_time_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "00:00:00");
     lv_subject_init_int(&sb_stopwatch_button_start_state, 0);
     lv_subject_init_int(&sb_stopwatch_button_reset_state, 0);
     lv_subject_init_pointer(&sb_stopwatch_button_start_icon, (void *)icon_timer_start);
@@ -1828,20 +1714,20 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_pointer(&sb_mpesa_hidden_icon, (void *)icon_text_hide);
     static char sb_mpesa_balance_text_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_mpesa_balance_text_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_mpesa_balance_text,
-                           sb_mpesa_balance_text_buf,
-                           sb_mpesa_balance_text_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "KSH 1,235"
-                          );
+    lv_subject_init_string(&sb_mpesa_balance_text, sb_mpesa_balance_text_buf, sb_mpesa_balance_text_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "KSH 1,235");
     static char sb_mpesa_recent_text_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_mpesa_recent_text_prev_buf[UI_SUBJECT_STRING_LENGTH];
-    lv_subject_init_string(&sb_mpesa_recent_text,
-                           sb_mpesa_recent_text_buf,
-                           sb_mpesa_recent_text_prev_buf,
-                           UI_SUBJECT_STRING_LENGTH,
-                           "Recent"
-                          );
+    lv_subject_init_string(&sb_mpesa_recent_text, sb_mpesa_recent_text_buf, sb_mpesa_recent_text_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Recent");
+    static char sb_diagnostic_bmi270_buf[UI_SUBJECT_STRING_LENGTH];
+    static char sb_diagnostic_bmi270_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&sb_diagnostic_bmi270, sb_diagnostic_bmi270_buf, sb_diagnostic_bmi270_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "Accel: X:4   Y:5   Z:2\nGyro: X:4   Y:5   Z:2\nSteps: 243\nWake event:");
+    static char sb_diagnostic_battery_buf[UI_SUBJECT_STRING_LENGTH];
+    static char sb_diagnostic_battery_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&sb_diagnostic_battery, sb_diagnostic_battery_buf, sb_diagnostic_battery_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "4027 mV\n82%\nCharge detect: Yes");
 
     /*----------------
      * Translations
@@ -2074,12 +1960,18 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "sb_mpesa_hidden_icon", &sb_mpesa_hidden_icon);
     lv_xml_register_subject(NULL, "sb_mpesa_balance_text", &sb_mpesa_balance_text);
     lv_xml_register_subject(NULL, "sb_mpesa_recent_text", &sb_mpesa_recent_text);
+    lv_xml_register_subject(NULL, "sb_diagnostic_bmi270", &sb_diagnostic_bmi270);
+    lv_xml_register_subject(NULL, "sb_diagnostic_battery", &sb_diagnostic_battery);
 
     /* Register callbacks */
     lv_xml_register_event_cb(NULL, "on_music_control_cb", on_music_control_cb);
+    lv_xml_register_event_cb(NULL, "on_slider_release", on_slider_release);
     lv_xml_register_event_cb(NULL, "on_hs_info_cb", on_hs_info_cb);
     lv_xml_register_event_cb(NULL, "on_hs_title_pill_cb", on_hs_title_pill_cb);
+    lv_xml_register_event_cb(NULL, "on_diagnostic_click", on_diagnostic_click);
     lv_xml_register_event_cb(NULL, "on_simulator_event_cb", on_simulator_event_cb);
+
+    /* Register easing callbacks */
 #endif
 
     /* Register all the global assets so that they won't be created again when globals.xml is parsed.
@@ -2127,6 +2019,7 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_image(NULL, "icon_user", icon_user);
     lv_xml_register_image(NULL, "icon_spotify", icon_spotify);
     lv_xml_register_image(NULL, "icon_phone_link", icon_phone_link);
+    lv_xml_register_image(NULL, "icon_diagnostics", icon_diagnostics);
     lv_xml_register_image(NULL, "icon_weather_humidity_icon", icon_weather_humidity_icon);
     lv_xml_register_image(NULL, "icon_weather_temp_up_icon", icon_weather_temp_up_icon);
     lv_xml_register_image(NULL, "icon_weather_temp_down_icon", icon_weather_temp_down_icon);
@@ -2186,6 +2079,13 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_image(NULL, "icon_text_show", icon_text_show);
     lv_xml_register_image(NULL, "icon_mpesa_watch", icon_mpesa_watch);
     lv_xml_register_image(NULL, "icon_mpesa_watch_32", icon_mpesa_watch_32);
+    lv_xml_register_image(NULL, "face_preview", face_preview);
+    lv_xml_register_image(NULL, "img_slider_left_60", img_slider_left_60);
+    lv_xml_register_image(NULL, "img_slider_left_90", img_slider_left_90);
+    lv_xml_register_image(NULL, "img_slider_left_110", img_slider_left_110);
+    lv_xml_register_image(NULL, "img_slider_right_60", img_slider_right_60);
+    lv_xml_register_image(NULL, "img_slider_right_90", img_slider_right_90);
+    lv_xml_register_image(NULL, "img_slider_right_110", img_slider_right_110);
 #endif
 
 #if !defined(LV_USE_XML) || LV_USE_XML == 0
@@ -2219,6 +2119,11 @@ void __attribute__((weak)) on_music_control_cb(lv_event_t * e)
     LV_UNUSED(e);
     LV_LOG("on_music_control_cb was called\n");
 }
+void __attribute__((weak)) on_slider_release(lv_event_t * e)
+{
+    LV_UNUSED(e);
+    LV_LOG("on_slider_release was called\n");
+}
 void __attribute__((weak)) on_hs_info_cb(lv_event_t * e)
 {
     LV_UNUSED(e);
@@ -2228,6 +2133,11 @@ void __attribute__((weak)) on_hs_title_pill_cb(lv_event_t * e)
 {
     LV_UNUSED(e);
     LV_LOG("on_hs_title_pill_cb was called\n");
+}
+void __attribute__((weak)) on_diagnostic_click(lv_event_t * e)
+{
+    LV_UNUSED(e);
+    LV_LOG("on_diagnostic_click was called\n");
 }
 void __attribute__((weak)) on_simulator_event_cb(lv_event_t * e)
 {

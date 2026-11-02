@@ -119,7 +119,7 @@ lv_obj_t * phone_create(void)
 
         hs_line_create(hs_card_1);
 
-        hs_bar_create(hs_card_1, "Brightness", "battery", &sb_phone_battery);
+        hs_bar_create(hs_card_1, "Brightness", "battery", &sb_phone_battery, lv_color_hex(0xffffff));
 
         hs_info_sb_create(hs_card_1, "Label", "charging", &sb_phone_charging_str, "%s");
 

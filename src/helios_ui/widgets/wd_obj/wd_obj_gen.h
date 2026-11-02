@@ -16,10 +16,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 #include "../../helios_ui_gen.h"
@@ -44,7 +42,7 @@ extern "C" {
 lv_obj_t * wd_obj_create(lv_obj_t * parent);
 /**
  * wd_obj bind_bg_color
- * @param obj   pointer to a wd_obj
+ * @param wd_obj   pointer to a wd_obj
  * @param bind_bg_color  bind_bg_color
  */
 void wd_obj_bind_bg_color(lv_obj_t * wd_obj, lv_subject_t * bind_bg_color);

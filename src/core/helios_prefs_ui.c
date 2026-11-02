@@ -68,7 +68,7 @@ void helios_prefs_apply_saved_ui_settings(void)
     if (helios_prefs_get_i32(PREF_SCREEN_RTW, &value, 1))
         helios_subject_set_screen_rtw(clamp_i32(value, 0, 1));
 
-    if (helios_prefs_get_i32(PREF_SCREEN_TIMEOUT, &value, 4))
+    if (helios_prefs_get_i32(PREF_SCREEN_TIMEOUT, &value, 1))
         helios_subject_set_screen_timeout(clamp_i32(value, 0, 4));
 
     if (helios_prefs_get_i32(PREF_FOCUSABLE, &value, 1))

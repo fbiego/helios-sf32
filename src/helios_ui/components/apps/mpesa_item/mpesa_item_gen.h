@@ -15,10 +15,8 @@ extern "C" {
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
     #include "lvgl.h"
-    #include "lvgl_private.h"
 #else
     #include "lvgl/lvgl.h"
-    #include "lvgl/lvgl_private.h"
 #endif
 
 /*********************
@@ -33,7 +31,7 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 
-lv_obj_t * mpesa_item_create(lv_obj_t * parent, const char * tx_name, const char * tx_time, const char * tx_amount, bool tx_in);
+lv_obj_t * mpesa_item_create(lv_obj_t * parent, const char * tx_name, const char * tx_time, const char * tx_amount, bool tx_in, lv_color_t tx_color);
 
 /**********************
  *      MACROS

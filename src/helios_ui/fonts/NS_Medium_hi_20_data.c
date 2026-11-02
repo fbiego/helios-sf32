@@ -18,13 +18,13 @@
     #include "lvgl/lvgl.h"
 #endif
 
-
-
 #ifndef NS_MEDIUM_HI_20_DATA
 #define NS_MEDIUM_HI_20_DATA 1
 #endif
 
 #if NS_MEDIUM_HI_20_DATA
+
+
 
 /*-----------------
  *    BITMAPS
@@ -1971,7 +1971,7 @@ lv_font_t NS_Medium_hi_20_data = {
     .underline_thickness = 1,
 #endif
 
-#if LV_VERSION_CHECK(9, 3, 0)
+#if LV_VERSION_CHECK(9, 3, 0) || LVGL_VERSION_MAJOR >= 10
     .static_bitmap = 1,    /*Bitmaps are stored as const so they are always static if not compressed */
 #endif
 

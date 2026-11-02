@@ -1,8 +1,25 @@
 #include "helios_platform.h"
+#include "helios_features.h"
+
+#if HELIOS_HAS_BMI270
+#include "helios_bmi270.h"
+#endif
 
 #include <string.h>
 
 #include "board.h"
+#include "drv_common.h"
+
+#if HELIOS_HAS_BUZZER
+#ifndef RT_USING_PWM
+#error Buzzer diagnostics require RT_USING_PWM
+#endif
+#include "drivers/rt_drv_pwm.h"
+#endif
+
+#if (HELIOS_HAS_BUZZER || HELIOS_HAS_MOTOR) && !defined(RT_USING_TIMER_SOFT)
+#error Diagnostic outputs require RT_USING_TIMER_SOFT
+#endif
 
 #ifdef RT_USING_DFS
 #include "dfs_fs.h"
@@ -23,12 +40,26 @@
 #define LOG_TAG "helios.hw"
 #include "log.h"
 
+void helios_platform_restart(void)
+{
+    drv_reboot();
+}
+
 #define HELIOS_ADC_DEV_NAME "bat1"
 #define HELIOS_ADC_VBAT_CH 7
 #define HELIOS_I2C2_SCL_PAD PAD_PA40
 #define HELIOS_I2C2_SDA_PAD PAD_PA39
 
+#ifdef RT_USING_ADC
 static rt_device_t g_adc_dev;
+static struct rt_mutex g_battery_lock;
+
+static int helios_battery_lock_init(void)
+{
+    return rt_mutex_init(&g_battery_lock, "battery", RT_IPC_FLAG_PRIO);
+}
+INIT_PREV_EXPORT(helios_battery_lock_init);
+#endif
 
 static void helios_i2c2_pinmux_init(void)
 {
@@ -88,7 +119,26 @@ static void helios_button_init_one(int32_t pin, uint8_t active_high)
 
 void helios_platform_init(void)
 {
+#if HELIOS_HAS_CHARGE_DETECT
+#if defined(BSP_CHARGER_INT_PIN) && BSP_CHARGER_INT_PIN != HELIOS_CHARGE_DETECT_PIN
+#error SDK charger pin conflicts with the Helios board profile
+#endif
+    /* The SDK base mux uses PA25 for SPI1 DI; this board uses open-drain detect. */
+    HAL_PIN_Set(HELIOS_CHARGE_DETECT_PAD, HELIOS_CHARGE_DETECT_GPIO, PIN_PULLUP, 1);
+    rt_pin_mode(HELIOS_CHARGE_DETECT_PIN, PIN_MODE_INPUT_PULLUP);
+#endif
+
     helios_i2c2_pinmux_init();
+
+#if HELIOS_HAS_BMI270
+#ifdef HELIOS_3V3_ENABLE_PIN
+    /* BMI270 shares the board's enabled 3.3 V peripheral rail. */
+    BSP_GPIO_Set(HELIOS_3V3_ENABLE_PIN, 1, 1);
+    rt_thread_mdelay(20);
+#endif
+    if (helios_bmi270_start() != RT_EOK)
+        LOG_E("failed to start BMI270 worker");
+#endif
 
 #ifdef USING_BUTTON_LIB
 #ifdef BSP_KEY1_PIN
@@ -124,17 +174,42 @@ rt_err_t helios_battery_read(helios_battery_t *battery)
     memset(battery, 0, sizeof(*battery));
 
 #ifdef RT_USING_ADC
-    if (!g_adc_dev)
-        g_adc_dev = rt_device_find(HELIOS_ADC_DEV_NAME);
-    if (!g_adc_dev)
-        return -RT_ERROR;
-
-    rt_err_t err = rt_adc_enable((rt_adc_device_t)g_adc_dev, HELIOS_ADC_VBAT_CH);
+    rt_err_t err = rt_mutex_take(&g_battery_lock, RT_WAITING_FOREVER);
     if (err != RT_EOK)
         return err;
 
-    rt_uint32_t raw_01mv = rt_adc_read((rt_adc_device_t)g_adc_dev, HELIOS_ADC_VBAT_CH);
-    rt_adc_disable((rt_adc_device_t)g_adc_dev, HELIOS_ADC_VBAT_CH);
+    if (!g_adc_dev)
+        g_adc_dev = rt_device_find(HELIOS_ADC_DEV_NAME);
+    if (!g_adc_dev)
+    {
+        err = -RT_ERROR;
+        goto done;
+    }
+
+    rt_adc_device_t adc = (rt_adc_device_t)g_adc_dev;
+    if (!adc->ops || !adc->ops->convert)
+    {
+        err = -RT_ENOSYS;
+        goto done;
+    }
+    err = rt_adc_enable(adc, HELIOS_ADC_VBAT_CH);
+    if (err != RT_EOK)
+        goto done;
+
+    /* rt_adc_read() discards the driver's error and can return an uninitialized
+     * value on failure. Keep the calibrated conversion result and its status. */
+    rt_uint32_t raw_01mv = 0;
+    err = adc->ops->convert(adc, HELIOS_ADC_VBAT_CH, &raw_01mv);
+    rt_err_t disable_err = rt_adc_disable(adc, HELIOS_ADC_VBAT_CH);
+    if (err == RT_EOK)
+        err = disable_err;
+    if (err != RT_EOK)
+        goto done;
+    if (raw_01mv == 0 || raw_01mv >= 50000)
+    {
+        err = -RT_ERROR;
+        goto done;
+    }
 
     battery->millivolts = raw_01mv / 10;
 
@@ -145,7 +220,126 @@ rt_err_t helios_battery_read(helios_battery_t *battery)
     else
         battery->percent = (uint8_t)((battery->millivolts - 3300) * 100 / (4200 - 3300));
 
-    return RT_EOK;
+#if HELIOS_HAS_CHARGE_DETECT
+    battery->charging = helios_charge_detect_level() == HELIOS_CHARGE_DETECT_ACTIVE_LEVEL;
+#endif
+
+done:
+    rt_mutex_release(&g_battery_lock);
+    return err;
+#else
+    return -RT_ENOSYS;
+#endif
+}
+
+#ifdef RT_USING_FINSH
+static void battery_status(void)
+{
+    helios_battery_t battery;
+    rt_err_t err = helios_battery_read(&battery);
+    if (err != RT_EOK)
+    {
+        rt_kprintf("Battery read failed: %d; device=%s channel=%d\n",
+                   err, HELIOS_ADC_DEV_NAME, HELIOS_ADC_VBAT_CH);
+        rt_kprintf("Check BSP_USING_ADC, BSP_USING_ADC1, and bat1 in list_device\n");
+        return;
+    }
+    rt_kprintf("VBAT=%lu mV, estimated level=%u%% (%s channel %d)\n",
+               (unsigned long)battery.millivolts, battery.percent,
+               HELIOS_ADC_DEV_NAME, HELIOS_ADC_VBAT_CH);
+}
+MSH_CMD_EXPORT(battery_status, Read internal VBAT voltage and battery level);
+#endif
+
+int helios_charge_detect_level(void)
+{
+#if HELIOS_HAS_CHARGE_DETECT
+    return rt_pin_read(HELIOS_CHARGE_DETECT_PIN);
+#else
+    return -RT_ENOSYS;
+#endif
+}
+
+#if HELIOS_HAS_BUZZER
+static struct rt_device_pwm *g_buzzer_pwm;
+static struct rt_timer g_buzzer_timer;
+static uint8_t g_buzzer_timer_ready;
+
+static void helios_buzzer_stop(void *parameter)
+{
+    (void)parameter;
+    if (g_buzzer_pwm)
+        rt_pwm_disable(g_buzzer_pwm, HELIOS_BUZZER_PWM_CHANNEL);
+    HAL_PIN_Set(HELIOS_BUZZER_PAD, HELIOS_BUZZER_GPIO, PIN_NOPULL, 1);
+    BSP_GPIO_Set(HELIOS_BUZZER_PIN, 0, 1);
+}
+#endif
+
+rt_err_t helios_buzzer_test(void)
+{
+#if HELIOS_HAS_BUZZER
+    rt_err_t err;
+    uint32_t period = 1000000000UL / HELIOS_BUZZER_FREQUENCY_HZ;
+    if (!g_buzzer_pwm)
+    {
+        struct rt_device_pwm *pwm = (struct rt_device_pwm *)rt_device_find(HELIOS_BUZZER_PWM_DEVICE);
+        if (!pwm)
+            return -RT_ERROR;
+        err = rt_device_open((rt_device_t)pwm, RT_DEVICE_OFLAG_RDWR);
+        if (err != RT_EOK)
+            return err;
+        g_buzzer_pwm = pwm;
+    }
+    if (!g_buzzer_timer_ready)
+    {
+        rt_timer_init(&g_buzzer_timer, "buzz_off", helios_buzzer_stop, RT_NULL,
+                      rt_tick_from_millisecond(200), RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_SOFT_TIMER);
+        g_buzzer_timer_ready = 1;
+    }
+    rt_timer_stop(&g_buzzer_timer);
+    HAL_PIN_Set(HELIOS_BUZZER_PAD, HELIOS_BUZZER_PWM_FUNCTION, PIN_NOPULL, 1);
+    err = rt_pwm_set(g_buzzer_pwm, HELIOS_BUZZER_PWM_CHANNEL, period, period / 2);
+    if (err == RT_EOK)
+        err = rt_pwm_enable(g_buzzer_pwm, HELIOS_BUZZER_PWM_CHANNEL);
+    if (err == RT_EOK)
+        err = rt_timer_start(&g_buzzer_timer);
+    if (err != RT_EOK)
+        helios_buzzer_stop(RT_NULL);
+    return err;
+#else
+    return -RT_ENOSYS;
+#endif
+}
+
+#if HELIOS_HAS_MOTOR
+static struct rt_timer g_motor_timer;
+static uint8_t g_motor_timer_ready;
+
+static void helios_motor_stop(void *parameter)
+{
+    (void)parameter;
+    rt_pin_write(HELIOS_MOTOR_PIN, !HELIOS_MOTOR_ACTIVE_HIGH);
+}
+#endif
+
+rt_err_t helios_motor_test(void)
+{
+#if HELIOS_HAS_MOTOR
+    if (!g_motor_timer_ready)
+    {
+        HAL_PIN_Set(HELIOS_MOTOR_PAD, HELIOS_MOTOR_GPIO, PIN_NOPULL, 1);
+        rt_pin_write(HELIOS_MOTOR_PIN, !HELIOS_MOTOR_ACTIVE_HIGH);
+        rt_pin_mode(HELIOS_MOTOR_PIN, PIN_MODE_OUTPUT);
+        rt_timer_init(&g_motor_timer, "motor_off", helios_motor_stop, RT_NULL,
+                      rt_tick_from_millisecond(250), RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_SOFT_TIMER);
+        g_motor_timer_ready = 1;
+    }
+    rt_timer_stop(&g_motor_timer);
+    rt_pin_write(HELIOS_MOTOR_PIN, HELIOS_MOTOR_ACTIVE_HIGH);
+    rt_err_t err = rt_timer_start(&g_motor_timer);
+    if (err != RT_EOK)
+        helios_motor_stop(RT_NULL);
+    return err;
 #else
     return -RT_ENOSYS;
 #endif

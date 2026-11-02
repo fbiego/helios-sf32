@@ -13,7 +13,11 @@ typedef struct
 } helios_battery_t;
 
 void helios_platform_init(void);
+void helios_platform_restart(void); /* Thread context; reboot both CPU cores. */
 rt_err_t helios_battery_read(helios_battery_t *battery);
+int helios_charge_detect_level(void); /* Raw 0/1, negative if unavailable. */
+rt_err_t helios_buzzer_test(void); /* Short, non-blocking diagnostic tone. */
+rt_err_t helios_motor_test(void);  /* Short, non-blocking diagnostic pulse. */
 rt_device_t helios_storage_open_root(void);
 struct rt_i2c_bus_device *helios_i2c_bus(const char *name, uint32_t hz);
 struct rt_spi_device *helios_spi_device(const char *name);

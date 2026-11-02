@@ -105,6 +105,23 @@ void helios_notifications_clear(void)
     lv_unlock();
 }
 
+bool helios_notifications_set_read(uint32_t id, bool read)
+{
+    lv_lock();
+    for (uint32_t i = 0; i < notification_count; i++) {
+        if (notifications[i].id == id) {
+            if (notifications[i].read != read) {
+                notifications[i].read = read;
+                notify_observers(HELIOS_NOTIFICATIONS_EVENT_CHANGED, &notifications[i]);
+            }
+            lv_unlock();
+            return true;
+        }
+    }
+    lv_unlock();
+    return false;
+}
+
 bool helios_notifications_observer_add(helios_notifications_observer_cb_t cb, void * user_data)
 {
     lv_lock();
