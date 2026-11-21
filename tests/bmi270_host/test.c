@@ -13,8 +13,18 @@ static int8_t init_result;
 static int transfers, releases, detaches, deletes, create_fails, startup_result;
 static int irq_attach_result, irq_enable_result;
 static int8_t gyro_config_error, gyro_disable_error;
+static int16_t temperature_raw;
+static int8_t temperature_error;
 static uint8_t bus_present = 1, chip_id = BMI270_CHIP_ID;
 static uint8_t last_payload[32];
+static uint8_t activity_output = HELIOS_BMI270_ACTIVITY_UNKNOWN;
+static uint8_t gesture_output = HELIOS_BMI270_GESTURE_FLICK_IN;
+static int8_t activity_error, gesture_error;
+static int8_t focus_config_error;
+static unsigned gesture_reads;
+#if HELIOS_IMU_WRIST_GESTURES
+static uint8_t configured_arm;
+#endif
 
 rt_tick_t rt_tick_get(void) { return now; }
 rt_tick_t rt_tick_from_millisecond(int32_t ms) { return (rt_tick_t)ms; }
@@ -66,7 +76,13 @@ rt_err_t rt_pin_irq_enable(rt_base_t pin, rt_uint32_t enable)
 rt_err_t rt_pin_detach_irq(rt_int32_t pin) { assert(pin == 44); return RT_EOK; }
 
 int8_t bmi270_init(struct bmi2_dev *device)
-{ assert(device->intf == BMI2_I2C_INTF && device->read_write_len == 32); return init_result; }
+{
+    assert(device->intf == BMI2_I2C_INTF && device->read_write_len == 32);
+    device->aps_status = BMI2_ENABLE;
+    return init_result;
+}
+int8_t bmi2_set_adv_power_save(uint8_t enabled, struct bmi2_dev *device)
+{ device->aps_status = enabled; return BMI2_OK; }
 int8_t bmi2_set_remap_axes(const struct bmi2_remap *axes, struct bmi2_dev *device)
 {
     (void)device;
@@ -78,7 +94,21 @@ int8_t bmi270_get_sensor_config(struct bmi2_sens_config *config, uint8_t n, stru
     (void)device;
     if (config[0].type == BMI2_ACCEL)
         assert(n == 1 + HELIOS_IMU_DEBUG_GYRO);
-    else
+    else if (config[0].type == BMI2_WRIST_GESTURE) {
+        assert(n == 1);
+        config[0].cfg.wrist_gest.min_flick_peak = 1774;
+        config[0].cfg.wrist_gest.min_flick_samples = 4;
+        config[0].cfg.wrist_gest.max_duration = 200;
+    } else if (config[0].type == BMI2_WRIST_WEAR_WAKE_UP) {
+        assert(n == 1);
+        if (focus_config_error) {
+            device->aps_status = BMI2_DISABLE;
+            return focus_config_error;
+        }
+        config[0].cfg.wrist_wear_wake_up = (struct bmi2_wrist_wear_wake_up_config) {
+            .max_tilt_lr = 1024, .max_tilt_ll = 700, .max_tilt_pd = 179, .max_tilt_pu = 1925,
+        };
+    } else
         assert(config[0].type == BMI2_GYRO && n == 1);
     return BMI2_OK;
 }
@@ -89,6 +119,13 @@ int8_t bmi270_set_sensor_config(struct bmi2_sens_config *config, uint8_t n, stru
         assert(config[0].cfg.acc.odr == BMI2_ACC_ODR_100HZ);
         assert(config[0].cfg.acc.range == BMI2_ACC_RANGE_2G);
         assert(config[0].cfg.acc.filter_perf == BMI2_POWER_OPT_MODE);
+    } else if (config[0].type == BMI2_WRIST_GESTURE) {
+#if HELIOS_IMU_WRIST_GESTURES
+        configured_arm = config[0].cfg.wrist_gest.wearable_arm;
+#endif
+        assert(config[0].cfg.wrist_gest.min_flick_peak == 1774);
+        assert(config[0].cfg.wrist_gest.min_flick_samples == 4);
+        assert(config[0].cfg.wrist_gest.max_duration == 200);
     } else {
         assert(config[0].type == BMI2_GYRO);
         assert(config[0].cfg.gyr.range == BMI2_GYR_RANGE_2000);
@@ -126,25 +163,52 @@ int8_t bmi2_get_int_status(uint16_t *status, struct bmi2_dev *device)
 { (void)device; *status = 0; return BMI2_OK; }
 int8_t bmi2_get_sensor_data(struct bmi2_sens_data *data, struct bmi2_dev *device)
 { (void)device; memset(data, 0, sizeof(*data)); return BMI2_OK; }
+int8_t bmi2_get_temperature_data(int16_t *raw, struct bmi2_dev *device)
+{
+    (void)device;
+    assert(enabled_sensors & (UINT64_C(1) << BMI2_TEMP));
+    if (temperature_error == BMI2_OK)
+        *raw = temperature_raw;
+    return temperature_error;
+}
 int8_t bmi270_get_feature_data(struct bmi2_feat_sensor_data *data, uint8_t n, struct bmi2_dev *device)
-{ (void)device; (void)n; data->sens_data.step_counter_output = 123; return BMI2_OK; }
+{
+    (void)device; assert(n == 1);
+    if (data->type == BMI2_STEP_ACTIVITY) {
+        if (activity_error) return activity_error;
+        data->sens_data.activity_output = activity_output;
+    } else if (data->type == BMI2_WRIST_GESTURE) {
+        gesture_reads++;
+        if (gesture_error) return gesture_error;
+        data->sens_data.wrist_gesture_output = gesture_output;
+    } else {
+        assert(data->type == BMI2_STEP_COUNTER);
+        data->sens_data.step_counter_output = 123;
+    }
+    return BMI2_OK;
+}
 
 static void test_initialization(void)
 {
     assert(bmi_begin() == BMI2_OK && g_address == 0x69);
     assert(enabled_sensors & (UINT64_C(1) << BMI2_ACCEL));
+    assert(enabled_sensors & (UINT64_C(1) << BMI2_TEMP));
     assert(!!(enabled_sensors & (UINT64_C(1) << BMI2_GYRO)) == HELIOS_IMU_DEBUG_GYRO);
     assert(!!(enabled_sensors & (UINT64_C(1) << BMI2_STEP_COUNTER)) == HELIOS_IMU_STEPS);
     assert(!!(enabled_sensors & (UINT64_C(1) << BMI2_STEP_DETECTOR)) == HELIOS_IMU_STEPS);
     assert(!!(mapped_features & (UINT64_C(1) << BMI2_STEP_DETECTOR)) == HELIOS_IMU_STEPS);
     assert(!!(mapped_features & (UINT64_C(1) << BMI2_WRIST_WEAR_WAKE_UP)) == HELIOS_IMU_RAISE_TO_WAKE);
+    assert(!!(enabled_sensors & (UINT64_C(1) << BMI2_STEP_ACTIVITY)) == HELIOS_IMU_ACTIVITY);
+    assert(!!(mapped_features & (UINT64_C(1) << BMI2_STEP_ACTIVITY)) == HELIOS_IMU_ACTIVITY);
+    assert(!!(enabled_sensors & (UINT64_C(1) << BMI2_WRIST_GESTURE)) == HELIOS_IMU_WRIST_GESTURES);
+    assert(!!(mapped_features & (UINT64_C(1) << BMI2_WRIST_GESTURE)) == HELIOS_IMU_WRIST_GESTURES);
     present_address = 0;
     assert(bmi_begin() == BMI2_E_DEV_NOT_FOUND);
     present_address = 0x68;
     init_result = BMI2_E_COM_FAIL;
     assert(bmi_begin() == BMI2_E_COM_FAIL);
     init_result = BMI2_OK;
-#if HELIOS_IMU_RAISE_TO_WAKE || HELIOS_IMU_STEPS
+#if HELIOS_IMU_RAISE_TO_WAKE || HELIOS_IMU_STEPS || HELIOS_IMU_ACTIVITY || HELIOS_IMU_WRIST_GESTURES
     assert(bmi_irq_start() == RT_EOK);
     int previous_transfers = transfers;
     bmi_irq(NULL);
@@ -265,6 +329,68 @@ static void test_events(void)
 #endif
 }
 
+static void test_recognition(void)
+{
+    helios_bmi270_sample_t sample = {.activity=HELIOS_BMI270_ACTIVITY_UNKNOWN,
+        .previous_activity=HELIOS_BMI270_ACTIVITY_UNKNOWN};
+    bmi_update_recognition(0, &sample);
+    assert(!sample.wrist_gesture_events && !gesture_reads);
+#if HELIOS_IMU_ACTIVITY
+    assert(sample.activity_valid && sample.activity == HELIOS_BMI270_ACTIVITY_UNKNOWN && !sample.activity_changes);
+    activity_output = HELIOS_BMI270_ACTIVITY_WALKING;
+    bmi_update_recognition(BMI270_STEP_ACT_STATUS_MASK, &sample);
+    assert(sample.activity==HELIOS_BMI270_ACTIVITY_WALKING && sample.activity_changes==1);
+    assert(sample.previous_activity==HELIOS_BMI270_ACTIVITY_UNKNOWN);
+    bmi_update_recognition(0, &sample);
+    assert(sample.activity_changes==1);
+    activity_error = BMI2_E_COM_FAIL;
+    activity_output = HELIOS_BMI270_ACTIVITY_RUNNING;
+    bmi_update_recognition(BMI270_STEP_ACT_STATUS_MASK, &sample);
+    assert(sample.activity_error==BMI2_E_COM_FAIL && sample.activity_changes==1);
+    activity_error = 0;
+    bmi_update_recognition(0, &sample);
+    assert(!sample.activity_error && sample.activity==HELIOS_BMI270_ACTIVITY_RUNNING && sample.activity_changes==2);
+    assert(sample.previous_activity==HELIOS_BMI270_ACTIVITY_WALKING);
+#endif
+#if HELIOS_IMU_WRIST_GESTURES
+    now = 8000;
+    bmi_update_recognition(BMI270_WRIST_GEST_STATUS_MASK, &sample);
+    assert(sample.wrist_gesture==HELIOS_BMI270_GESTURE_FLICK_IN && sample.wrist_gesture_events==1);
+    assert(sample.wrist_gesture_tick==8000);
+    bmi_update_recognition(0, &sample);
+    assert(sample.wrist_gesture_events==1 && gesture_reads==1);
+    bmi_update_recognition(BMI270_WRIST_GEST_STATUS_MASK, &sample);
+    assert(sample.wrist_gesture_events==2); /* Identical successive gestures are real events. */
+    gesture_error = BMI2_E_COM_FAIL;
+    gesture_output = HELIOS_BMI270_GESTURE_FLICK_OUT;
+    bmi_update_recognition(BMI270_WRIST_GEST_STATUS_MASK, &sample);
+    assert(sample.wrist_gesture_error==BMI2_E_COM_FAIL && sample.wrist_gesture_events==2);
+    gesture_error = 0;
+    bmi_update_recognition(0, &sample); /* Retry latched event without needing another IRQ. */
+    assert(!sample.wrist_gesture_error && sample.wrist_gesture_events==3);
+    assert(sample.wrist_gesture==HELIOS_BMI270_GESTURE_FLICK_OUT);
+    assert(sample.wrist_pivot_up_events == 0);
+    now = 8100;
+    gesture_output = 0x18 | HELIOS_BMI270_GESTURE_PIVOT_UP;
+    bmi_update_recognition(BMI270_WRIST_GEST_STATUS_MASK, &sample);
+    assert(sample.wrist_gesture == HELIOS_BMI270_GESTURE_PIVOT_UP);
+    assert(sample.wrist_pivot_up_events == 1 && sample.wrist_pivot_up_tick == 8100);
+    now = 8200;
+    gesture_output = HELIOS_BMI270_GESTURE_FLICK_IN;
+    bmi_update_recognition(BMI270_WRIST_GEST_STATUS_MASK, &sample);
+    assert(sample.wrist_gesture == HELIOS_BMI270_GESTURE_FLICK_IN && sample.wrist_gesture_tick == 8200);
+    assert(sample.wrist_pivot_up_events == 1 && sample.wrist_pivot_up_tick == 8100);
+    gesture_output = HELIOS_BMI270_GESTURE_SHAKE;
+    bmi_update_recognition(BMI270_WRIST_GEST_STATUS_MASK, &sample);
+    assert(sample.wrist_gesture == HELIOS_BMI270_GESTURE_SHAKE);
+    assert(sample.wrist_pivot_up_events == 1 && sample.wrist_pivot_up_tick == 8100);
+#endif
+    assert(!strcmp(helios_bmi270_activity_name(0), "Still"));
+    assert(!strcmp(helios_bmi270_activity_name(255), "Unknown"));
+    assert(!strcmp(helios_bmi270_gesture_name(5), "Flick out"));
+    assert(!strcmp(helios_bmi270_gesture_name(255), "Unknown"));
+}
+
 #if HELIOS_IMU_DEBUG_ORIENTATION
 static void test_orientation(void)
 {
@@ -293,12 +419,74 @@ static void test_orientation(void)
 }
 #endif
 
+static void test_wrist_focus(void)
+{
+    helios_bmi270_sample_t sample = {.accel = {0, 0, 16384}};
+#if HELIOS_IMU_RAISE_TO_WAKE
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Focus"));
+    sample.accel[0] = -7000; sample.accel[2] = 14800;
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Focus"));
+    sample.accel[0] = 7000;
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Non-focus"));
+    sample.accel[0] = 0; sample.accel[1] = 3000; sample.accel[2] = 16100;
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Focus"));
+    sample.accel[1] = -3000;
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Non-focus"));
+    sample.accel[1] = 0; sample.accel[2] = -16384;
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Non-focus"));
+    sample.accel[2] = 25000;
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Uncertain (motion)"));
+    assert(!strcmp(helios_bmi270_focus_name(NULL), "Unavailable"));
+    focus_config_error = BMI2_E_COM_FAIL;
+    assert(bmi_begin() == BMI2_OK && g_device.aps_status == BMI2_ENABLE);
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Unavailable"));
+    focus_config_error = BMI2_OK;
+    assert(bmi_begin() == BMI2_OK);
+#else
+    assert(!strcmp(helios_bmi270_focus_name(&sample), "Disabled"));
+#endif
+}
+
+static void test_temperature(void)
+{
+    helios_bmi270_sample_t sample = {0};
+    temperature_raw = INT16_MIN;
+    bmi_update_temperature(&sample);
+    assert(!sample.temperature_valid);
+
+    temperature_raw = -256;
+    bmi_update_temperature(&sample);
+    assert(sample.temperature_valid && sample.temperature_c == 22.5f);
+
+    temperature_error = BMI2_E_COM_FAIL;
+    temperature_raw = 512;
+    bmi_update_temperature(&sample);
+    assert(sample.temperature_valid && sample.temperature_c == 22.5f);
+
+    temperature_error = BMI2_OK;
+    bmi_update_temperature(&sample);
+    assert(sample.temperature_valid && sample.temperature_c == 24.0f);
+}
+
 int main(void)
 {
     test_initialization();
+    test_temperature();
+#if HELIOS_IMU_WRIST_GESTURES
+    assert(configured_arm == HELIOS_BMI270_WEARABLE_ARM);
+    uint8_t other_arm = !configured_arm;
+    helios_bmi270_set_wearable_arm(other_arm);
+    assert(g_wearable_arm_requested == other_arm && configured_arm != other_arm);
+    assert(bmi_apply_wearable_arm(g_wearable_arm_requested) == BMI2_OK);
+    assert(g_wearable_arm_applied == other_arm && configured_arm == other_arm);
+    helios_bmi270_set_wearable_arm(2);
+    assert(g_wearable_arm_requested == other_arm);
+#endif
+    test_wrist_focus();
     test_diagnostic_gyro();
     test_failure_diagnostics();
     test_events();
+    test_recognition();
 #if HELIOS_IMU_DEBUG_ORIENTATION
     test_orientation();
 #endif

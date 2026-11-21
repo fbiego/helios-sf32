@@ -101,15 +101,39 @@ lv_obj_t * settings_system_create(lv_obj_t * parent)
         hs_dropdown_create(hs_card_0, "Timeout", "language", &sb_language, "en\npt\nde\nes\nfr\nhu\nru\nel\nth\nzh\nja\nhi\nvi");
 
         lv_obj_t * hs_card_1 = hs_card_create(wd_list_container_0);
-        lv_obj_t * hs_button_0 = hs_button_create(hs_card_1, "Circular Scroll", "reboot", COLOR_PRIMARY);
+        lv_obj_t * hs_title_0 = hs_title_create(hs_card_1, "Select", "wear_pos", &sb_battery_percent);
+        lv_obj_t * wd_segment_0 = wd_segment_create(hs_title_0);
+        lv_obj_set_style_layout(wd_segment_0, LV_LAYOUT_FLEX, 0);
+        wd_segment_bind_value(wd_segment_0, &sb_wrist_position);
+        lv_obj_t * hs_button_text_0 = hs_button_text_create(wd_segment_0, "Text", "left", 0);
+        lv_obj_set_flex_grow(hs_button_text_0, 1);
+
+        lv_obj_t * hs_button_text_1 = hs_button_text_create(wd_segment_0, "Text", "right", 0);
+        lv_obj_set_flex_grow(hs_button_text_1, 1);
+
+        hs_line_create(hs_card_1);
+
+        hs_switch_create(hs_card_1, "Circular Scroll", "gesture_nav", &sb_gesture_navigation);
+
+        lv_obj_t * hs_text_small_0 = hs_text_small_create(hs_card_1);
+        lv_obj_set_width(hs_text_small_0, lv_pct(100));
+        lv_label_set_translation_tag(hs_text_small_0, "gesture_info");
+
+        hs_space_create(wd_list_container_0);
+
+        lv_obj_t * hs_button_0 = hs_button_create(wd_list_container_0, "Circular Scroll", "reboot", COLOR_PRIMARY);
         lv_obj_set_style_bg_color(hs_button_0, COLOR_BUTTON_PRIMARY, 0);
+        lv_obj_set_style_radius(hs_button_0, 40, 0);
 
-        lv_obj_t * hs_button_1 = hs_button_create(hs_card_1, "Circular Scroll", "shutdown", COLOR_PRIMARY);
+        lv_obj_t * hs_button_1 = hs_button_create(wd_list_container_0, "Circular Scroll", "shutdown", COLOR_PRIMARY);
         lv_obj_set_style_bg_color(hs_button_1, COLOR_BUTTON_PRIMARY, 0);
+        lv_obj_set_style_radius(hs_button_1, 40, 0);
 
-        lv_obj_t * hs_card_2 = hs_card_create(wd_list_container_0);
-        lv_obj_t * hs_button_2 = hs_button_create(hs_card_2, "Circular Scroll", "factory_reset", COLOR_DANGER);
+        hs_space_create(wd_list_container_0);
+
+        lv_obj_t * hs_button_2 = hs_button_create(wd_list_container_0, "Circular Scroll", "factory_reset", COLOR_DANGER);
         lv_obj_set_style_bg_color(hs_button_2, COLOR_BUTTON_DANGER, 0);
+        lv_obj_set_style_radius(hs_button_2, 40, 0);
 
         the_root = wd_list_0;
     }

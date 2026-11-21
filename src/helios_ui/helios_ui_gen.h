@@ -169,6 +169,9 @@ extern lv_font_t * NS_Medium_jp_18;
 extern lv_font_t * NS_Medium_jp_20;
 extern lv_font_t * NS_Medium_jp_30;
 extern lv_font_t * NS_Medium_jp_40;
+extern lv_font_t * NS_Emoji_20;
+extern lv_font_t * NS_Emoji_14;
+extern lv_font_t * NS_Emoji_18;
 
 
 /*----------------
@@ -284,6 +287,10 @@ extern const void * img_slider_left_110;
 extern const void * img_slider_right_60;
 extern const void * img_slider_right_90;
 extern const void * img_slider_right_110;
+extern const void * icon_steps;
+extern const void * icon_calories;
+extern const void * img_call;
+extern const void * icon_route;
 
 /*----------------
  * Subjects
@@ -328,6 +335,7 @@ extern lv_subject_t sb_activity_kcal;
 extern lv_subject_t sb_activity_distance;
 extern lv_subject_t sb_health_bpm;
 extern lv_subject_t sb_health_oxygen;
+extern lv_subject_t sb_activity_progress;
 extern lv_subject_t sb_system_connection;
 extern lv_subject_t sb_system_connection_str;
 extern lv_subject_t sb_os_name;
@@ -368,6 +376,7 @@ extern lv_subject_t sb_phone_charging;
 extern lv_subject_t sb_phone_charging_str;
 extern lv_subject_t sb_chronos_app_code;
 extern lv_subject_t sb_phone_last_sync;
+extern lv_subject_t sb_caller_name;
 extern lv_subject_t sb_weather_code;
 extern lv_subject_t sb_weather_icon;
 extern lv_subject_t sb_weather_temp;
@@ -392,6 +401,10 @@ extern lv_subject_t sb_mpesa_balance_text;
 extern lv_subject_t sb_mpesa_recent_text;
 extern lv_subject_t sb_diagnostic_bmi270;
 extern lv_subject_t sb_diagnostic_battery;
+extern lv_subject_t sb_notif_sound;
+extern lv_subject_t sb_notif_vibration;
+extern lv_subject_t sb_gesture_navigation;
+extern lv_subject_t sb_wrist_position;
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -437,6 +450,8 @@ void helios_ui_init_gen(const char * asset_path);
 #include "components/control/control_slider/control_slider_gen.h"
 #include "components/control/control_switch/control_switch_gen.h"
 #include "components/dialogs/info_dialog/info_dialog_gen.h"
+#include "components/dialogs/notification_dialog/notification_dialog_gen.h"
+#include "components/generic/hs_arc/hs_arc_gen.h"
 #include "components/generic/hs_bar/hs_bar_gen.h"
 #include "components/generic/hs_button_icon/hs_button_icon_gen.h"
 #include "components/generic/hs_button_text/hs_button_text_gen.h"
@@ -448,6 +463,7 @@ void helios_ui_init_gen(const char * asset_path);
 #include "components/generic/hs_dropdown/hs_dropdown_gen.h"
 #include "components/generic/hs_info_sb_sb/hs_info_sb_sb_gen.h"
 #include "components/generic/hs_info_sb/hs_info_sb_gen.h"
+#include "components/generic/hs_info_tag_sb/hs_info_tag_sb_gen.h"
 #include "components/generic/hs_info/hs_info_gen.h"
 #include "components/generic/hs_lap_item/hs_lap_item_gen.h"
 #include "components/generic/hs_line/hs_line_gen.h"
@@ -487,8 +503,10 @@ void helios_ui_init_gen(const char * asset_path);
 #include "screens/apps/sc_mpesa/sc_mpesa_gen.h"
 #include "screens/core/applications/applications_gen.h"
 #include "screens/core/boot/boot_gen.h"
+#include "screens/core/call/call_gen.h"
 #include "screens/core/contacts/contacts_gen.h"
 #include "screens/core/diagnostics/diagnostics_gen.h"
+#include "screens/core/fitness/fitness_gen.h"
 #include "screens/core/home/home_gen.h"
 #include "screens/core/music/music_gen.h"
 #include "screens/core/navigation/navigation_gen.h"

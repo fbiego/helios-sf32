@@ -11,8 +11,10 @@ variants = {
     "gyro_debug": ["-DHELIOS_IMU_DEBUG_GYRO=1"],
     "steps_only": ["-DHELIOS_IMU_RAISE_TO_WAKE=0"],
     "wake_only": ["-DHELIOS_IMU_STEPS=0"],
+    "recognition_only": ["-DHELIOS_IMU_STEPS=0", "-DHELIOS_IMU_RAISE_TO_WAKE=0"],
+    "right_arm": ["-DHELIOS_BMI270_WEARABLE_ARM=1"],
     "all_optional_off": [f"-DHELIOS_IMU_{name}=0" for name in
-                         ("STEPS", "RAISE_TO_WAKE", "DEBUG_ORIENTATION", "DEBUG_GYRO")],
+                         ("STEPS", "RAISE_TO_WAKE", "DEBUG_ORIENTATION", "DEBUG_GYRO", "ACTIVITY", "WRIST_GESTURES")],
 }
 with tempfile.TemporaryDirectory(prefix="helios-bmi270-") as temporary:
     for name, defines in variants.items():

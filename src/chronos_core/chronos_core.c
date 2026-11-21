@@ -1100,6 +1100,7 @@ chronos_status_t chronos_core_handle_packet(
             break;
 
         case 0x7E:
+            core->weather_daily_time = current_unix_timestamp();
             core->weather_size = 0;
             for (size_t k = 0; k < (packet->length - 6u) / 2u && k < CHRONOS_WEATHER_SIZE; k++) {
                 uint8_t icon_temp = packet->data[(k * 2u) + 6u];
@@ -1129,7 +1130,7 @@ chronos_status_t chronos_core_handle_packet(
                 core->weather[0].uv = packet->data[6];
                 core->weather[0].pressure = read_u16_be(&packet->data[7]);
                 core->weather_time = current_unix_timestamp();
-                target_event->type = CHRONOS_EVENT_CONFIG;
+                set_config_event(target_event, CHRONOS_CONFIG_WEATHER, 5, 0);
             }
             break;
 
@@ -1304,6 +1305,7 @@ chronos_status_t chronos_core_handle_packet(
                     core->hourly_forecast[hour + z].wind = read_u16_be(&packet->data[base + 2u]);
                     core->hourly_forecast[hour + z].humidity = packet->data[base + 4u];
                     core->hourly_forecast[hour + z].uv = packet->data[base + 5u];
+                    core->weather_hourly_time[hour + z] = current_unix_timestamp();
                     core->hourly_forecast_valid[hour + z] = true;
                 }
                 core->weather_time = current_unix_timestamp();
@@ -1969,9 +1971,10 @@ chronos_status_t chronos_core_send_steps_record(
 {
     uint8_t packet[CHRONOS_CORE_MAX_PACKET_SIZE];
     size_t length = 0;
-    return send_built_packet(
-        chronos_core_build_steps_record(steps, calories, hour, day, month, year, heart_rate, blood_oxygen, systolic, diastolic, packet, sizeof(packet), &length),
-        packet, length, true);
+    chronos_status_t status = chronos_core_build_steps_record(
+        steps, calories, hour, day, month, year, heart_rate, blood_oxygen,
+        systolic, diastolic, packet, sizeof(packet), &length);
+    return send_built_packet(status, packet, length, true);
 }
 
 chronos_status_t chronos_core_send_heart_rate_record(

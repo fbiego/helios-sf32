@@ -57,13 +57,16 @@ void helios_apps_init_all(void)
                                     HELIOS_SCREEN_TRANSITION_APP_OPEN_LEFT);
     helios_apps_register_simple_events_transition(icon_diagnostics,
                                            "Diagnostics",
-                                           "Diagnostics",
+                                           "diagnostics",
                                            diagnostics_create,
                                            LV_SCR_LOAD_ANIM_OVER_LEFT,
                                            helios_diagnostic_screen_event,
                                            HELIOS_SCREEN_TRANSITION_APP_OPEN_LEFT);
     helios_apps_register(icon_folder, "Files", "files", NULL, LV_SCR_LOAD_ANIM_OVER_LEFT);
-    helios_apps_register(icon_running, "Fitness", "fitness", NULL, LV_SCR_LOAD_ANIM_OVER_LEFT);
+    helios_apps_register_simple_events_transition(icon_running, "Fitness", "fitness", fitness_create,
+                                                  LV_SCR_LOAD_ANIM_OVER_LEFT,
+                                                  helios_mpesa_screen_events_cb,
+                                                  HELIOS_SCREEN_TRANSITION_APP_OPEN_LEFT);
     // helios_apps_register(icon_measurement, "Health", "health", NULL, LV_SCR_LOAD_ANIM_OVER_LEFT);
     helios_apps_register_simple_transition(icon_music,
                                            "Music",

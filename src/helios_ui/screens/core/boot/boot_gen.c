@@ -47,6 +47,8 @@ lv_obj_t * boot_create(void)
         lv_label_set_text(hs_text_normal_0, "HELIOS");
         lv_obj_set_align(hs_text_normal_0, LV_ALIGN_CENTER);
 
+        lv_obj_add_screen_create_event(lv_obj_0, LV_EVENT_SCREEN_LOADED, simulator_create, LV_SCREEN_LOAD_ANIM_FADE_IN, 500, 3000);
+
         the_root = lv_obj_0;
     }
     #endif

@@ -96,8 +96,8 @@ void wd_image_xml_apply(lv_xml_parser_state_t * state, const char ** attrs)
         else if(lv_streq("x_2", name)) {
             wd_image_set_x_2(item, lv_xml_to_size(value));
         }
-        else if(lv_streq("rotation", name)) {
-            wd_image_set_rotation(item, lv_xml_atoi(value));
+        else if(lv_streq("wd_rotation", name)) {
+            wd_image_set_wd_rotation(item, lv_xml_atoi(value));
         }
         else if(lv_streq("bind_scale", name)) {
             lv_subject_t * subject = lv_xml_get_subject(&state->scope, value);

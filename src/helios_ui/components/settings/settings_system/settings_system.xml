@@ -1,8 +1,23 @@
 <component>
 	<previews>
-		<preview width="466" height="466" style_radius="233" style_bg_color="0x000" />
-		<preview width="360" height="360" style_radius="180" style_bg_color="0x000" />
-		<preview width="240" height="240" style_radius="120" style_bg_color="0x000" />
+		<preview
+			width="466"
+			height="466"
+			style_radius="233"
+			style_bg_color="0x000"
+		/>
+		<preview
+			width="360"
+			height="360"
+			style_radius="180"
+			style_bg_color="0x000"
+		/>
+		<preview
+			width="240"
+			height="240"
+			style_radius="120"
+			style_bg_color="0x000"
+		/>
 	</previews>
 
 	<api>
@@ -22,19 +37,54 @@
 
 	<view extends="wd_list" bind_screen="sb_screen_size">
 		<wd_list-title height="content">
-			<hs_title_pill width="content" align="center" style_max_width="100%" tag="system" />
+			<hs_title_pill
+				width="content"
+				align="center"
+				style_max_width="100%"
+				tag="system"
+			/>
 		</wd_list-title>
 		<wd_list-container>
 			<style name="style_base" />
-			<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
-			<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
-			<bind_state_if_eq subject="sb_screen_type" ref_value="1" state="user_1" />
-			<bind_style name="style_pad_rect" subject="sb_screen_size" ref_value="0" selector="user_1" />
-			<bind_style name="style_pad_rect_360" subject="sb_screen_size" ref_value="1" selector="user_1" />
-			<bind_style name="style_pad_rect_240" subject="sb_screen_size" ref_value="2" selector="user_1" />
+			<bind_style
+				name="style_pad_360"
+				subject="sb_screen_size"
+				ref_value="1"
+			/>
+			<bind_style
+				name="style_pad_240"
+				subject="sb_screen_size"
+				ref_value="2"
+			/>
+			<bind_state_if_eq
+				subject="sb_screen_type"
+				ref_value="1"
+				state="user_1"
+			/>
+			<bind_style
+				name="style_pad_rect"
+				subject="sb_screen_size"
+				ref_value="0"
+				selector="user_1"
+			/>
+			<bind_style
+				name="style_pad_rect_360"
+				subject="sb_screen_size"
+				ref_value="1"
+				selector="user_1"
+			/>
+			<bind_style
+				name="style_pad_rect_240"
+				subject="sb_screen_size"
+				ref_value="2"
+				selector="user_1"
+			/>
 
 			<hs_card>
-				<hs_switch tag="circular_scroll" bind_value="sb_list_circular_mode" />
+				<hs_switch
+					tag="circular_scroll"
+					bind_value="sb_list_circular_mode"
+				/>
 				<hs_line />
 				<hs_switch tag="grid_mode" bind_value="sb_app_list_mode" />
 				<hs_line />
@@ -46,12 +96,43 @@
 			</hs_card>
 
 			<hs_card>
-				<hs_button tag="reboot" style_bg_color="#color_button_primary" />
-				<hs_button tag="shutdown" style_bg_color="#color_button_primary" />
+				<hs_title tag="wear_pos">
+					<wd_segment
+						style_layout="flex"
+						bind_value="sb_wrist_position"
+					>
+						<hs_button_text flex_grow="1" tag="left" />
+						<hs_button_text flex_grow="1" tag="right" />
+					</wd_segment>
+				</hs_title>
+
+				<hs_line />
+				<hs_switch
+					tag="gesture_nav"
+					bind_value="sb_gesture_navigation"
+				/>
+				<hs_text_small width="100%" translation_tag="gesture_info" />
 			</hs_card>
-			<hs_card>
-				<hs_button tag="factory_reset" text_color="#color_danger" style_bg_color="#color_button_danger" />
-			</hs_card>
+
+			<hs_space />
+			<hs_button
+				tag="reboot"
+				style_bg_color="#color_button_primary"
+				style_radius="40"
+			/>
+			<hs_button
+				tag="shutdown"
+				style_bg_color="#color_button_primary"
+				style_radius="40"
+			/>
+
+			<hs_space />
+			<hs_button
+				tag="factory_reset"
+				text_color="#color_danger"
+				style_bg_color="#color_button_danger"
+				style_radius="40"
+			/>
 		</wd_list-container>
 	</view>
 </component>

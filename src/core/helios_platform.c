@@ -1,4 +1,5 @@
 #include "helios_platform.h"
+#include "helios_battery.h"
 #include "helios_features.h"
 
 #if HELIOS_HAS_BMI270
@@ -15,6 +16,9 @@
 #error Buzzer diagnostics require RT_USING_PWM
 #endif
 #include "drivers/rt_drv_pwm.h"
+#if HELIOS_HAS_LOW_POWER
+#include <drivers/pm.h>
+#endif
 #endif
 
 #if (HELIOS_HAS_BUZZER || HELIOS_HAS_MOTOR) && !defined(RT_USING_TIMER_SOFT)
@@ -77,6 +81,7 @@ static void helios_i2c2_pinmux_init(void)
 #ifdef USING_BUTTON_LIB
 static volatile uint8_t g_button_state[2];
 static volatile uint32_t g_button_press_count[2];
+static volatile uint32_t g_button_press_sequence;
 
 static void helios_button_handler(int32_t pin, button_action_t action)
 {
@@ -96,7 +101,10 @@ static void helios_button_handler(int32_t pin, button_action_t action)
     {
         g_button_state[id] = pressed;
         if (action == BUTTON_PRESSED)
+        {
             g_button_press_count[id]++;
+            g_button_press_sequence++;
+        }
     }
 
     LOG_I("button pin=%d action=%d", pin, action);
@@ -213,12 +221,7 @@ rt_err_t helios_battery_read(helios_battery_t *battery)
 
     battery->millivolts = raw_01mv / 10;
 
-    if (battery->millivolts >= 4200)
-        battery->percent = 100;
-    else if (battery->millivolts <= 3300)
-        battery->percent = 0;
-    else
-        battery->percent = (uint8_t)((battery->millivolts - 3300) * 100 / (4200 - 3300));
+    battery->percent = helios_battery_percent_from_mv(battery->millivolts);
 
 #if HELIOS_HAS_CHARGE_DETECT
     battery->charging = helios_charge_detect_level() == HELIOS_CHARGE_DETECT_ACTIVE_LEVEL;
@@ -264,39 +267,81 @@ int helios_charge_detect_level(void)
 static struct rt_device_pwm *g_buzzer_pwm;
 static struct rt_timer g_buzzer_timer;
 static uint8_t g_buzzer_timer_ready;
+static struct rt_mutex g_buzzer_lock;
+static rt_tick_t g_buzzer_started;
+static rt_tick_t g_buzzer_duration;
+#if HELIOS_HAS_LOW_POWER
+static uint8_t g_buzzer_awake;
+#endif
 
-static void helios_buzzer_stop(void *parameter)
+static int helios_buzzer_lock_init(void)
 {
-    (void)parameter;
+    return rt_mutex_init(&g_buzzer_lock, "buzzer", RT_IPC_FLAG_PRIO);
+}
+INIT_PREV_EXPORT(helios_buzzer_lock_init);
+
+static void helios_buzzer_off(void)
+{
     if (g_buzzer_pwm)
         rt_pwm_disable(g_buzzer_pwm, HELIOS_BUZZER_PWM_CHANNEL);
     HAL_PIN_Set(HELIOS_BUZZER_PAD, HELIOS_BUZZER_GPIO, PIN_NOPULL, 1);
     BSP_GPIO_Set(HELIOS_BUZZER_PIN, 0, 1);
+#if HELIOS_HAS_LOW_POWER
+    if (g_buzzer_awake) {
+        rt_pm_release(PM_SLEEP_MODE_IDLE);
+        g_buzzer_awake = 0;
+    }
+#endif
+}
+
+static void helios_buzzer_stop(void *parameter)
+{
+    (void)parameter;
+    rt_mutex_take(&g_buzzer_lock, RT_WAITING_FOREVER);
+    /* An expired callback may have been waiting while a new tone started. */
+    if ((rt_tick_t)(rt_tick_get() - g_buzzer_started) >= g_buzzer_duration)
+        helios_buzzer_off();
+    rt_mutex_release(&g_buzzer_lock);
 }
 #endif
 
-rt_err_t helios_buzzer_test(void)
+rt_err_t helios_buzzer_tone(uint32_t duration_ms)
 {
 #if HELIOS_HAS_BUZZER
     rt_err_t err;
     uint32_t period = 1000000000UL / HELIOS_BUZZER_FREQUENCY_HZ;
+    rt_tick_t duration = rt_tick_from_millisecond(duration_ms ? duration_ms : 1);
+    rt_mutex_take(&g_buzzer_lock, RT_WAITING_FOREVER);
     if (!g_buzzer_pwm)
     {
         struct rt_device_pwm *pwm = (struct rt_device_pwm *)rt_device_find(HELIOS_BUZZER_PWM_DEVICE);
         if (!pwm)
-            return -RT_ERROR;
+        {
+            err = -RT_ERROR;
+            goto done;
+        }
         err = rt_device_open((rt_device_t)pwm, RT_DEVICE_OFLAG_RDWR);
         if (err != RT_EOK)
-            return err;
+            goto done;
         g_buzzer_pwm = pwm;
     }
     if (!g_buzzer_timer_ready)
     {
         rt_timer_init(&g_buzzer_timer, "buzz_off", helios_buzzer_stop, RT_NULL,
-                      rt_tick_from_millisecond(200), RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_SOFT_TIMER);
+                      duration, RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_SOFT_TIMER);
         g_buzzer_timer_ready = 1;
     }
     rt_timer_stop(&g_buzzer_timer);
+    rt_timer_control(&g_buzzer_timer, RT_TIMER_CTRL_SET_TIME, &duration);
+    g_buzzer_started = rt_tick_get();
+    g_buzzer_duration = duration;
+#if HELIOS_HAS_LOW_POWER
+    /* Keep the PWM clock running while ringing with the display off. */
+    if (!g_buzzer_awake) {
+        rt_pm_request(PM_SLEEP_MODE_IDLE);
+        g_buzzer_awake = 1;
+    }
+#endif
     HAL_PIN_Set(HELIOS_BUZZER_PAD, HELIOS_BUZZER_PWM_FUNCTION, PIN_NOPULL, 1);
     err = rt_pwm_set(g_buzzer_pwm, HELIOS_BUZZER_PWM_CHANNEL, period, period / 2);
     if (err == RT_EOK)
@@ -304,45 +349,99 @@ rt_err_t helios_buzzer_test(void)
     if (err == RT_EOK)
         err = rt_timer_start(&g_buzzer_timer);
     if (err != RT_EOK)
-        helios_buzzer_stop(RT_NULL);
+        helios_buzzer_off();
+done:
+    rt_mutex_release(&g_buzzer_lock);
     return err;
 #else
+    (void)duration_ms;
     return -RT_ENOSYS;
+#endif
+}
+
+rt_err_t helios_buzzer_test(void)
+{
+    return helios_buzzer_tone(200);
+}
+
+void helios_buzzer_silence(void)
+{
+#if HELIOS_HAS_BUZZER
+    rt_mutex_take(&g_buzzer_lock, RT_WAITING_FOREVER);
+    if (g_buzzer_timer_ready)
+        rt_timer_stop(&g_buzzer_timer);
+    helios_buzzer_off();
+    rt_mutex_release(&g_buzzer_lock);
 #endif
 }
 
 #if HELIOS_HAS_MOTOR
 static struct rt_timer g_motor_timer;
 static uint8_t g_motor_timer_ready;
+static struct rt_mutex g_motor_lock;
+static rt_tick_t g_motor_started, g_motor_duration;
+
+static int helios_motor_lock_init(void)
+{
+    return rt_mutex_init(&g_motor_lock, "motor", RT_IPC_FLAG_PRIO);
+}
+INIT_PREV_EXPORT(helios_motor_lock_init);
 
 static void helios_motor_stop(void *parameter)
 {
     (void)parameter;
-    rt_pin_write(HELIOS_MOTOR_PIN, !HELIOS_MOTOR_ACTIVE_HIGH);
+    rt_mutex_take(&g_motor_lock, RT_WAITING_FOREVER);
+    if ((rt_tick_t)(rt_tick_get() - g_motor_started) >= g_motor_duration)
+        rt_pin_write(HELIOS_MOTOR_PIN, !HELIOS_MOTOR_ACTIVE_HIGH);
+    rt_mutex_release(&g_motor_lock);
 }
 #endif
 
-rt_err_t helios_motor_test(void)
+rt_err_t helios_motor_pulse(uint32_t duration_ms)
 {
 #if HELIOS_HAS_MOTOR
+    rt_tick_t duration = rt_tick_from_millisecond(duration_ms ? duration_ms : 1);
+    rt_mutex_take(&g_motor_lock, RT_WAITING_FOREVER);
     if (!g_motor_timer_ready)
     {
         HAL_PIN_Set(HELIOS_MOTOR_PAD, HELIOS_MOTOR_GPIO, PIN_NOPULL, 1);
         rt_pin_write(HELIOS_MOTOR_PIN, !HELIOS_MOTOR_ACTIVE_HIGH);
         rt_pin_mode(HELIOS_MOTOR_PIN, PIN_MODE_OUTPUT);
         rt_timer_init(&g_motor_timer, "motor_off", helios_motor_stop, RT_NULL,
-                      rt_tick_from_millisecond(250), RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_SOFT_TIMER);
+                      duration, RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_SOFT_TIMER);
         g_motor_timer_ready = 1;
     }
     rt_timer_stop(&g_motor_timer);
+    rt_timer_control(&g_motor_timer, RT_TIMER_CTRL_SET_TIME, &duration);
+    g_motor_started = rt_tick_get();
+    g_motor_duration = duration;
     rt_pin_write(HELIOS_MOTOR_PIN, HELIOS_MOTOR_ACTIVE_HIGH);
     rt_err_t err = rt_timer_start(&g_motor_timer);
     if (err != RT_EOK)
-        helios_motor_stop(RT_NULL);
+        rt_pin_write(HELIOS_MOTOR_PIN, !HELIOS_MOTOR_ACTIVE_HIGH);
+    rt_mutex_release(&g_motor_lock);
     return err;
 #else
+    (void)duration_ms;
     return -RT_ENOSYS;
 #endif
+}
+
+void helios_motor_silence(void)
+{
+#if HELIOS_HAS_MOTOR
+    rt_mutex_take(&g_motor_lock, RT_WAITING_FOREVER);
+    if (g_motor_timer_ready) {
+        rt_timer_stop(&g_motor_timer);
+        rt_pin_write(HELIOS_MOTOR_PIN, !HELIOS_MOTOR_ACTIVE_HIGH);
+    }
+    rt_mutex_release(&g_motor_lock);
+#endif
+}
+
+rt_err_t helios_motor_test(void)
+{
+    return helios_motor_pulse(250);
 }
 
 rt_device_t helios_storage_open_root(void)
@@ -412,6 +511,18 @@ uint8_t helios_button_take_press(uint8_t id)
     return pressed;
 #else
     (void)id;
+    return 0;
+#endif
+}
+
+uint32_t helios_button_press_sequence(void)
+{
+#ifdef USING_BUTTON_LIB
+    rt_base_t level = rt_hw_interrupt_disable();
+    uint32_t sequence = g_button_press_sequence;
+    rt_hw_interrupt_enable(level);
+    return sequence;
+#else
     return 0;
 #endif
 }

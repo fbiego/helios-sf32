@@ -137,7 +137,7 @@
 				<app_item
 					icon="icon_diagnostics"
 					app_name="Diagnostics"
-					tag="Diagnostics"
+					tag="diagnostics"
 				/>
 				<app_item icon="icon_folder" app_name="Files" tag="files" />
 				<app_item

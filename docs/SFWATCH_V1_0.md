@@ -19,9 +19,27 @@ The profile's Helios capabilities are defined in
 [`src/boards/sfwatch_v1_0.h`](../src/boards/sfwatch_v1_0.h).
 BMI270 is enabled; MAX30100 is disabled. The buzzer is declared present and
 the PA20 motor output is enabled for the planned connection. The diagnostics
-buttons test the passive buzzer with a 200 ms, 2 kHz PWM tone on PA41
+buttons test the passive buzzer with a 200 ms, 4 kHz PWM tone on PA41
 (`pwmt2`, channel 2), and pulse the active-high motor output for 250 ms.
 Soft timers switch both outputs off without blocking the UI.
+
+Startup plays a single 250 ms tone after initialization. Notification arrivals
+(Chronos and iOS, including incoming-call entries) play
+a 120 ms tone. An hourly chime plays a 400 ms tone at the top of each local
+hour while the display is on or off, only when the app's synced hourly
+measurement setting is enabled. It defaults off until synced after boot.
+When the app enables sleep time, the hourly tone is silent from the local sleep
+start (inclusive) to the end (exclusive), including overnight periods. Equal
+start/end times mean all day. Disabling sleep time removes this restriction.
+These settings affect the hourly tone; startup, notification and alarm sounds
+keep their existing behavior. All tones use the same
+4 kHz, 50% duty-cycle buzzer output. The existing sound-volume control
+controls the phone and does not change these buzzer tones.
+
+The hourly check tolerates up to four seconds of scheduling delay. Startup,
+invalid calendars and clock jumps over five seconds establish a new baseline
+without replaying missed chimes. Overlapping sounds restart the buzzer with
+the latest tone's duration instead of building a queue.
 
 BMI270 uses `i2c2` on PA39/PA40 and probes addresses `0x68` and `0x69`.
 The profile currently selects 100 kHz for bring-up with
@@ -32,12 +50,14 @@ Initialization failures retry every five seconds. Diagnostics and
 (expected chip ID `0x24`), last I2C register/length/result, and attempt count.
 The second address is not probed once the first identifies the BMI270.
 The driver uploads Bosch's configuration image and enables the accelerometer,
-step counter, step detector, and wrist-wear wake feature. The gyroscope is off
+step counter, step detector, activity recognition, wrist navigation gestures,
+and wrist-wear wake feature. The gyroscope is off
 by default; opening Diagnostics requests gyro sampling from the sensor worker,
 and leaving the page disables it again. Set `HELIOS_IMU_DEBUG_GYRO=1` to force
 it on outside Diagnostics as well.
 
-INT1 on PA44 carries latched, active-high wrist-wake and step-detector events.
+INT1 on PA44 carries latched, active-high wrist-wake, step-detector,
+activity-change, and wrist navigation events.
 The GPIO interrupt wakes the sensor worker; it does not access I2C or LVGL.
 The worker reads/clears the sensor interrupt status and keeps a thread-safe
 snapshot. A one-second timeout refreshes readings and provides a polling fallback
@@ -77,6 +97,83 @@ Independent switches in `helios_features.h`, overridable in the board header:
 | `HELIOS_IMU_RAISE_TO_WAKE` | `1` |
 | `HELIOS_IMU_DEBUG_ORIENTATION` | `1` |
 | `HELIOS_IMU_DEBUG_GYRO` | `0` |
+| `HELIOS_IMU_ACTIVITY` | `1` |
+| `HELIOS_IMU_WRIST_GESTURES` | `1` |
+
+### Activity and wrist navigation diagnostics
+
+The on-chip activity classifier reports Still, Walking, Running, or Unknown.
+Diagnostics shows `Act: current <- previous [changes]`. The first successful
+reading establishes a baseline; later observed transitions increment the
+counter. Activity is also polled, so a missed interrupt can still update it.
+
+The wrist navigation detector reports Arm down, Pivot up, Wrist shake, Flick in,
+or Flick out. Diagnostics shows `Nav: last gesture [events]`; the last event
+remains visible between gestures. Each observed gesture interrupt is counted,
+including repeated gestures with the same output. Sensor interrupts can
+coalesce, so these counters describe observed events rather than a complete
+event log. A failed gesture read is retried without requiring a new interrupt.
+
+Diagnostics and `bmi270_status` show an estimated Focus or Non-focus wrist
+position. The firmware compares the remapped accelerometer sample with the four
+wrist-wake tilt limits read from the BMI270. Samples far from 1 g are marked
+uncertain. The BMI270's documented output is a wake interrupt, so this estimate
+can differ from the sensor's internal classification.
+
+Both features run in the sensor worker. Notification previews use Flick in and
+Flick out, and Pivot up cycles the widget pages. `helios_bmi270_read()` returns a copied
+`helios_bmi270_sample_t` containing `activity`, `previous_activity`,
+`activity_valid`, `activity_changes`, `wrist_gesture`, `wrist_gesture_events`,
+and `wrist_gesture_tick` (RT-Thread ticks). Consumers can compare event counters
+without consuming events needed by other callers. Independent
+`activity_error` and `wrist_gesture_error` fields report Bosch read errors;
+previous values remain cached, and accelerometer/step sampling continues.
+
+Wrist Position selects left (`0`) or right (`1`) and applies to BMI270 wrist
+gestures as soon as the sensor worker receives the setting.
+The integration preserves Bosch's default gesture timing and tilt thresholds
+and uses the board's existing axis remapping. Check actual recognition while
+wearing the watch; host tests cannot validate physical gestures.
+
+### Notification previews and wrist wake
+
+Gesture Navigation enables the hands-free navigation shortcuts. Raise to Wake
+has its own switch. Notification Sound and Notification Vibration independently
+control both message alerts and incoming calls. All four settings are saved
+across reboot.
+
+When Raise to Wake is enabled, wrist wake previews unread notifications received
+while the display was off after its last automatic sleep. Button and touch wake
+open Home and clear that batch from wrist previews. The messages remain in
+Notifications. Wrist wake opens Home when no message qualifies. A notification
+received while the display is on can also open a preview when Home is active
+and the watch is idle.
+
+- Swipe left or flick your wrist inward to see the next unread notification.
+  After the last one, this gesture opens Home.
+- Swipe right or flick your wrist outward to go straight to Home.
+- Scroll vertically to read longer messages. Opening a preview marks that
+  notification as read. The Notifications list also marks visible rows as read.
+- An untouched preview returns to Home after three seconds. Touching the screen
+  or pressing a button switches back to the normal display timeout.
+
+After a wrist wake, the hands-free timeout is five seconds from the wake or
+last successful wrist navigation gesture. Touch
+or button input restores the configured timeout. Always On and active display
+wake locks take priority.
+
+While the display is awake, Pivot up returns to Home from an app or a
+notification preview. With no active route, Pivot up cycles Home → Widgets →
+Home. During an active route, it cycles Home → Navigation → Widgets → Home.
+Flick in switches widget pages and wraps to the first page after the last one.
+Diagnostics shows a separate `Pivot ups` count for the BMI270's Pivot up reports.
+
+From Home, Flick in opens Notifications at the top. Each additional Flick in
+scrolls down by one visible page, stopping at the bottom. Pivot up returns to
+Home from the list.
+
+References: [Bosch BMI270 datasheet, sections 4.8.5 and 4.8.7](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi270-ds000.pdf)
+and the bundled Bosch Sensor API in `src/drivers/bmi270/`.
 
 ### Verify sensor mounting
 

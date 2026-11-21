@@ -111,11 +111,11 @@ void wd_image_set_x_1(lv_obj_t * wd_image, int32_t x_1);
 void wd_image_set_x_2(lv_obj_t * wd_image, int32_t x_2);
 
 /**
- * wd_image rotation
+ * wd_image wd_rotation
  * @param wd_image   pointer to a wd_image
- * @param rotation  rotation
+ * @param wd_rotation  wd_rotation
  */
-void wd_image_set_rotation(lv_obj_t * wd_image, int32_t rotation);
+void wd_image_set_wd_rotation(lv_obj_t * wd_image, int32_t wd_rotation);
 
 /**
  * wd_image bind_scale

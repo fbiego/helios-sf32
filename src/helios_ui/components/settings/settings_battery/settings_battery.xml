@@ -39,6 +39,14 @@
 		<style name="style_pad_rect" pad_hor="18" />
 		<style name="style_pad_rect_360" pad_hor="14" />
 		<style name="style_pad_rect_240" pad_hor="10" />
+		<style
+			name="style_chart"
+			height="100"
+			bg_opa="0"
+			border_width="0"
+			radius="0"
+			pad_column="2"
+		/>
 	</styles>
 
 	<view extends="wd_list" bind_screen="sb_screen_size">
@@ -99,8 +107,28 @@
 					fmt="%.1f°"
 				/>
 				<hs_line />
+				<lv_chart
+					name="battery_chart"
+					type="bar"
+					point_count="24"
+					hor_div_line_count="0"
+					ver_div_line_count="0"
+				>
+					<style name="style_chart" />
+					<lv_chart-axis
+						axis="primary_y"
+						min_value="0"
+						max_value="100"
+					/>
+					<lv_chart-series
+						color="0xffffff"
+						axis="primary_y"
+						values="60 43 34 24 38 54 54 20 45 0 25 56 80 34 65 45 56 50 35 15 34 65 25 56"
+					/>
+				</lv_chart>
+				<hs_line />
 				<hs_info_sb
-					label_tag="usage"
+					label_tag="remaining"
 					info="sb_battery_usage"
 					fmt="%s"
 				/>

@@ -317,6 +317,8 @@ typedef struct {
     int weather_size;
     char weather_city[CHRONOS_TEXT_MEDIUM_SIZE];
     uint32_t weather_time;
+    uint32_t weather_daily_time; /* Base date for weather[0]. */
+    uint32_t weather_hourly_time[CHRONOS_FORECAST_SIZE]; /* Receipt date per slot. */
     chronos_weather_location_t weather_location;
     chronos_hourly_forecast_t hourly_forecast[CHRONOS_FORECAST_SIZE];
     bool hourly_forecast_valid[CHRONOS_FORECAST_SIZE];

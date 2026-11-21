@@ -40,6 +40,7 @@ lv_obj_t * settings_battery_create(lv_obj_t * parent)
     static lv_style_t style_pad_rect;
     static lv_style_t style_pad_rect_360;
     static lv_style_t style_pad_rect_240;
+    static lv_style_t style_chart;
 
     static bool style_inited = false;
 
@@ -51,6 +52,7 @@ lv_obj_t * settings_battery_create(lv_obj_t * parent)
         lv_style_init(&style_pad_rect);
         lv_style_init(&style_pad_rect_360);
         lv_style_init(&style_pad_rect_240);
+        lv_style_init(&style_chart);
 
         lv_style_set_pad_row(&style_base, 10);
         lv_style_set_pad_ver(&style_base, 120);
@@ -61,6 +63,11 @@ lv_obj_t * settings_battery_create(lv_obj_t * parent)
         lv_style_set_pad_hor(&style_pad_rect, 18);
         lv_style_set_pad_hor(&style_pad_rect_360, 14);
         lv_style_set_pad_hor(&style_pad_rect_240, 10);
+        lv_style_set_height(&style_chart, 100);
+        lv_style_set_bg_opa(&style_chart, 0);
+        lv_style_set_border_width(&style_chart, 0);
+        lv_style_set_radius(&style_chart, 0);
+        lv_style_set_pad_column(&style_chart, 2);
 
         style_inited = true;
     }
@@ -98,7 +105,22 @@ lv_obj_t * settings_battery_create(lv_obj_t * parent)
 
         hs_line_create(hs_card_0);
 
-        hs_info_sb_create(hs_card_0, "Label", "usage", &sb_battery_usage, "%s");
+        lv_obj_t * battery_chart = lv_chart_create(hs_card_0);
+        lv_obj_set_name(battery_chart, "battery_chart");
+        lv_chart_set_type(battery_chart, LV_CHART_TYPE_BAR);
+        lv_chart_set_point_count(battery_chart, 24);
+        lv_chart_set_hor_div_line_count(battery_chart, 0);
+        lv_chart_set_ver_div_line_count(battery_chart, 0);
+        lv_obj_add_style(battery_chart, &style_chart, 0);
+        lv_chart_set_axis_min_value(battery_chart, LV_CHART_AXIS_PRIMARY_Y, 0);
+        lv_chart_set_axis_max_value(battery_chart, LV_CHART_AXIS_PRIMARY_Y, 100);
+        lv_chart_series_t * lv_chart_series_0 = lv_chart_add_series(battery_chart, lv_color_hex(0xffffff), LV_CHART_AXIS_PRIMARY_Y);
+        static const int32_t battery_chart_values_0[] = {60, 43, 34, 24, 38, 54, 54, 20, 45, 0, 25, 56, 80, 34, 65, 45, 56, 50, 35, 15, 34, 65, 25, 56};
+        lv_chart_set_series_values(battery_chart, lv_chart_series_0, battery_chart_values_0, 24);
+
+        hs_line_create(hs_card_0);
+
+        hs_info_sb_create(hs_card_0, "Label", "remaining", &sb_battery_usage, "%s");
 
         the_root = wd_list_0;
     }

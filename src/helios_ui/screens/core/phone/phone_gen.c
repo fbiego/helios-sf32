@@ -105,10 +105,10 @@ lv_obj_t * phone_create(void)
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_360, LV_STATE_USER_1, &sb_screen_size, 1);
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_240, LV_STATE_USER_1, &sb_screen_size, 2);
         lv_obj_t * hs_card_0 = hs_card_create(wd_list_container_0);
-        hs_info_sb_create(hs_card_0, "Label", "status", &sb_system_connection_str, "%s");
+        hs_info_tag_sb_create(hs_card_0, "Label", "status", &sb_system_connection_str);
 
-        lv_obj_t * hs_info_sb_1 = hs_info_sb_create(hs_card_0, "Label", "last_sync", &sb_phone_last_sync, "%s");
-        lv_obj_bind_flag_if_eq(hs_info_sb_1, &sb_system_connection, LV_OBJ_FLAG_HIDDEN, 1);
+        lv_obj_t * hs_info_sb_0 = hs_info_sb_create(hs_card_0, "Label", "last_sync", &sb_phone_last_sync, "%s");
+        lv_obj_bind_flag_if_eq(hs_info_sb_0, &sb_system_connection, LV_OBJ_FLAG_HIDDEN, 1);
 
         lv_obj_t * hs_card_1 = hs_card_create(wd_list_container_0);
         hs_info_sb_sb_create(hs_card_1, &sb_phone_manufacturer, &sb_phone_model, 0);
@@ -121,7 +121,7 @@ lv_obj_t * phone_create(void)
 
         hs_bar_create(hs_card_1, "Brightness", "battery", &sb_phone_battery, lv_color_hex(0xffffff));
 
-        hs_info_sb_create(hs_card_1, "Label", "charging", &sb_phone_charging_str, "%s");
+        hs_info_tag_sb_create(hs_card_1, "Label", "charging", &sb_phone_charging_str);
 
         lv_obj_t * hs_card_2 = hs_card_create(wd_list_container_0);
         hs_info_create(hs_card_2, "Chronos", "", "App");
@@ -137,6 +137,7 @@ lv_obj_t * phone_create(void)
         lv_obj_t * hs_button_0 = hs_button_create(hs_card_3, "Circular Scroll", "find_phone", COLOR_PRIMARY);
         lv_obj_set_flag(hs_button_0, LV_OBJ_FLAG_CHECKABLE, true);
         lv_obj_set_style_bg_color(hs_button_0, COLOR_BUTTON_PRIMARY, 0);
+        lv_obj_set_style_radius(hs_button_0, 40, 0);
 
         hs_space_create(wd_list_container_0);
 

@@ -120,7 +120,7 @@ void helios_ui_init(const char * asset_path)
     lv_subject_copy_string(&sb_lvgl_version, buf);
 
 #if !defined(LV_EDITOR_PREVIEW)
-    lv_screen_load(simulator_create());
+    lv_screen_load(boot_create());
 #endif
 }
 

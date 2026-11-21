@@ -66,7 +66,7 @@ int main(void) {
     assert(n->read && n->icon==icon_nt_whatsapp && !strcmp(n->message,"line\nslash\\") && !strcmp(n->title,"Quote \" and 雨"));
     assert(helios_contacts_count()==1 && !strcmp(helios_contacts_get(0)->name,"Alice") && sos_contact==0);
     assert(!strcmp(qr[3],"https://example.com/a?x=\"b\"") && !strcmp(core->qr_links[3],qr[3]));
-    assert(helios_weather_hourly_count()==1 && helios_weather_daily_count()==1 && lv_subject_get_int(&sb_weather_temp)==25);
+    assert(!helios_weather_hourly_count() && !helios_weather_daily_count() && lv_subject_get_int(&sb_weather_temp)==25);
     assert(!strcmp(lv_subject_get_string(&sb_weather_location),"Nairobi"));
     before=saves;helios_storage_ui_poll();assert(saves==before); /* restore is not a change */
     helios_storage_ui_sync_user((35UL<<24)|(180UL<<16)|(90UL<<8)|80,12UL<<16);
@@ -88,6 +88,17 @@ int main(void) {
     helios_storage_ui_init();assert(!helios_notifications_count() && preserve[HELIOS_STORE_NOTIFICATIONS]);
     cJSON_ReplaceItemInObject(files[HELIOS_STORE_USER],"stepLength",cJSON_CreateNumber(0));
     helios_storage_ui_init();assert(preserve[HELIOS_STORE_USER] && helios_user_get().step_length==70);
+    /* At 23:00 the lists may be empty, but full readings and city still restore. */
+    core->weather_size=1;core->weather_daily_time=time(NULL);core->weather_time=time(NULL);
+    core->weather[0].temp=29;core->weather[0].icon=1;
+    cJSON *weather_doc=snapshot(HELIOS_STORE_WEATHER);assert(weather_doc);
+    assert(!cJSON_GetArraySize(item(weather_doc,"items")) && !cJSON_GetArraySize(item(weather_doc,"daily")));
+    chronos_core_init();helios_subject_set_weather_location("");
+    assert(restore(HELIOS_STORE_WEATHER,weather_doc));
+    assert(core->weather_size==1 && core->weather[0].temp==29 && core->weather_daily_time);
+    assert(!strcmp(chronos_core_get_weather_city(),"Nairobi"));
+    assert(!strcmp(lv_subject_get_string(&sb_weather_location),"Nairobi"));
+    cJSON_Delete(weather_doc);
     puts("UI persistence: real collection APIs, observer batching, UTF-8/escaping, read flags, icon IDs, contacts/SOS, QR, weather, reboot/clear, OOM and invalid schema: passed");
     for(int i=0;i<HELIOS_STORE_COUNT;i++) cJSON_Delete(files[i]);
     return 0;

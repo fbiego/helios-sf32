@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include "chronos_core.h"
+#include "helios_screen_wake_lock.h"
 
 void helios_ui_set_ble(uint8_t connected);
 void helios_ui_set_battery(uint8_t percent, uint32_t millivolts);
@@ -12,7 +13,7 @@ void helios_ui_set_battery(uint8_t percent, uint32_t millivolts);
 void helios_app_chronos_init(void);
 void helios_app_chronos_connection(bool connected);
 void helios_app_chronos_notification(const chronos_notification_t *notification);
-void helios_app_chronos_ringer(const char *caller, bool active);
+void helios_app_call_update(const char *caller, bool active);
 void helios_app_chronos_config(chronos_config_t config, uint32_t a, uint32_t b);
 void helios_app_music_update(const chronos_music_info_t *music);
 

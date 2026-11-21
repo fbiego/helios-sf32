@@ -41,9 +41,9 @@ extern "C" {
  */
 lv_obj_t * wf_item_create(lv_obj_t * parent);
 /**
- * The array containing the image digits
+ * Digit images, or percentage images ordered from empty to full
  * @param wf_item   pointer to a wf_item
- * @param image_array  The array containing the image digits
+ * @param image_array  Digit images, or percentage images ordered from empty to full
  */
 void wf_item_set_image_array(lv_obj_t * wf_item, const void * image_array[], uint32_t image_array_count);
 
@@ -55,9 +55,9 @@ void wf_item_set_image_array(lv_obj_t * wf_item, const void * image_array[], uin
 void wf_item_bind_subject(lv_obj_t * wf_item, lv_subject_t * bind_subject);
 
 /**
- * The place value to show on this item
+ * Digit position (0 = units); -3 = first image shown only for negative subject values; -2 = hundreds digit hidden when zero; -1 = percentage: nearest level: index = (min(value, 100) * (count - 1) + 50) / 100; other modes hide negative subject values
  * @param wf_item   pointer to a wf_item
- * @param place_value  The place value to show on this item
+ * @param place_value  Digit position (0 = units); -3 = first image shown only for negative subject values; -2 = hundreds digit hidden when zero; -1 = percentage: nearest level: index = (min(value, 100) * (count - 1) + 50) / 100; other modes hide negative subject values
  */
 void wf_item_set_place_value(lv_obj_t * wf_item, int32_t place_value);
 

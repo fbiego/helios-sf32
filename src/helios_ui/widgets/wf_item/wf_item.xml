@@ -7,9 +7,9 @@
 		<!-- Add your API here. For example 
 		<prop name="prop1" type="int" default="0" help="What is this property?"/>
 		-->
-		<prop name="image_array" type="image[count]" help="The array containing the image digits" />
+		<prop name="image_array" type="image[count]" help="Digit images, or percentage images ordered from empty to full" />
 		<prop name="bind_subject" type="subject" help="The watchface subject to attach the item" />
-		<prop name="place_value" type="int" help="The place value to show on this item" />
+		<prop name="place_value" type="int" help="Digit position (0 = units); -3 = first image shown only for negative subject values; -2 = hundreds digit hidden when zero; -1 = percentage: nearest level: index = (min(value, 100) * (count - 1) + 50) / 100; other modes hide negative subject values" />
 	</api>
 
 	<styles>

@@ -48,6 +48,16 @@
 #ifndef HELIOS_IMU_DEBUG_GYRO
 #define HELIOS_IMU_DEBUG_GYRO 0
 #endif
+#ifndef HELIOS_IMU_ACTIVITY
+#define HELIOS_IMU_ACTIVITY HELIOS_HAS_BMI270
+#endif
+#ifndef HELIOS_IMU_WRIST_GESTURES
+#define HELIOS_IMU_WRIST_GESTURES HELIOS_HAS_BMI270
+#endif
+/* Bosch wrist navigation uses 0 for the left arm, 1 for the right arm. */
+#ifndef HELIOS_BMI270_WEARABLE_ARM
+#define HELIOS_BMI270_WEARABLE_ARM 0
+#endif
 
 /* Use #if, since disabled features are explicitly defined as 0. */
 #ifndef HELIOS_APP_HEALTH

@@ -3,12 +3,12 @@
 #include <rtthread.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 
 #include "bf0_ble_ancs.h"
 #include "bf0_ble_ams.h"
 #include "bf0_sibles.h"
 #include "helios_app.h"
-#include "helios_ui/helios_ui.h"
 
 #define LOG_TAG "helios.ios"
 #include "log.h"
@@ -69,7 +69,15 @@ typedef struct
     uint8_t conn_idx;
     uint8_t ancs_ready;
     uint8_t ams_ready;
+    uint8_t secured;
+    uint8_t ancs_started;
+    uint8_t ams_started;
+    uint8_t ancs_subscribed;
+    uint8_t ams_subscribed;
     uint16_t ams_cmd_mask;
+    bool call_seen;
+    bool call_active;
+    uint32_t call_uid;
     chronos_music_info_t music;
 } helios_ios_env_t;
 
@@ -283,7 +291,21 @@ static void helios_ios_handle_ancs_notification(const ble_ancs_noti_attr_t *noti
           noti->attr_count,
           noti->evt_flag);
 
-    if (noti->evt_id == BLE_ANCS_EVENT_ID_NOTIFICATION_REMOVED)
+    bool incoming_call = noti->cate_id == BLE_ANCS_CATEGORY_ID_INCOMING_CALL;
+    bool same_call = g_ios.call_seen && g_ios.call_uid == noti->noti_uid;
+    if (noti->evt_id == BLE_ANCS_EVENT_ID_NOTIFICATION_REMOVED) {
+        if (incoming_call && (same_call || !g_ios.call_active)) {
+            if (g_ios.call_active)
+                helios_app_call_update(NULL, false);
+            g_ios.call_seen = true;
+            g_ios.call_active = false;
+            g_ios.call_uid = noti->noti_uid;
+        }
+        return;
+    }
+
+    if (incoming_call && ((same_call && !g_ios.call_active) ||
+                          (!same_call && noti->evt_id != BLE_ANCS_EVENT_ID_NOTIFICATION_ADDED)))
         return;
 
     memset(&notification, 0, sizeof(notification));
@@ -322,6 +344,16 @@ static void helios_ios_handle_ancs_notification(const ble_ancs_noti_attr_t *noti
         attr = (ble_ancs_attr_value_t *)((uint8_t *)attr +
                                          sizeof(ble_ancs_attr_value_t) +
                                          attr->len);
+    }
+
+    if (incoming_call) {
+        if (g_ios.call_active && !same_call)
+            helios_app_call_update(NULL, false);
+        g_ios.call_seen = true;
+        g_ios.call_active = true;
+        g_ios.call_uid = noti->noti_uid;
+        helios_app_call_update(notification.title, true);
+        return;
     }
 
     helios_ios_apply_app_mapping(&notification);
@@ -427,12 +459,35 @@ static void helios_ios_handle_ams_entity(const ble_ams_entity_attr_value_t *attr
     helios_ios_publish_music();
 }
 
+static void helios_ios_subscribe(void)
+{
+    uint8_t ret;
+    if (!g_ios.secured)
+        return;
+
+    /* The SDK's ANCS writer asserts on a full transmit queue. Avoid the
+     * old disable/enable burst, and handle pairing + encryption only once.
+     * Discovery starts with CCCDs off, so AMS's enable(1) is not a no-op. */
+    if (g_ios.ancs_ready && !g_ios.ancs_subscribed) {
+        ret = ble_ancs_cccd_enable(1);
+        g_ios.ancs_subscribed = ret == BLE_ANCS_ERR_NO_ERR;
+        LOG_I("ANCS secure subscribe ret=%u", ret);
+    }
+    if (g_ios.ams_ready && !g_ios.ams_subscribed) {
+        ret = ble_ams_cccd_enable(1);
+        g_ios.ams_subscribed = ret == BLE_AMS_ERR_NO_ERR ||
+                               ret == BLE_AMS_ERR_CCCD_PENDING;
+        LOG_I("AMS secure subscribe ret=%u", ret);
+    }
+}
+
 void helios_ios_on_connected(uint8_t conn_idx)
 {
     uint8_t ret;
 
     if (g_ios.conn_idx != conn_idx)
     {
+        memset(&g_ios, 0, sizeof(g_ios));
         g_ios.conn_idx = conn_idx;
         g_ios.ancs_ready = 0;
         g_ios.ams_ready = 0;
@@ -442,29 +497,36 @@ void helios_ios_on_connected(uint8_t conn_idx)
         LOG_I("iOS profile discovery reset conn_idx=%u", conn_idx);
     }
 
-    if (!g_ios.ancs_ready)
+    if (!g_ios.ancs_ready && !g_ios.ancs_started)
     {
         LOG_I("ANCS discovery start conn_idx=%u", conn_idx);
         helios_ios_configure_ancs();
-        ble_ancs_cccd_enable(1);
+        ble_ancs_cccd_enable(0);
+        g_ios.ancs_started = 1;
         ret = ble_ancs_enable(conn_idx);
+        if (ret != BLE_ANCS_ERR_NO_ERR)
+            g_ios.ancs_started = 0;
         LOG_I("ANCS enable ret=%u", ret);
     }
 
-    if (!g_ios.ams_ready)
+    /* This SDK leaves AMS in SEARCHING after a failed search. Wait for
+     * security so a pre-pairing "service unavailable" cannot wedge it. */
+    if (g_ios.secured && !g_ios.ams_ready && !g_ios.ams_started)
     {
         LOG_I("AMS discovery start conn_idx=%u", conn_idx);
-        ble_ams_cccd_enable(1);
+        ble_ams_cccd_enable(0);
         helios_ios_configure_ams();
+        g_ios.ams_started = 1;
         ret = ble_ams_enable(conn_idx);
+        if (ret != BLE_AMS_ERR_NO_ERR)
+            g_ios.ams_started = 0;
         LOG_I("AMS enable ret=%u", ret);
     }
+    helios_ios_subscribe();
 }
 
 void helios_ios_on_bonded(uint8_t conn_idx)
 {
-    uint8_t ret;
-
     if (g_ios.conn_idx != conn_idx)
     {
         LOG_W("iOS bonded event ignored conn_idx=%u active=%u",
@@ -472,34 +534,12 @@ void helios_ios_on_bonded(uint8_t conn_idx)
         return;
     }
 
-    LOG_I("iOS bonded refresh conn_idx=%u ancs=%u ams=%u",
+    if (g_ios.secured)
+        return;
+    g_ios.secured = 1;
+    LOG_I("iOS secured conn_idx=%u ancs=%u ams=%u",
           conn_idx, g_ios.ancs_ready, g_ios.ams_ready);
-
-    if (g_ios.ancs_ready)
-    {
-        helios_ios_configure_ancs();
-        ret = ble_ancs_cccd_enable(0);
-        LOG_I("ANCS cccd disable ret=%u", ret);
-        ret = ble_ancs_cccd_enable(1);
-        LOG_I("ANCS cccd enable ret=%u", ret);
-    }
-    else
-    {
-        helios_ios_on_connected(conn_idx);
-    }
-
-    if (g_ios.ams_ready)
-    {
-        helios_ios_configure_ams();
-        ret = ble_ams_cccd_enable(0);
-        LOG_I("AMS cccd disable ret=%u", ret);
-        ret = ble_ams_cccd_enable(1);
-        LOG_I("AMS cccd enable ret=%u", ret);
-    }
-    else
-    {
-        helios_ios_on_connected(conn_idx);
-    }
+    helios_ios_on_connected(conn_idx);
 }
 
 void helios_ios_on_disconnected(uint8_t conn_idx)
@@ -508,11 +548,10 @@ void helios_ios_on_disconnected(uint8_t conn_idx)
     {
         LOG_I("iOS profiles disconnected conn_idx=%u ancs=%u ams=%u",
               conn_idx, g_ios.ancs_ready, g_ios.ams_ready);
+        if (g_ios.call_active)
+            helios_app_call_update(NULL, false);
+        memset(&g_ios, 0, sizeof(g_ios));
         g_ios.conn_idx = INVALID_CONN_IDX;
-        g_ios.ancs_ready = 0;
-        g_ios.ams_ready = 0;
-        g_ios.ams_cmd_mask = 0;
-        memset(&g_ios.music, 0, sizeof(g_ios.music));
     }
 }
 
@@ -568,39 +607,56 @@ uint8_t helios_ios_ancs_ready(void)
 static int helios_ios_event_handler(uint16_t event_id, uint8_t *data,
                                     uint16_t len, uint32_t context)
 {
-    (void)len;
     (void)context;
+
+    if (g_ios.conn_idx == INVALID_CONN_IDX)
+        return 0;
 
     switch (event_id)
     {
     case BLE_ANCS_ENABLE_RSP:
     {
+        if (!data || len < sizeof(ble_ancs_enable_rsp_t))
+            break;
         ble_ancs_enable_rsp_t *rsp = (ble_ancs_enable_rsp_t *)data;
+        if (rsp->conn_idx != g_ios.conn_idx)
+            break;
+        g_ios.ancs_started = 0;
         g_ios.ancs_ready = (rsp && rsp->result == BLE_ANCS_ERR_NO_ERR) ? 1 : 0;
         LOG_I("ANCS %s result=%u conn_idx=%u",
               g_ios.ancs_ready ? "ready" : "failed",
               rsp ? rsp->result : 0xFF,
               g_ios.conn_idx);
+        helios_ios_subscribe();
         break;
     }
     case BLE_ANCS_NOTIFICATION_IND:
-        helios_ios_handle_ancs_notification((const ble_ancs_noti_attr_t *)data);
+        if (data && len >= sizeof(ble_ancs_noti_attr_t))
+            helios_ios_handle_ancs_notification((const ble_ancs_noti_attr_t *)data);
         break;
     case BLE_AMS_ENABLE_RSP:
     {
+        if (!data || len < sizeof(ble_ams_enable_rsp_t))
+            break;
         ble_ams_enable_rsp_t *rsp = (ble_ams_enable_rsp_t *)data;
+        g_ios.ams_started = 0;
         g_ios.ams_ready = (rsp && rsp->result == BLE_AMS_ERR_NO_ERR) ? 1 : 0;
         LOG_I("AMS %s result=%u conn_idx=%u",
               g_ios.ams_ready ? "ready" : "failed",
               rsp ? rsp->result : 0xFF,
               g_ios.conn_idx);
+        helios_ios_subscribe();
         break;
     }
     case BLE_AMS_ENABLE_PENDING_IND:
     {
+        if (!data || len < sizeof(ble_ams_enable_pending_ind_t))
+            break;
         ble_ams_enable_pending_ind_t *ind = (ble_ams_enable_pending_ind_t *)data;
         if (ind && ind->result == BLE_AMS_ERR_NO_ERR)
             g_ios.ams_ready = 1;
+        else
+            g_ios.ams_subscribed = 0;
         LOG_I("AMS pending result=%u conn_idx=%u",
               ind ? ind->result : 0xFF,
               g_ios.conn_idx);
@@ -608,6 +664,8 @@ static int helios_ios_event_handler(uint16_t event_id, uint8_t *data,
     }
     case BLE_AMS_SUPPORTED_CMD_NOTIFY_IND:
     {
+        if (!data || len < sizeof(ble_ams_supported_cmd_notify_ind_t))
+            break;
         ble_ams_supported_cmd_notify_ind_t *ind =
             (ble_ams_supported_cmd_notify_ind_t *)data;
         if (ind)
@@ -616,7 +674,13 @@ static int helios_ios_event_handler(uint16_t event_id, uint8_t *data,
         break;
     }
     case BLE_AMS_ENTITY_ATTRIBUTE_PAIR_IND:
-        helios_ios_handle_ams_entity((const ble_ams_entity_attr_value_t *)data);
+        if (data && len >= sizeof(ble_ams_entity_attr_value_t)) {
+            const ble_ams_entity_attr_value_t *attr = (const ble_ams_entity_attr_value_t *)data;
+            if (attr->len <= len - offsetof(ble_ams_entity_attr_value_t, value))
+                helios_ios_handle_ams_entity(attr);
+            else
+                LOG_W("AMS truncated entity event len=%u value_len=%u", len, attr->len);
+        }
         break;
     default:
         break;

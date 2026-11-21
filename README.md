@@ -28,6 +28,10 @@ This project is intended to live outside the SiFli SDK tree. Keep the `project/`
 
 See [docs/BOARD_SETUP.md](docs/BOARD_SETUP.md) for the SDK board-package requirement, custom-board memory-map override, and board capability flags such as `HELIOS_HAS_MAX30100`.
 
+The UI under `src/helios_ui/` is maintained externally and imported here. Keep
+firmware integration in `src/core/` and project documentation in `docs/`.
+See [screen wake locks](docs/SCREEN_WAKE_LOCKS.md) for the API used by Diagnostics.
+
 Persistent JSON settings, weather, notifications, contacts, QR links and hourly
 battery/step histories are documented in [docs/FILE_STORAGE.md](docs/FILE_STORAGE.md).
 

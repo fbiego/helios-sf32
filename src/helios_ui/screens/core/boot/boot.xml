@@ -3,5 +3,13 @@
 		<style name="style_dark" />
 
 		<hs_text_normal text="HELIOS" align="center" />
+
+		<screen_create_event
+			trigger="screen_loaded"
+			screen="simulator"
+			delay="3000"
+			anim_type="fade_in"
+			duration="500"
+		/>
 	</view>
 </screen>

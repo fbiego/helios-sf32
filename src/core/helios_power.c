@@ -12,8 +12,11 @@
 #include "lvgl.h"
 #include "lvgl_private.h"
 
+#define HELIOS_LCD_IDLE_TIMEOUT_MS 250
+
 static uint8_t g_initialized;
 static uint8_t g_display_on = 1;
+static lv_display_t *g_guarded_display;
 
 void helios_power_init(void)
 {
@@ -21,6 +24,30 @@ void helios_power_init(void)
     {
         rt_pm_request(PM_SLEEP_MODE_IDLE);
         g_initialized = 1;
+    }
+}
+
+static void helios_lcd_guard_refresh(lv_event_t *event)
+{
+    /* Layout changes send REFR_REQUEST even with invalidation disabled.
+     * Run after LVGL's handler, which resumes the timer for every request. */
+    if (!g_display_on)
+        lv_timer_pause(lv_event_get_user_data(event));
+}
+
+static rt_err_t helios_lcd_wait_idle(rt_device_t lcd)
+{
+    rt_tick_t start = rt_tick_get();
+    rt_tick_t timeout = rt_tick_from_millisecond(HELIOS_LCD_IDLE_TIMEOUT_MS);
+    for (;;)
+    {
+        bool busy = false;
+        rt_err_t err = rt_device_control(lcd, RTGRAPHIC_CTRL_GET_BUSY, &busy);
+        if (err != RT_EOK || !busy)
+            return err;
+        if ((rt_tick_t)(rt_tick_get() - start) >= timeout)
+            return -RT_ETIMEOUT;
+        rt_thread_mdelay(1);
     }
 }
 
@@ -39,15 +66,22 @@ rt_err_t helios_power_set_display(uint8_t on)
 
     if (!on)
     {
-        /* Finish the SDK's pending pixel copy before stopping the panel. The
-         * synchronous POWEROFF command also drains earlier LCD task messages. */
-        if (display->flush_wait_cb)
-            display->flush_wait_cb(display);
-        /* LVGL normally resumes its refresh timer on invalidation. Suppress
-         * invalidations too, so background subjects cannot restart drawing. */
+        if (g_guarded_display != display)
+        {
+            lv_display_add_event_cb(display, helios_lcd_guard_refresh, LV_EVENT_REFR_REQUEST, refresh);
+            g_guarded_display = display;
+        }
+
         lv_display_enable_invalidation(display, false);
         lv_timer_pause(refresh);
-        rt_err_t err = rt_device_control(lcd, RTGRAPHIC_CTRL_POWEROFF, NULL);
+
+        /* The LVGL callback waits for the pixel copy. The SDK can still have
+         * a framebuffer transfer pending, including work queued by a callback. */
+        if (display->flush_wait_cb)
+            display->flush_wait_cb(display);
+        rt_err_t err = helios_lcd_wait_idle(lcd);
+        if (err == RT_EOK)
+            err = rt_device_control(lcd, RTGRAPHIC_CTRL_POWEROFF, NULL);
         if (err != RT_EOK)
         {
             lv_display_enable_invalidation(display, true);

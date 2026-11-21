@@ -109,6 +109,7 @@ lv_obj_t * settings_storage_create(lv_obj_t * parent)
 
         lv_obj_t * hs_button_0 = hs_button_create(hs_card_1, "Circular Scroll", "format", COLOR_DANGER);
         lv_obj_set_style_bg_color(hs_button_0, COLOR_BUTTON_DANGER, 0);
+        lv_obj_set_style_radius(hs_button_0, 40, 0);
 
         lv_obj_t * hs_card_2 = hs_card_create(wd_list_container_0);
         hs_bar_create(hs_card_2, "Brightness", "sd_card", &sb_battery_percent, lv_color_hex(0xffffff));
@@ -117,6 +118,7 @@ lv_obj_t * settings_storage_create(lv_obj_t * parent)
 
         lv_obj_t * hs_button_1 = hs_button_create(hs_card_2, "Circular Scroll", "format", COLOR_DANGER);
         lv_obj_set_style_bg_color(hs_button_1, COLOR_BUTTON_DANGER, 0);
+        lv_obj_set_style_radius(hs_button_1, 40, 0);
 
         the_root = wd_list_0;
     }

@@ -2,6 +2,7 @@
 #include "helios_storage.h"
 #include "helios_prefs.h"
 #include "helios_user.h"
+#include "helios_weather_data.h"
 #include "chronos_core.h"
 #include "helios_ui/helios_ui.h"
 #include "helios_ui/custom/apps/notifications/notifications.h"
@@ -92,6 +93,7 @@ static cJSON *snapshot(helios_store_id_t id)
             if (!value || !cJSON_AddItemToArray(array, value)) { cJSON_Delete(value); goto failed; }
         }
     } else if (id == HELIOS_STORE_WEATHER) {
+        if (!helios_weather_data_save(doc)) goto failed;
         S(doc, "city", lv_subject_get_string(&sb_weather_location));
         S(doc, "update_time", lv_subject_get_string(&sb_weather_update_time));
         S(doc, "unit", lv_subject_get_string(&sb_weather_temp_unit));
@@ -166,7 +168,7 @@ static bool restore(helios_store_id_t id, const cJSON *doc)
     } else if (id == HELIOS_STORE_WEATHER) {
         const cJSON *days = item(doc, "daily");
         if (count > HELIOS_HOURLY_FORECAST_MAX || !cJSON_IsArray(days) || cJSON_GetArraySize(days) > HELIOS_DAILY_FORECAST_MAX) return false;
-        if (!count && !cJSON_GetArraySize(days)) return true;
+        if (!count && !cJSON_GetArraySize(days) && !item(doc, "readings")) return true;
         if (!string_fits(doc, "city", 256) || !string_fits(doc, "update_time", 256) || !string_fits(doc, "unit", 16)) return false;
         const char *keys[] = {"code", "temp", "high", "low", "humidity", "uv"};
         for (unsigned i = 0; i < sizeof(keys) / sizeof(keys[0]); i++) {
@@ -181,6 +183,7 @@ static bool restore(helios_store_id_t id, const cJSON *doc)
             if (!string_fits(row, "day", HELIOS_WEATHER_TEXT_MAX) || !string_fits(row, "temp", HELIOS_WEATHER_TEXT_MAX) ||
                 !cJSON_IsNumber(item(row, "icon"))) return false;
         }
+        if (!helios_weather_data_restore(doc)) return false;
         const cJSON *updated = item(doc, "updated_at"); time_t now = time(NULL);
         /* Retain the file, but don't present a forecast from an unrelated date. */
         if (!cJSON_IsNumber(updated) || updated->valuedouble > (double)now || (double)now - updated->valuedouble > 7 * 86400) return true;
@@ -190,8 +193,8 @@ static bool restore(helios_store_id_t id, const cJSON *doc)
         helios_subject_set_weather_condition(helios_weather_condition_get(num(doc, "code")));
         helios_subject_set_weather_temp(num(doc, "temp")); helios_subject_set_weather_temp_high(num(doc, "high"));
         helios_subject_set_weather_temp_low(num(doc, "low")); helios_subject_set_weather_humidity(num(doc, "humidity")); helios_subject_set_weather_uv(num(doc, "uv"));
-        cJSON_ArrayForEach(row, array) helios_weather_hourly_add(num(row, "icon"), str(row, "time"), str(row, "temp"), str(row, "humidity"));
-        cJSON_ArrayForEach(row, days) helios_weather_daily_add(num(row, "icon"), str(row, "day"), str(row, "temp"));
+        /* Lists are rebuilt from dated readings by the first UI clock refresh.
+         * Legacy formatted rows have no reliable date and are not replayed. */
     }
     return true;
 }
@@ -210,6 +213,7 @@ void helios_storage_ui_init(void)
     helios_subject_set_weather_humidity(0); helios_subject_set_weather_uv(0);
     helios_subject_set_weather_condition(""); helios_subject_set_weather_icon(NULL);
     for (int i = HELIOS_STORE_WEATHER; i < HELIOS_STORE_COUNT; i++) {
+        if (i == HELIOS_STORE_ALARMS) continue; /* Owned by helios_alarms. */
         bool exists; cJSON *doc = helios_storage_load(i, &exists);
         if (doc && !restore(i, doc)) {
             helios_storage_preserve_invalid(i);
@@ -227,6 +231,7 @@ void helios_storage_ui_poll(void)
 {
     helios_prefs_retry_save();
     for (int i = HELIOS_STORE_WEATHER; i < HELIOS_STORE_COUNT; i++) {
+        if (i == HELIOS_STORE_ALARMS) continue;
         if (!dirty[i]) continue;
         cJSON *doc = snapshot(i);
         if (doc && helios_storage_save(i, doc)) dirty[i] = false;

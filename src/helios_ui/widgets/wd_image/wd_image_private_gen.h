@@ -44,7 +44,7 @@ typedef struct {
     int32_t x_0;
     int32_t x_1;
     int32_t x_2;
-    int32_t rotation;
+    int32_t wd_rotation;
     lv_subject_t * bind_scale;
     lv_subject_t * bind_src;
     lv_subject_t * bind_color;

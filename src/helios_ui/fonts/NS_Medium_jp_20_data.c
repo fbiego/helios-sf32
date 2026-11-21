@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Size: 20 px
  * Bpp: 4
- * Opts: --font /fonts/raw/languages/NotoSansJP-Medium.ttf -o /fonts/NS_Medium_jp_20_data.c --size 20 --bpp 4 --format lvgl --no-compress --symbols 、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風 --range 0x20-0x7F
+ * Opts: --font /fonts/raw/languages/NotoSansJP-Medium.ttf -o /fonts/NS_Medium_jp_20_data.c --size 20 --bpp 4 --format lvgl --no-compress --symbols 、々あいえおかがくげこごさしすせただちっつづてでとどにのはべほまみむめもやよらりるれろをんァアィイウェォカキクグケゲコサシジスズセタダチッテデトドナニネバビフブプヘマムメモャュョラリルレロンー予作充先円切別刻動去回土圧報場寝工巻常強後態持探時晴曇曜最木楽気水済火画着確竜終絡続線荷設話認語転輝込連進金開間陽雨電面順風 --range 0x20-0x7F --lv-fallback NS_Emoji_20_data
  ******************************************************************************/
 
 #ifdef __has_include
@@ -6305,6 +6305,7 @@ static lv_font_fmt_txt_dsc_t font_dsc = {
 
 };
 
+extern const lv_font_t NS_Emoji_20_data;
 
 
 /*-----------------
@@ -6339,7 +6340,7 @@ lv_font_t NS_Medium_jp_20_data = {
 
     .dsc = &font_dsc,          /*The custom font data. Will be accessed by `get_glyph_bitmap/dsc` */
 #if LV_VERSION_CHECK(8, 2, 0) || LVGL_VERSION_MAJOR >= 9
-    .fallback = NULL,
+    .fallback = &NS_Emoji_20_data,
 #endif
     .user_data = NULL,
 };

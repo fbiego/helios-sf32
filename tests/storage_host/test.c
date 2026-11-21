@@ -69,6 +69,8 @@ static time_t when(int day, int hour, int minute) {
     struct tm t={0};t.tm_year=126;t.tm_mon=10;t.tm_mday=day;t.tm_hour=hour;t.tm_min=minute;t.tm_isdst=-1;return mktime(&t);
 }
 static void *no_memory(size_t size) { (void)size; return NULL; }
+static bool exported_record(const helios_steps_record_t *record, void *user)
+{ (void)record; (void)user; return true; }
 
 int main(void) {
     blank=0;assert(storage_init()!=0 && !ready && !formatted);
@@ -87,6 +89,11 @@ int main(void) {
         fail_write=fail_sync=fail_rename=0;
     }
     assert(helios_storage_flush());check_file(path,3);
+    d=document(8);assert(helios_storage_save(HELIOS_STORE_ALARMS,d));cJSON_Delete(d);
+    assert(helios_storage_flush());
+    char alarm_path[128];path_for(alarm_path,sizeof(alarm_path),HELIOS_STORE_ALARMS);
+    assert(strstr(alarm_path,"/alarms.json"));check_file(alarm_path,8);
+    d=helios_storage_load(HELIOS_STORE_ALARMS,&exists);assert(d && exists);cJSON_Delete(d);
     d=document(4);cJSON_Hooks hooks={no_memory,free};cJSON_InitHooks(&hooks);
     assert(!helios_storage_save(HELIOS_STORE_WEATHER,d));cJSON_InitHooks(NULL);cJSON_Delete(d);check_file(path,3);
     FILE *f=fopen(path,"w");fputs("{bad",f);fclose(f);
@@ -117,8 +124,16 @@ int main(void) {
     assert(helios_storage_flush() && !history_dirty);
     clock_now=when(1,13,0);helios_storage_record_steps(clock_now,15);history_process();
     assert(day_total==125 && hours[13].steps==10);
-    clock_now=when(2,0,0);helios_storage_record_steps(clock_now,18);history_process();
+    uint32_t bins[HELIOS_STEPS_HOURS_PER_DAY];
+    helios_storage_hourly_steps(clock_now, bins);
+    assert(bins[0] == 0 && bins[12] == 115 && bins[13] == 10 && bins[23] == 0);
+    clock_now=when(2,0,0);
+    helios_storage_hourly_steps(clock_now, bins);
+    for (unsigned h = 0; h < HELIOS_STEPS_HOURS_PER_DAY; ++h) assert(bins[h] == 0);
+    helios_storage_record_steps(clock_now,18);history_process();
     assert(day_total==3 && hours[0].steps==3 && !strcmp(history_date,"2026-11-02"));
+    helios_storage_hourly_steps(clock_now, bins);
+    assert(bins[0] == 3 && bins[12] == 0 && bins[13] == 0);
     clock_now+=1;helios_storage_record_steps(clock_now,2);history_process();assert(day_total==5);
     assert(history_save());
     char calories_path[160];snprintf(calories_path,sizeof(calories_path),HELIOS_STORAGE_ROOT "/steps/2026-11-02.json");
@@ -126,6 +141,61 @@ int main(void) {
     assert(calories_exist && number(calories_doc,"daily_calories")==helios_user_calories(day_total));
     cJSON *calorie_row=cJSON_GetArrayItem(cJSON_GetObjectItem(calories_doc,"hours"),0);
     assert(number(calorie_row,"calories")==helios_user_calories(hours[0].steps));cJSON_Delete(calories_doc);
+    history_load();
+    helios_storage_hourly_steps(clock_now, bins);
+    assert(bins[0] == 5 && bins[1] == 0);
+    /* Export actual hourly files, skip missing/corrupt days and future hours,
+     * retain recorded calories, and include uncheckpointed current samples. */
+    char prior_path[160];snprintf(prior_path,sizeof(prior_path),HELIOS_STORAGE_ROOT "/steps/2026-11-01.json");
+    cJSON *prior=read_json(prior_path,&exists);assert(prior);
+    cJSON *prior_row=cJSON_GetArrayItem(cJSON_GetObjectItem(prior,"hours"),12);
+    assert(cJSON_SetNumberValue(cJSON_GetObjectItem(prior_row,"calories"),123)==123);
+    assert(write_json(prior_path,prior));cJSON_Delete(prior);
+    char invalid_path[160];snprintf(invalid_path,sizeof(invalid_path),HELIOS_STORAGE_ROOT "/steps/2026-10-31.json");
+    assert(write_json_text(invalid_path,"{broken"));
+    clock_now++;helios_storage_record_steps(clock_now,7);history_process();assert(history_dirty);
+    helios_storage_request_steps(exported_record,(void *)42);
+    helios_steps_record_t record;helios_steps_record_cb_t callback;void *user;
+    int exported=0;
+    while(steps_export_next(&record,&callback,&user)) {
+        assert(callback==exported_record && user==(void *)42);
+        assert(record.year==2026 && record.month==11);
+        if(exported<24) {
+            assert(record.day==1 && record.hour==exported);
+            if(record.hour==12) assert(record.steps==115 && record.calories==123);
+            if(record.hour==13) assert(record.steps==10);
+        } else { assert(record.day==2 && record.hour==0 && record.steps==10); }
+        assert(++exported<=25);
+    }
+    assert(exported==25 && !steps_export_busy);
+    helios_storage_request_steps(exported_record,NULL);
+    assert(steps_export_next(&record,&callback,&user));
+    helios_storage_request_steps(NULL,NULL);
+    assert(!steps_export_next(&record,&callback,&user) && !steps_export_busy);
+    /* Battery chart crosses midnight, recalibrates old percentages using voltage,
+     * includes live samples, and leaves unobserved hours explicitly empty. */
+    helios_battery_usage_t usage;
+    assert(!helios_battery_get_usage_24h(clock_now,NULL));
+    assert(!helios_battery_get_usage_24h(0,&usage));
+    clock_now=when(2,0,1);
+    helios_storage_record_battery(clock_now,3900,57,0);history_process();
+    assert(helios_battery_get_usage_24h(clock_now,&usage));
+    assert(usage.count==25 && usage.start==clock_now-86400 && usage.end==clock_now);
+    assert(usage.hours[0].timestamp==when(1,0,0) && !usage.hours[0].samples);
+    assert(usage.hours[12].timestamp==when(1,12,0) && usage.hours[12].samples==2);
+    assert(usage.hours[12].average_mv==3850 && usage.hours[12].last_mv==3800);
+    assert(usage.hours[12].percent==42 && usage.hours[12].charging);
+    assert(usage.hours[24].samples==1 && usage.hours[24].percent==57);
+    assert(history_dirty); /* Read API does not force flash writes. */
+    assert(helios_storage_flush());
+    history_date[0]=0;memset(hours,0,sizeof(hours)); /* Simulate a reboot. */
+    assert(helios_battery_get_usage_24h(clock_now,&usage));
+    assert(usage.hours[24].samples==1 && usage.hours[12].average_mv==3850);
+    assert(history_select(clock_now)==0);
+    char battery_path[160];snprintf(battery_path,sizeof(battery_path),HELIOS_STORAGE_ROOT "/battery/2026-11-01.json");
+    assert(write_json_text(battery_path,"{broken"));
+    assert(helios_battery_get_usage_24h(clock_now,&usage));
+    assert(!usage.hours[12].samples && usage.hours[24].samples==1);
     cJSON_InitHooks(&hooks);history_dirty=true;assert(!history_save());cJSON_InitHooks(NULL);
     char old_path[160], keep_path[160], other_path[160];
     snprintf(old_path,sizeof(old_path),HELIOS_STORAGE_ROOT "/battery/2026-10-03.json");

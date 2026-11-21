@@ -531,6 +531,7 @@ def extract_components(
     face_items = ""
     rsc_array = ""
     rsc_path_array = ""
+    single_image_groups: set[str] = set()
     lv_update_time = ""
     lv_update_weather = ""
     lv_update_status = ""
@@ -572,6 +573,9 @@ def extract_components(
             is_grouped = True
         frame_count = (data[base + 5] & 0x7F) if is_grouped else 1
         pivot_offset = data[base + 6]
+
+        # if item_id == 0x16 and pivot_offset == 0x20:
+        #     is_grouped = True
 
         if is_multi:
             lan += 1
@@ -776,6 +780,19 @@ def extract_components(
         analog_subject = analog_subject_name(lan) if item_id == 0x0D else None
         use_wf_analog = drawable and analog_subject is not None
 
+        if item_id == 0x0B:
+            if place_value == 2:
+                place_value = -2
+            if not use_wf_item:
+                use_wf_item = True
+                place_value = -1 # Use a negative place value to indicate a battery icon instead of a number.
+
+        if item_id == 0x16 and pivot_offset == 0x20:
+            use_wf_item = True
+            place_value = -3 # Icon minus sign for negative temperature, instead of a number.
+
+        print(f"ID: {item_id:02X} use_wf_item: {use_wf_item} place_value: {place_value} pivot_offset: {pivot_offset:02X}")
+
         if use_wf_item:
             if split_ampm_array_name is not None:
                 image_array = split_ampm_array_name
@@ -788,6 +805,20 @@ def extract_components(
                 image_count = 2
             else:
                 image_array = f"face_{name}_dial_img_{resource_pos}_{clt_dat}_group"
+                # Single-frame resources normally use lv_image directly. A
+                # wf_item still needs an array, including for a minus sign.
+                if frame_count == 1 and image_array not in single_image_groups:
+                    rsc_array += (
+                        f"static const void *{image_array}[] = {{\n"
+                        f"\t&face_{name}_dial_img_{resource_pos}_{clt_dat}_0,\n"
+                        "};\n"
+                    )
+                    rsc_path_array += (
+                        f"const char *{image_array}[] = {{\n"
+                        f'\t"{r_prefix}{name}_{resource_pos}_{clt_dat}_0.bin",\n'
+                        "};\n"
+                    )
+                    single_image_groups.add(image_array)
 
         if drawable:
             extern += f"\textern lv_obj_t *face_{name}_{x}_{clt_dat};\n"
@@ -1050,8 +1081,8 @@ extern "C"
     #include "lvgl/lvgl_private.h"
 #endif
 
-#include "../../../../helios_ui.h"
-#include "../../../../custom/watchfaces/watchface_manager.h"
+#include "helios_ui/helios_ui.h"
+#include "helios_ui/custom/watchfaces/watchface_manager.h"
 
 #ifndef ENABLE_FACE_{{NAME}}
 #define ENABLE_FACE_{{NAME}}

@@ -131,10 +131,10 @@ lv_obj_t *init_face_756_466(lv_obj_t *parent){
     lv_obj_set_x(face_756_466_2_53334, 223);
     lv_obj_set_y(face_756_466_2_53334, 33);
 
-    lv_obj_t *face_756_466_3_60952 = lv_img_create(face_756_466);
-    lv_img_set_src(face_756_466_3_60952, &face_756_466_dial_img_3_60952_0);
-    lv_obj_set_width(face_756_466_3_60952, LV_SIZE_CONTENT);
-    lv_obj_set_height(face_756_466_3_60952, LV_SIZE_CONTENT);
+    lv_obj_t *face_756_466_3_60952 = wf_item_create(face_756_466);
+    wf_item_set_place_value(face_756_466_3_60952, -1);
+    wf_item_set_image_array(face_756_466_3_60952, face_756_466_dial_img_3_60952_group, 6);
+    wf_item_bind_subject(face_756_466_3_60952, &sb_battery_percent);
     lv_obj_set_x(face_756_466_3_60952, 126);
     lv_obj_set_y(face_756_466_3_60952, 34);
 

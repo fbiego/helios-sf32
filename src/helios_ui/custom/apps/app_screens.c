@@ -58,6 +58,10 @@ static void on_control_drag_cb(lv_event_t * e);
 static void panel_events_cb(lv_event_code_t code);
 
 static void settings_item_helper(lv_obj_t * parent, const void * icon,  const char * name, settings_item_create_cb_t function);
+
+static lv_obj_t *battery_view_create(lv_obj_t *parent);
+void battery_view_attach(lv_obj_t *view);
+
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -299,7 +303,7 @@ lv_obj_t * screen_settings(void)
         settings_item_helper(list, icon_settings_monitor, "display", settings_display_create);
         settings_item_helper(list, icon_settings_smartwatch, "system", settings_system_create);
         settings_item_helper(list, icon_settings_bell, "alerts", settings_alert_create);
-        settings_item_helper(list, icon_settings_power, "battery", settings_battery_create);
+        settings_item_helper(list, icon_settings_power, "battery", battery_view_create);
         settings_item_helper(list, icon_settings_harddisk, "storage", settings_storage_create);
         settings_item_helper(list, icon_settings_information, "about", settings_about_create);
 
@@ -643,4 +647,21 @@ static void settings_item_helper(lv_obj_t * parent, const void * icon,  const ch
 {
     lv_obj_t * item = app_item_create(parent, icon, name, name);
     lv_obj_add_event_cb(item, settings_item_clicked_cb, LV_EVENT_CLICKED, function);
+}
+
+
+static lv_obj_t *battery_view_create(lv_obj_t *parent)
+{
+    lv_obj_t *view = settings_battery_create(parent);
+
+    
+    battery_view_attach(view);
+
+    return view;
+}
+
+void __attribute__((weak)) battery_view_attach(lv_obj_t *view)
+{
+
+    LV_LOG_WARN("Battery view attach not implemented");
 }

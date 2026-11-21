@@ -3,6 +3,7 @@
 #include "../../battery_host/stubs/rtthread.h"
 #define RT_TIMER_FLAG_ONE_SHOT 0
 #define RT_TIMER_FLAG_SOFT_TIMER 4
+#define RT_TIMER_CTRL_SET_TIME 1
 struct rt_timer {
     void (*callback)(void *);
     void *parameter;
@@ -12,4 +13,5 @@ struct rt_timer {
 void rt_timer_init(struct rt_timer *, const char *, void (*)(void *), void *, rt_tick_t, uint8_t);
 rt_err_t rt_timer_start(struct rt_timer *);
 rt_err_t rt_timer_stop(struct rt_timer *);
+rt_err_t rt_timer_control(struct rt_timer *, int, void *);
 #endif

@@ -37,10 +37,27 @@ serialized. Notification icons use a stable numeric table; future entries
 should be appended rather than reordering existing IDs.
 
 - `settings.json`: a `values` object containing preference keys such as
-  `screen.brightness`, `screen.timeout`, and `ui.watchface.tag`.
-- `weather.json`: current scalar values, city, units, update label, hourly
-  `items`, and `daily` forecasts. Cached forecasts older than seven days, or
-  dated in the future relative to the RTC, are not displayed on restore.
+  `screen.brightness`, `screen.timeout`, `ui.watchface.tag`, and `time.hour_24`.
+  The phone's clock-mode request saves `time.hour_24` as `1` for 24-hour or `0`
+  for 12-hour display; startup restores it, defaulting to 24-hour if absent.
+  The UI hour subject uses 0–23 or 1–12 respectively. `time_am` is `-1` in
+  24-hour mode, `0` for AM, and `1` for PM. Midnight/noon both display as 12
+  in 12-hour mode; the RTC and stored timestamps keep their native values.
+- `weather.json`: current scalar values, city, units, update label, displayed
+  hourly `items` and `daily` forecasts, plus full numeric `readings`. The readings
+  retain the daily base date, a receipt timestamp for each of the 24 hourly
+  slots, and the last phone update timestamp. They restore into Chronos state
+  so the UI can advance without reconnecting to the phone. At startup, each
+  calendar-hour change, and phone receipt, firmware selects the current hour's
+  temperature/condition/humidity/UV (falling back to today's daily reading when
+  that hour is unavailable). Hourly rows start at the next hour and stop at
+  23:00 today; daily rows start tomorrow and advance relative to the saved base
+  date. Old hourly slots are excluded even after a partial phone update.
+  The update label remains the phone receipt time when the clock advances.
+  Legacy files retain scalar values but their undated formatted forecast rows
+  are not replayed; a new phone update supplies dated readings. No imported
+  `helios_ui` changes are required: existing subject setters and collection APIs
+  support this behavior.
 - `notifications.json`: `items` with title, displayed time, message, icon ID and
   read flag, in collection order. The current UI limit is 16 notifications.
 - `contacts.json`: name/number `items` and `sos_index` (-1 means none). The

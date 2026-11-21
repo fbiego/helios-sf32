@@ -43,10 +43,6 @@ lv_obj_t * simulator_create(void)
         lv_obj_set_name_static(lv_obj_0, "simulator_#");
         lv_obj_set_style_bg_color(lv_obj_0, lv_color_hex(0x000000), 0);
 
-        lv_obj_t * hs_text_normal_0 = hs_text_normal_create(lv_obj_0);
-        lv_label_set_text(hs_text_normal_0, "Simulator");
-        lv_obj_set_align(hs_text_normal_0, LV_ALIGN_CENTER);
-
         lv_obj_add_event_cb(lv_obj_0, on_simulator_event_cb, LV_EVENT_ALL, NULL);
 
         the_root = lv_obj_0;

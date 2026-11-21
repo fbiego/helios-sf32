@@ -47,7 +47,7 @@ static uint32_t helios_ui_target = HELIOS_UI_COMPILE_TARGET;
 
 #ifndef LV_EDITOR_PREVIEW
     static const char * translation_languages[] = {"en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", NULL};
-    static const char * translation_tags[] = {"id", "locale", "sun", "mon", "tue", "wed", "thur", "fri", "sat", "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sept", "oct", "nov", "dec", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december", "contacts", "files", "fitness", "health", "music", "navigation", "notifications", "settings", "sleep", "stopwatch", "timer", "weather", "display", "system", "alerts", "battery", "about", "storage", "brightness", "timeout", "rotation", "raise_to_wake", "circular_scroll", "grid_mode", "language", "reboot", "shutdown", "factory_reset", "sound", "vibration", "wake_screen", "dnd", "voltage", "temperature", "usage", "format", "firmware", "hourly_forecast", "daily_forecast", "timeout_5", "timeout_10", "timeout_20", "timeout_30", "always_on", "updated_at", "cloudy", "ram", "psram", "flash", "type", "steps", "watchfaces", "sd_card", "clear_all", "no_notifications", "camera", "music_control", "reset", "inactive", "connected", "disconnected", "nav_info", "nav_start", "navio_info", "en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", "proceed", "cancel", "reset_info", "reset_title", "icon_size", "system_time", "arrival_time", "directions", "large_text", "applications", "phone_link", "status", "last_sync", "charging", "yes", "no", "find_phone", "version", "code", "sun_cloud", "sunny", "snow", "rainy", "tornado", "wind", "haze", "helios_info", NULL};
+    static const char * translation_tags[] = {"id", "locale", "sun", "mon", "tue", "wed", "thur", "fri", "sat", "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sept", "oct", "nov", "dec", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december", "contacts", "files", "fitness", "health", "music", "navigation", "notifications", "settings", "sleep", "stopwatch", "timer", "weather", "display", "system", "alerts", "battery", "about", "storage", "brightness", "timeout", "rotation", "raise_to_wake", "circular_scroll", "grid_mode", "language", "reboot", "shutdown", "factory_reset", "sound", "vibration", "wake_screen", "dnd", "voltage", "temperature", "usage", "format", "firmware", "hourly_forecast", "daily_forecast", "timeout_5", "timeout_10", "timeout_20", "timeout_30", "always_on", "updated_at", "cloudy", "ram", "psram", "flash", "type", "steps", "watchfaces", "sd_card", "clear_all", "no_notifications", "camera", "music_control", "reset", "inactive", "connected", "disconnected", "nav_info", "nav_start", "navio_info", "en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", "proceed", "cancel", "reset_info", "reset_title", "icon_size", "system_time", "arrival_time", "directions", "large_text", "applications", "phone_link", "status", "last_sync", "charging", "yes", "no", "find_phone", "version", "code", "sun_cloud", "sunny", "snow", "rainy", "tornado", "wind", "haze", "helios_info", "left", "right", "gesture_nav", "diagnostics", "haptics", "buzzer", "remaining", "wear_pos", "gesture_info", "incoming_call", NULL};
     static const char * translation_texts[] = {
         "en", "pt", "de", "es", "fr", "hu", "ru", "el", "th", "zh", "ja", "hi", "vi", /* id */
         "English", "Portuguese", "German", "Spanish", "French", "Hungarian", "Russian", "Greek", "Thai", "Chinese", "Japanese", "Hindi", "Vietnamese", /* locale */
@@ -121,7 +121,7 @@ static uint32_t helios_ui_target = HELIOS_UI_COMPILE_TARGET;
         "Wake screen", "Tela de ativação", "Bildschirm aufwecken", "Pantalla de activación", "Écran de réveil", "Képernyő felébresztése", "Экран пробуждения", "Οθόνη αφύπνισης", "หน้าจอปลุก", "唤醒屏幕", "起動画面", "जाग्रत स्क्रीन", "Màn hình khởi động", /* wake_screen */
         "DND Mode", "Modo Não Perturbe", "Nicht stören-Modus", "Modo No Molestar", "Mode Ne pas déranger", "DND mód", "Режим «Не беспокоить»", "Λειτουργία DND", "โหมดห้ามรบกวน", "勿扰模式", "おやすみモード", "डीएनडी मोड", "Chế độ Không làm phiền", /* dnd */
         "Voltage", "Tensão", "Stromspannung", "Voltaje", "Tension", "Feszültség", "Напряжение", "Δυναμικό", "แรงดันไฟฟ้า", "电压", "電圧", "वोल्टेज", "Điện áp", /* voltage */
-        "Temperatue", "Temperatura", "Temperatur", "Temperatura", "Température", "Hőmérséklet", "Температура", "Θερμοκρασία", "อุณหภูมิ", "温度", "温度", "तापमान", "Nhiệt độ", /* temperature */
+        "Temperature", "Temperatura", "Temperatur", "Temperatura", "Température", "Hőmérséklet", "Температура", "Θερμοκρασία", "อุณหภูมิ", "温度", "温度", "तापमान", "Nhiệt độ", /* temperature */
         "Usage", "Uso", "Verwendung", "Uso", "Usage", "Használat", "Использование", "Χρήση", "การใช้งาน", "用法", "使用法", "प्रयोग", "Cách sử dụng", /* usage */
         "Format", "Formatar", "Format", "Formato", "Format", "Formátum", "Формат", "Σχήμα και διάταξις βιβλίου", "รูปแบบ", "格式", "形式", "प्रारूप", "Định dạng", /* format */
         "Firmware", "Firmware", "Firmware", "Firmware", "Micrologiciel", "Firmware", "Прошивка", "Υλικολογισμικό", "เฟิร์มแวร์", "固件", "ファームウェア", "फर्मवेयर", "Phần mềm cơ sở", /* firmware */
@@ -191,7 +191,17 @@ static uint32_t helios_ui_target = HELIOS_UI_COMPILE_TARGET;
         "Tornado", "Tornado", "Tornado", "Tornado", "Tornade", "Tornádó", "Торнадо", "Ανεμοστρόβιλος", "พายุทอร์นาโด", "龙卷风", "竜巻", "बवंडर", "Lốc xoáy", /* tornado */
         "Windy", "Ventoso", "Windig", "Ventoso", "Venteux", "Szeles", "Ветрено", "Ανεμώδης", "ลมแรง", "风", "風が強い", "तूफ़ानी", "Có gió", /* wind */
         "Haze", "Confusão", "Dunst", "Bruma", "Brume", "Köd", "Туман", "Ομίχλη", "หมอก", "阴霾", "ヘイズ", "धुंध", "Sương mù", /* haze */
-        "A smartwatch UI made with ♥️ in Kenya using LVGL Pro by fbiego 🛠️", "Uma interface de smartwatch feita com ♥️ no Quênia usando LVGL Pro da fbiego 🛠️", "Eine mit ♥️ in Kenia mit LVGL Pro von fbiego entwickelte Smartwatch-Benutzeroberfläche 🛠️", "Una interfaz de usuario para reloj inteligente hecha con ♥️ en Kenia usando LVGL Pro de fbiego 🛠️", "Une interface utilisateur pour smartwatch conçue avec ♥️ au Kenya à l'aide de LVGL Pro par fbiego 🛠️", "Egy okosóra felhasználói felület, amelyet ♥️-val készítettek Kenyában az fbiego 🛠️ LVGL Pro használatával", "Пользовательский интерфейс для умных часов, созданный с любовью в Кении с использованием LVGL Pro от fbiego 🛠️", "Ένα περιβάλλον χρήστη smartwatch φτιαγμένο με ♥️ στην Κένυα χρησιμοποιώντας LVGL Pro από την fbiego 🛠️", "อินเทอร์เฟซผู้ใช้สำหรับสมาร์ทวอทช์ สร้างสรรค์ด้วย ♥️ ในประเทศเคนยา โดยใช้ LVGL Pro จาก fbiego 🛠️", "一款由fbiego在肯尼亚使用LVGL Pro精心打造的智能手表用户界面🛠️", "ケニアでfbiegoのLVGL Proを使って♥️を込めて作られたスマートウォッチUI🛠️", "केन्या में fbiego के LVGL Pro का उपयोग करके प्यार से बनाया गया एक स्मार्टवॉच यूआई 🛠️", "Giao diện người dùng đồng hồ thông minh được tạo ra bằng ♥️ tại Kenya bằng LVGL Pro của fbiego 🛠️", /* helios_info */
+        "A smartwatch UI made with ♥️ in Kenya using LVGL Pro by fbiego 🛠️", "Uma interface de smartwatch feita com ♥️ no Quênia usando LVGL Pro da fbiego 🛠️", "Eine mit ♥️ in Kenia mit LVGL Pro von fbiego entwickelte Smartwatch-Benutzeroberfläche 🛠️", "Una interfaz de usuario para reloj inteligente hecha con ♥️ en Kenia usando LVGL Pro de fbiego 🛠️", "Une interface utilisateur pour smartwatch conçue avec ♥️ au Kenya à l'aide de LVGL Pro par fbiego 🛠️", "Egy okosóra felhasználói felület, amelyet ♥️-val készítettek Kenyában az fbiego 🛠️ LVGL Pro használatával", "Пользовательский интерфейс для умных часов, созданный с любовью в Кении с использованием LVGL Pro от fbiego 🛠️", "Ένα περιβάλλον χρήστη smartwatch φτιαγμένο με ♥️ στην Κένυα χρησιμοποιώντας LVGL Pro από την fbiego 🛠️", "อินเทอร์เฟซผู้ใช้สำหรับสมาร์ทวอทช์ สร้างสรรค์ด้วย ♥️ ในประเทศเคนยา โดยใช้ LVGL Pro จาก fbiego 🛠️", "一款由fbiego在肯尼亚使用LVGL Pro精心打造的智能手表用户界面🛠️", "ケニアでfbiegoによるLVGL Proを使用して♥️を込めて作られたスマートウォッチUI🛠️", "केन्या में fbiego के LVGL Pro का उपयोग करके प्यार से बनाया गया एक स्मार्टवॉच यूआई 🛠️", "Giao diện người dùng đồng hồ thông minh được tạo ra bằng ♥️ tại Kenya bằng LVGL Pro của fbiego 🛠️", /* helios_info */
+        "Left", "Esquerda", "Links", "Izquierda", "Gauche", "Balra", "Левый", "Αριστερά", "ซ้าย", "左边", "左", "बाएं", "Bên trái", /* left */
+        "Right", "Certo", "Rechts", "Bien", "Droite", "Jobbra", "Верно", "Δικαίωμα", "ขวา", "正确的", "右", "सही", "Phải", /* right */
+        "Gesture navigation", "Navegação por gestos", "Gestensteuerung", "Navegación por gestos", "Navigation gestuelle", "Gesztusnavigáció", "Навигация с помощью жестов", "Πλοήγηση με κινήσεις", "การนำทางด้วยท่าทาง", "手势导航", "ジェスチャーナビゲーション", "जेस्चर नेविगेशन", "Điều hướng bằng cử chỉ", /* gesture_nav */
+        "Diagnostics", "Diagnóstico", "Diagnostik", "Diagnóstico", "Diagnostic", "Diagnosztika", "Диагностика", "Διαγνωστικά", "การวินิจฉัยโรค", "诊断", "診断", "निदान", "Chẩn đoán", /* diagnostics */
+        "Haptics", "Háptica", "Haptik", "Háptica", "Haptique", "Haptikus ingerek", "Тактильные ощущения", "Απτική", "การสัมผัส", "触觉", "触覚", "हैप्टिक्स", "Phản hồi xúc giác", /* haptics */
+        "Buzzer", "Buzina", "Summer", "Zumbador", "Ronfleur", "Berregő", "Зуммер", "Βομβητής", "เสียงกริ่ง", "蜂鸣器", "ブザー", "बजर", "Chuông", /* buzzer */
+        "Remaining", "Restante", "Übrig", "Restante", "Restant", "Többi", "Оставшийся", "Παραμένων", "ที่เหลืออยู่", "其余的", "残り", "शेष", "Còn lại", /* remaining */
+        "Wear position", "Posição de uso", "Verschleißposition", "Posición de uso", "Position de port", "Viselési pozíció", "Положение износа", "Θέση ένδυσης", "ตำแหน่งการสวมใส่", "佩戴位置", "装着位置", "पहनने की स्थिति", "Vị trí đeo", /* wear_pos */
+        "Use hand gesture to control the watch. Ensure to set the correct wear position for better detection.", "Use gestos com as mãos para controlar o relógio. Certifique-se de posicioná-lo corretamente para melhor detecção.", "Steuern Sie die Uhr per Handgesten. Achten Sie auf die korrekte Trageposition für eine optimale Erkennung.", "Utilice gestos con la mano para controlar el reloj. Asegúrese de colocarlo en la posición correcta para una mejor detección.", "Utilisez les gestes de la main pour contrôler la montre. Veillez à bien la positionner pour une meilleure détection.", "Kézmozdulatokkal irányítsa az órát. A jobb észlelés érdekében ügyeljen a megfelelő viselési pozíció beállítására.", "Для управления часами используйте жесты рук. Для лучшего распознавания убедитесь, что вы правильно установили положение часов на руке.", "Χρησιμοποιήστε χειρονομίες για να ελέγξετε το ρολόι. Βεβαιωθείτε ότι έχετε ρυθμίσει τη σωστή θέση χρήσης για καλύτερη ανίχνευση.", "ใช้ท่าทางมือในการควบคุมนาฬิกา ตรวจสอบให้แน่ใจว่าได้ตั้งตำแหน่งการสวมใส่ที่ถูกต้องเพื่อการตรวจจับที่ดีขึ้น", "使用手势控制手表。请确保佩戴位置正确，以便更好地识别手表。", "手のジェスチャーで時計を操作します。より正確な検出のために、正しい装着位置を設定してください。", "घड़ी को नियंत्रित करने के लिए हाथ के इशारों का उपयोग करें। बेहतर पहचान के लिए घड़ी को सही ढंग से पहनें।", "Sử dụng cử chỉ tay để điều khiển đồng hồ. Đảm bảo đeo đúng vị trí để nhận diện tốt hơn.", /* gesture_info */
+        "Incoming call", "Chamada recebida", "Eingehender Anruf", "Llamada entrante", "Appel entrant", "Bejövő hívás", "Входящий звонок", "Εισερχόμενη κλήση", "สายเรียกเข้า", "来电", "着信", "एक फोन आ रहा है", "Cuộc gọi đến", /* incoming_call */
     };
 #endif
 
@@ -309,6 +319,12 @@ lv_font_t * NS_Medium_jp_30;
 extern lv_font_t NS_Medium_jp_30_data;
 lv_font_t * NS_Medium_jp_40;
 extern lv_font_t NS_Medium_jp_40_data;
+lv_font_t * NS_Emoji_20;
+extern lv_font_t NS_Emoji_20_data;
+lv_font_t * NS_Emoji_14;
+extern lv_font_t NS_Emoji_14_data;
+lv_font_t * NS_Emoji_18;
+extern lv_font_t NS_Emoji_18_data;
 
 /*----------------
  * Images
@@ -531,6 +547,14 @@ const void * img_slider_right_90 = NULL;
 extern const void * img_slider_right_90_data;
 const void * img_slider_right_110 = NULL;
 extern const void * img_slider_right_110_data;
+const void * icon_steps = NULL;
+extern const void * icon_steps_data;
+const void * icon_calories = NULL;
+extern const void * icon_calories_data;
+const void * img_call = NULL;
+extern const void * img_call_data;
+const void * icon_route = NULL;
+extern const void * icon_route_data;
 
 /*----------------
  * Global styles
@@ -592,6 +616,7 @@ lv_subject_t sb_activity_kcal;
 lv_subject_t sb_activity_distance;
 lv_subject_t sb_health_bpm;
 lv_subject_t sb_health_oxygen;
+lv_subject_t sb_activity_progress;
 lv_subject_t sb_system_connection;
 lv_subject_t sb_system_connection_str;
 lv_subject_t sb_os_name;
@@ -632,6 +657,7 @@ lv_subject_t sb_phone_charging;
 lv_subject_t sb_phone_charging_str;
 lv_subject_t sb_chronos_app_code;
 lv_subject_t sb_phone_last_sync;
+lv_subject_t sb_caller_name;
 lv_subject_t sb_weather_code;
 lv_subject_t sb_weather_icon;
 lv_subject_t sb_weather_temp;
@@ -656,6 +682,10 @@ lv_subject_t sb_mpesa_balance_text;
 lv_subject_t sb_mpesa_recent_text;
 lv_subject_t sb_diagnostic_bmi270;
 lv_subject_t sb_diagnostic_battery;
+lv_subject_t sb_notif_sound;
+lv_subject_t sb_notif_vibration;
+lv_subject_t sb_gesture_navigation;
+lv_subject_t sb_wrist_position;
 
 /**********************
  *      MACROS
@@ -980,6 +1010,24 @@ void helios_ui_init_gen(const char * asset_path)
             /* NS_Medium_jp_40 */
             /* get font 'NS_Medium_jp_40' from a C array */
             NS_Medium_jp_40 = &NS_Medium_jp_40_data;
+
+        }
+        if (!NS_Emoji_20) {
+            /* NS_Emoji_20 */
+            /* get font 'NS_Emoji_20' from a C array */
+            NS_Emoji_20 = &NS_Emoji_20_data;
+
+        }
+        if (!NS_Emoji_14) {
+            /* NS_Emoji_14 */
+            /* get font 'NS_Emoji_14' from a C array */
+            NS_Emoji_14 = &NS_Emoji_14_data;
+
+        }
+        if (!NS_Emoji_18) {
+            /* NS_Emoji_18 */
+            /* get font 'NS_Emoji_18' from a C array */
+            NS_Emoji_18 = &NS_Emoji_18_data;
 
         }
     }
@@ -1424,6 +1472,22 @@ void helios_ui_init_gen(const char * asset_path)
         if (!img_slider_right_110) {
             img_slider_right_110 = &img_slider_right_110_data;
         }
+        /* icon_steps */
+        if (!icon_steps) {
+            icon_steps = &icon_steps_data;
+        }
+        /* icon_calories */
+        if (!icon_calories) {
+            icon_calories = &icon_calories_data;
+        }
+        /* img_call */
+        if (!img_call) {
+            img_call = &img_call_data;
+        }
+        /* icon_route */
+        if (!icon_route) {
+            icon_route = &icon_route_data;
+        }
     }
     #endif
 
@@ -1553,6 +1617,7 @@ void helios_ui_init_gen(const char * asset_path)
     lv_subject_init_int(&sb_activity_distance, 157);
     lv_subject_init_int(&sb_health_bpm, 72);
     lv_subject_init_int(&sb_health_oxygen, 98);
+    lv_subject_init_int(&sb_activity_progress, 55);
     lv_subject_init_int(&sb_system_connection, 0);
     static char sb_system_connection_str_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_system_connection_str_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -1622,7 +1687,7 @@ void helios_ui_init_gen(const char * asset_path)
     static char sb_battery_usage_prev_buf[UI_SUBJECT_STRING_LENGTH];
     lv_subject_init_string(&sb_battery_usage, sb_battery_usage_buf, sb_battery_usage_prev_buf,
                            UI_SUBJECT_STRING_LENGTH, "2d 14h");
-    lv_subject_init_pointer(&sb_nav_icon, (void *)icon_turn_left);
+    lv_subject_init_pointer(&sb_nav_icon, (void *)icon_route);
     static char sb_nav_text_buf[UI_SUBJECT_STRING_LENGTH];
     static char sb_nav_text_prev_buf[UI_SUBJECT_STRING_LENGTH];
     lv_subject_init_string(&sb_nav_text, sb_nav_text_buf, sb_nav_text_prev_buf,
@@ -1675,6 +1740,10 @@ void helios_ui_init_gen(const char * asset_path)
     static char sb_phone_last_sync_prev_buf[UI_SUBJECT_STRING_LENGTH];
     lv_subject_init_string(&sb_phone_last_sync, sb_phone_last_sync_buf, sb_phone_last_sync_prev_buf,
                            UI_SUBJECT_STRING_LENGTH, "2d 4h");
+    static char sb_caller_name_buf[UI_SUBJECT_STRING_LENGTH];
+    static char sb_caller_name_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&sb_caller_name, sb_caller_name_buf, sb_caller_name_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH, "John Doe");
     lv_subject_init_int(&sb_weather_code, 0);
     lv_subject_set_min_value_int(&sb_weather_code, 0);
     lv_subject_set_max_value_int(&sb_weather_code, 7);
@@ -1728,6 +1797,18 @@ void helios_ui_init_gen(const char * asset_path)
     static char sb_diagnostic_battery_prev_buf[UI_SUBJECT_STRING_LENGTH];
     lv_subject_init_string(&sb_diagnostic_battery, sb_diagnostic_battery_buf, sb_diagnostic_battery_prev_buf,
                            UI_SUBJECT_STRING_LENGTH, "4027 mV\n82%\nCharge detect: Yes");
+    lv_subject_init_int(&sb_notif_sound, 0);
+    lv_subject_set_min_value_int(&sb_notif_sound, 0);
+    lv_subject_set_max_value_int(&sb_notif_sound, 1);
+    lv_subject_init_int(&sb_notif_vibration, 0);
+    lv_subject_set_min_value_int(&sb_notif_vibration, 0);
+    lv_subject_set_max_value_int(&sb_notif_vibration, 1);
+    lv_subject_init_int(&sb_gesture_navigation, 0);
+    lv_subject_set_min_value_int(&sb_gesture_navigation, 0);
+    lv_subject_set_max_value_int(&sb_gesture_navigation, 1);
+    lv_subject_init_int(&sb_wrist_position, 0);
+    lv_subject_set_min_value_int(&sb_wrist_position, 0);
+    lv_subject_set_max_value_int(&sb_wrist_position, 1);
 
     /*----------------
      * Translations
@@ -1804,6 +1885,9 @@ void helios_ui_init_gen(const char * asset_path)
     check_font(&NS_Medium_jp_20, "NS_Medium_jp_20");
     check_font(&NS_Medium_jp_30, "NS_Medium_jp_30");
     check_font(&NS_Medium_jp_40, "NS_Medium_jp_40");
+    check_font(&NS_Emoji_20, "NS_Emoji_20");
+    check_font(&NS_Emoji_14, "NS_Emoji_14");
+    check_font(&NS_Emoji_18, "NS_Emoji_18");
 
     /* Register fonts */
     lv_xml_register_font(NULL, "NS_Medium_70", NS_Medium_70);
@@ -1857,6 +1941,9 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_font(NULL, "NS_Medium_jp_20", NS_Medium_jp_20);
     lv_xml_register_font(NULL, "NS_Medium_jp_30", NS_Medium_jp_30);
     lv_xml_register_font(NULL, "NS_Medium_jp_40", NS_Medium_jp_40);
+    lv_xml_register_font(NULL, "NS_Emoji_20", NS_Emoji_20);
+    lv_xml_register_font(NULL, "NS_Emoji_14", NS_Emoji_14);
+    lv_xml_register_font(NULL, "NS_Emoji_18", NS_Emoji_18);
 
     /* Register subjects */
     lv_xml_register_subject(NULL, "sb_screen_size", &sb_screen_size);
@@ -1898,6 +1985,7 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "sb_activity_distance", &sb_activity_distance);
     lv_xml_register_subject(NULL, "sb_health_bpm", &sb_health_bpm);
     lv_xml_register_subject(NULL, "sb_health_oxygen", &sb_health_oxygen);
+    lv_xml_register_subject(NULL, "sb_activity_progress", &sb_activity_progress);
     lv_xml_register_subject(NULL, "sb_system_connection", &sb_system_connection);
     lv_xml_register_subject(NULL, "sb_system_connection_str", &sb_system_connection_str);
     lv_xml_register_subject(NULL, "sb_os_name", &sb_os_name);
@@ -1938,6 +2026,7 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "sb_phone_charging_str", &sb_phone_charging_str);
     lv_xml_register_subject(NULL, "sb_chronos_app_code", &sb_chronos_app_code);
     lv_xml_register_subject(NULL, "sb_phone_last_sync", &sb_phone_last_sync);
+    lv_xml_register_subject(NULL, "sb_caller_name", &sb_caller_name);
     lv_xml_register_subject(NULL, "sb_weather_code", &sb_weather_code);
     lv_xml_register_subject(NULL, "sb_weather_icon", &sb_weather_icon);
     lv_xml_register_subject(NULL, "sb_weather_temp", &sb_weather_temp);
@@ -1962,6 +2051,10 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "sb_mpesa_recent_text", &sb_mpesa_recent_text);
     lv_xml_register_subject(NULL, "sb_diagnostic_bmi270", &sb_diagnostic_bmi270);
     lv_xml_register_subject(NULL, "sb_diagnostic_battery", &sb_diagnostic_battery);
+    lv_xml_register_subject(NULL, "sb_notif_sound", &sb_notif_sound);
+    lv_xml_register_subject(NULL, "sb_notif_vibration", &sb_notif_vibration);
+    lv_xml_register_subject(NULL, "sb_gesture_navigation", &sb_gesture_navigation);
+    lv_xml_register_subject(NULL, "sb_wrist_position", &sb_wrist_position);
 
     /* Register callbacks */
     lv_xml_register_event_cb(NULL, "on_music_control_cb", on_music_control_cb);
@@ -2086,6 +2179,10 @@ void helios_ui_init_gen(const char * asset_path)
     lv_xml_register_image(NULL, "img_slider_right_60", img_slider_right_60);
     lv_xml_register_image(NULL, "img_slider_right_90", img_slider_right_90);
     lv_xml_register_image(NULL, "img_slider_right_110", img_slider_right_110);
+    lv_xml_register_image(NULL, "icon_steps", icon_steps);
+    lv_xml_register_image(NULL, "icon_calories", icon_calories);
+    lv_xml_register_image(NULL, "img_call", img_call);
+    lv_xml_register_image(NULL, "icon_route", icon_route);
 #endif
 
 #if !defined(LV_USE_XML) || LV_USE_XML == 0

@@ -531,6 +531,7 @@ def extract_components(
     face_items = ""
     rsc_array = ""
     rsc_path_array = ""
+    single_image_groups: set[str] = set()
     lv_update_time = ""
     lv_update_weather = ""
     lv_update_status = ""
@@ -540,10 +541,10 @@ def extract_components(
 
     weather_ic = f"static const void *face_{name}_dial_img_weather[] = {{\n"
     weather_path_ic = f"const char *face_{name}_dial_img_weather[] = {{\n"
-    conn_ic = f"static const void *face_{name}_dial_img_connection[] = {{\n"
-    conn_path_ic = f"const char *face_{name}_dial_img_connection[] = {{\n"
+    conn_ic: list[str] = []
+    conn_path_ic: list[str] = []
     weather_json = "["
-    conn_json = "["
+    conn_json: list[str] = []
     split_ampm_pairs = {}
     split_ampm_groups_to_use = find_split_ampm_groups(data, component_count)
 
@@ -572,6 +573,9 @@ def extract_components(
             is_grouped = True
         frame_count = (data[base + 5] & 0x7F) if is_grouped else 1
         pivot_offset = data[base + 6]
+
+        # if item_id == 0x16 and pivot_offset == 0x20:
+        #     is_grouped = True
 
         if is_multi:
             lan += 1
@@ -652,13 +656,20 @@ def extract_components(
                 weather_path_ic += f'\t"{r_prefix}{name}_{x}_{clt_dat}_0.bin",\n'
                 weather_json += f'"{r_prefix}{name}_{x}_{clt_dat}_0.bin",'
             elif item_id == 0x0A:
-                conn_ic += f"\t&face_{name}_dial_img_{x}_{clt_dat}_0,\n"
-                conn_path_ic += f'\t"{r_prefix}{name}_{x}_{clt_dat}_0.bin",\n'
-                conn_json += f'"{r_prefix}{name}_{x}_{clt_dat}_0.bin",'
-                if conn_ic.count("\n") > 2:
-                    rsc_array += conn_ic + "};\n"
-                    rsc_path_array += conn_path_ic + "};\n"
-                    resource_json = conn_json[:-1] + "]"
+                # Reverse file order so both exports use the same state order.
+                conn_ic.insert(0, f"\t&face_{name}_dial_img_{x}_{clt_dat}_0,\n")
+                conn_path_ic.insert(0, f'\t"{r_prefix}{name}_{x}_{clt_dat}_0.bin",\n')
+                conn_json.insert(0, f'"{r_prefix}{name}_{x}_{clt_dat}_0.bin"')
+                if len(conn_ic) == 2:
+                    rsc_array += (
+                        f"static const void *face_{name}_dial_img_connection[] = {{\n"
+                        + "".join(conn_ic) + "};\n"
+                    )
+                    rsc_path_array += (
+                        f"const char *face_{name}_dial_img_connection[] = {{\n"
+                        + "".join(conn_path_ic) + "};\n"
+                    )
+                    resource_json = "[" + ", ".join(conn_json) + "]"
             elif frame_count == 1:
                 pass
             else:
@@ -729,7 +740,7 @@ def extract_components(
                     )
                     resource_json = f"[\"{first_ref['path']}\", \"{split_ref['path']}\"]"
 
-        if item_id == 0x0A and conn_ic.count("\n") < 3:
+        if item_id == 0x0A and len(conn_ic) < 2:
             continue
 
         if is_multi:
@@ -776,6 +787,24 @@ def extract_components(
         analog_subject = analog_subject_name(lan) if item_id == 0x0D else None
         use_wf_analog = drawable and analog_subject is not None
 
+        if item_id == 0x0B:
+            if place_value == 2:
+                place_value = -2
+            if not use_wf_item:
+                use_wf_item = True
+                place_value = -1 # Use a negative place value to indicate a battery icon instead of a number.
+
+        if item_id == 0x16 and pivot_offset == 0x20:
+            use_wf_item = True
+            place_value = -3 # Icon minus sign for negative temperature, instead of a number.
+
+        if item_id == 0x03 and id2 == 0x8C:
+            use_wf_item = True
+            place_value = -4 # Month label
+            offs = show.value - 1
+
+        print(f"ID: {item_id:02X} use_wf_item: {use_wf_item} place_value: {place_value} pivot_offset: {pivot_offset:02X}")
+
         if use_wf_item:
             if split_ampm_array_name is not None:
                 image_array = split_ampm_array_name
@@ -788,6 +817,20 @@ def extract_components(
                 image_count = 2
             else:
                 image_array = f"face_{name}_dial_img_{resource_pos}_{clt_dat}_group"
+                # Single-frame resources normally use lv_image directly. A
+                # wf_item still needs an array, including for a minus sign.
+                if frame_count == 1 and image_array not in single_image_groups:
+                    rsc_array += (
+                        f"static const void *{image_array}[] = {{\n"
+                        f"\t&face_{name}_dial_img_{resource_pos}_{clt_dat}_0,\n"
+                        "};\n"
+                    )
+                    rsc_path_array += (
+                        f"const char *{image_array}[] = {{\n"
+                        f'\t"{r_prefix}{name}_{resource_pos}_{clt_dat}_0.bin",\n'
+                        "};\n"
+                    )
+                    single_image_groups.add(image_array)
 
         if drawable:
             extern += f"\textern lv_obj_t *face_{name}_{x}_{clt_dat};\n"
@@ -1003,10 +1046,8 @@ JSON_OBJ = """
 LV_ITEM = """
     lv_obj_t *{{CHILD}} = lv_img_create({{PARENT}});
     lv_img_set_src({{CHILD}}, {{RESOURCE}});
-    lv_obj_set_width({{CHILD}}, LV_SIZE_CONTENT);
-    lv_obj_set_height({{CHILD}}, LV_SIZE_CONTENT);
-    lv_obj_set_x({{CHILD}}, {{CHILD_X}});
-    lv_obj_set_y({{CHILD}}, {{CHILD_Y}});
+    lv_obj_set_size({{CHILD}}, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_set_pos({{CHILD}}, {{CHILD_X}}, {{CHILD_Y}});
 """
 
 WF_ITEM = """
@@ -1014,8 +1055,7 @@ WF_ITEM = """
     wf_item_set_place_value({{CHILD}}, {{PLACE_VALUE}});
     wf_item_set_image_array({{CHILD}}, {{IMAGE_ARRAY}}, {{IMAGE_COUNT}});
     wf_item_bind_subject({{CHILD}}, &{{SUBJECT}});
-    lv_obj_set_x({{CHILD}}, {{CHILD_X}});
-    lv_obj_set_y({{CHILD}}, {{CHILD_Y}});
+    lv_obj_set_pos({{CHILD}}, {{CHILD_X}}, {{CHILD_Y}});
 """
 
 WF_ANALOG = """
@@ -1024,8 +1064,7 @@ WF_ANALOG = """
     wf_analog_bind_rotation({{CHILD}}, &{{SUBJECT}});
     wf_analog_set_pivot_x({{CHILD}}, {{PIVOT_X}});
     wf_analog_set_pivot_y({{CHILD}}, {{PIVOT_Y}});
-    lv_obj_set_x({{CHILD}}, {{CHILD_X}});
-    lv_obj_set_y({{CHILD}}, {{CHILD_Y}});
+    lv_obj_set_pos({{CHILD}}, {{CHILD_X}}, {{CHILD_Y}});
 """
 
 H_FILE = """

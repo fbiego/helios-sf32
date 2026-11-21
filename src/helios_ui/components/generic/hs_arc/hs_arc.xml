@@ -1,0 +1,22 @@
+<component>
+	<previews>
+		<preview width="320" height="240" style_bg_color="0x000000" />
+	</previews>
+
+	<api>
+		<!-- Add your API here here. For example 
+		<prop name="prop1" type="int" default="0" help="What is this property?"/>
+		-->
+	</api>
+
+	<styles>
+		<style name="style_arc" arc_color="0x2fc547" arc_width="40" />
+	</styles>
+
+	<view extends="lv_arc" bg_start_angle="0" bg_end_angle="360" rotation="90">
+		<!-- Add widgets/components here -->
+		<remove_style selector="knob" />
+		<style name="style_arc" />
+		<style name="style_arc" selector="indicator" />
+	</view>
+</component>

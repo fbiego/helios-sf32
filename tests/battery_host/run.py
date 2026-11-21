@@ -21,3 +21,11 @@ with tempfile.TemporaryDirectory(prefix="helios-battery-") as temporary:
         ], check=True)
         subprocess.run([str(executable)], check=True)
         print(f"{name}: passed", flush=True)
+    executable = Path(temporary) / "runtime"
+    subprocess.run([
+        "cc", "-std=c99", "-Wall", "-Wextra", "-Werror",
+        f"-I{test / 'stubs'}", f"-I{root / 'tests/bmi270_host/stubs'}",
+        f"-I{root / 'src'}", str(test / "runtime.c"), "-o", str(executable),
+    ], check=True)
+    subprocess.run([str(executable)], check=True)
+    print("battery runtime: learning, discharge, ring wrap, stale, charging, clock changes: passed")

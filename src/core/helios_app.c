@@ -4,6 +4,7 @@
 #include <rthw.h>
 #include <rtdevice.h>
 #include <board.h>
+#include <math.h>
 #include <string.h>
 #include <time.h>
 
@@ -11,6 +12,7 @@
 #include "lvgl.h"
 #include "helios_ui/helios_ui.h"
 #include "apps/mpesa/mpesa_notifications.h"
+#include "helios_ui/custom/apps/app_manager.h"
 #include "helios_ui/custom/apps/notifications/notifications.h"
 #ifndef _WIN32
 #include "drv_lcd.h"
@@ -19,11 +21,18 @@
 #include "helios_ble.h"
 #include "helios_chronos.h"
 #include "helios_platform.h"
+#include "helios_battery.h"
+#include "helios_sounds.h"
+#include "helios_alarms.h"
+#include "helios_ui_dispatch.h"
 #include "helios_display.h"
 #include "helios_power.h"
 #include "helios_prefs.h"
+#include "helios_time.h"
 #include "helios_storage.h"
 #include "helios_storage_ui.h"
+#include "helios_weather_ui.h"
+#include "helios_notification_ui.h"
 #include "helios_user.h"
 
 #define LOG_TAG "helios.app"
@@ -33,13 +42,13 @@
 #define LCD_DEVICE_NAME "lcd"
 #define HELIOS_SCREEN_TIMEOUT_DEFAULT_MS 5000U
 #define HELIOS_SCREEN_IDLE_POLL_MS 250U
+#define HELIOS_WRIST_VIEW_TIMEOUT_MS 5000U
 #define HELIOS_SLEEP_HOME_DELAY_MS 500U
 #define HELIOS_HEALTH_SENSOR_POLL_MS 20U
 #define HELIOS_BUTTON_PA34 0
 #define HELIOS_BUTTON_PA11 1
 #define HELIOS_SCREEN_SLEEP_BUTTON HELIOS_BUTTON_PA34
 #define HELIOS_PENDING_NOTIFICATIONS 4
-#define HELIOS_WEATHER_HOURLY_DISPLAY_MAX 12
 
 #include "helios_features.h"
 
@@ -67,16 +76,34 @@ static volatile uint8_t g_ui_ready;
 static volatile uint8_t g_restart_requested;
 static volatile uint32_t g_screen_timeout_ms = HELIOS_SCREEN_TIMEOUT_DEFAULT_MS;
 static volatile uint8_t g_screen_awake_override;
-static uint8_t g_screen_on;
+static volatile uint8_t g_screen_on;
 static uint8_t g_sleep_home_pending;
 static uint32_t g_screen_off_tick;
+static uint32_t g_screen_button_sequence;
 static uint8_t g_screen_brightness = 30;
 static lv_image_dsc_t g_nav_icon_dsc;
 static uint32_t g_nav_crc = 0xFFFFFFFFu;
 static uint8_t g_nav_icon_data[CHRONOS_ICON_DATA_SIZE];
+static bool g_nav_active;
+static bool g_nav_open_pending;
+static bool g_nav_wake_locked;
+static bool g_nav_unattended;
+static uint32_t g_nav_button_sequence;
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_WRIST_GESTURES
+static rt_tick_t g_notification_wrist_open_tick;
+static rt_tick_t g_screen_wake_tick;
+#endif
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_RAISE_TO_WAKE
+static bool g_wrist_view_active;
+static rt_tick_t g_wrist_view_started;
+#endif
+static lv_obj_t *g_call_screen;
+static lv_obj_t *g_call_return_screen;
 
 typedef struct {
     const void *icon;
+    uint32_t preview_generation;
+    bool received_while_awake;
     char app[CHRONOS_TEXT_SMALL_SIZE];
     char title[HELIOS_NOTIFICATION_TITLE_MAX];
     char message[HELIOS_NOTIFICATION_MESSAGE_MAX];
@@ -86,15 +113,24 @@ static helios_pending_notification_t g_pending_notifications[HELIOS_PENDING_NOTI
 static uint8_t g_pending_notification_head;
 static uint8_t g_pending_notification_count;
 static volatile uint8_t g_pending_notification_async;
+/* Tag arrivals before UI dispatch so delayed packets keep their sleep window. */
+static uint32_t g_notification_preview_generation;
+static bool g_capture_wrist_notifications;
 
 static volatile uint8_t g_pending_connection_async;
 static bool g_pending_connected;
+
+static volatile uint8_t g_pending_call_async;
+static bool g_pending_call_active;
+static bool g_pending_call_started;
+static char g_pending_caller[CHRONOS_TEXT_LARGE_SIZE];
 
 static volatile uint8_t g_pending_music_async;
 static chronos_music_info_t g_pending_music;
 
 static volatile uint8_t g_pending_nav_async;
 static chronos_navigation_t g_pending_nav;
+static bool g_pending_nav_started;
 
 static volatile uint8_t g_pending_nav_icon_async;
 static uint8_t g_pending_nav_icon[CHRONOS_ICON_DATA_SIZE];
@@ -105,6 +141,9 @@ static volatile uint8_t g_pending_contacts_async, g_pending_qr_async;
 static volatile uint32_t g_pending_qr_mask;
 static volatile uint8_t g_pending_user_async;
 static uint32_t g_pending_user_a, g_pending_user_b;
+static volatile uint8_t g_pending_phone_async;
+static uint8_t g_pending_phone_mask;
+static chronos_phone_info_t g_pending_phone;
 static uint32_t g_activity_steps;
 
 #if HELIOS_HAS_MAX30100
@@ -180,29 +219,92 @@ static uint8_t helios_screen_restore_home(void)
     return 1;
 }
 
-static void helios_screen_power(uint8_t on)
+typedef enum {
+    HELIOS_SCREEN_WAKE,
+    HELIOS_SCREEN_WRIST_WAKE,
+    HELIOS_SCREEN_SLEEP,
+    HELIOS_SCREEN_AUTO_SLEEP,
+} helios_screen_action_t;
+
+static void helios_chronos_notification_async(void *user_data);
+
+static void helios_screen_update_notification_window(helios_screen_action_t action)
+{
+    bool keep_preview = action == HELIOS_SCREEN_WRIST_WAKE;
+    rt_base_t level = rt_hw_interrupt_disable();
+    if (!keep_preview && ++g_notification_preview_generation == 0)
+        ++g_notification_preview_generation;
+    g_capture_wrist_notifications = action == HELIOS_SCREEN_AUTO_SLEEP;
+    if (action == HELIOS_SCREEN_SLEEP || action == HELIOS_SCREEN_AUTO_SLEEP)
+        g_screen_on = 0;
+    rt_hw_interrupt_enable(level);
+
+    if (!keep_preview)
+        helios_notification_preview_reset();
+}
+
+static bool helios_show_notification_preview(void)
+{
+    if (!helios_notification_preview_show())
+        return false;
+
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_WRIST_GESTURES
+    g_notification_wrist_open_tick = rt_tick_get();
+#endif
+    return true;
+}
+
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_RAISE_TO_WAKE
+static void helios_wrist_view_start(void)
+{
+    g_wrist_view_active = true;
+    g_wrist_view_started = rt_tick_get();
+}
+#endif
+
+static void helios_screen_power(helios_screen_action_t action)
 {
     lv_display_t *display = lv_display_get_default();
 
-    if (on)
+    if (action == HELIOS_SCREEN_WAKE || action == HELIOS_SCREEN_WRIST_WAKE)
     {
         if (g_screen_on)
             return;
 
+        g_screen_button_sequence = helios_button_press_sequence();
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_WRIST_GESTURES
+        g_screen_wake_tick = rt_tick_get();
+#endif
         if (helios_power_set_display(1) != RT_EOK)
         {
             LOG_E("display wake failed");
             return;
         }
 
-        /* A quick wake must land on Home even before the delayed reset ran. */
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_WRIST_GESTURES
+        helios_bmi270_set_gesture_polling(helios_subject_get_gesture_navigation() != 0);
+#endif
+        helios_screen_update_notification_window(action);
+        /* A quick wake replaces the previous app even before the delayed reset. */
         uint8_t restored_home = helios_screen_restore_home();
-        if (display && (restored_home || HELIOS_HAS_LOW_POWER))
+        bool preview = false;
+        if (action == HELIOS_SCREEN_WRIST_WAKE) {
+            /* Include any messages received while dark that are still queued. */
+            helios_chronos_notification_async(NULL);
+            preview = helios_show_notification_preview();
+        }
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_RAISE_TO_WAKE
+        if (action == HELIOS_SCREEN_WRIST_WAKE && g_screen_timeout_ms != 0 && !g_screen_awake_override)
+            helios_wrist_view_start();
+#endif
+        if (display && (restored_home || preview || HELIOS_HAS_LOW_POWER))
         {
             lv_obj_invalidate(lv_screen_active());
             lv_refr_now(display);
         }
+        rt_base_t level = rt_hw_interrupt_disable();
         g_screen_on = 1;
+        rt_hw_interrupt_enable(level);
         helios_screen_apply_brightness();
         if (display)
         {
@@ -223,7 +325,15 @@ static void helios_screen_power(uint8_t on)
         return;
     }
 
-    g_screen_on = 0;
+    helios_screen_update_notification_window(action);
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_RAISE_TO_WAKE
+    g_wrist_view_active = false;
+#endif
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_WRIST_GESTURES
+    helios_bmi270_set_gesture_polling(0);
+#endif
+    helios_sounds_ringtone(false);
+    g_nav_unattended = false;
     g_sleep_home_pending = 1;
     g_screen_off_tick = lv_tick_get();
     if (display)
@@ -314,54 +424,36 @@ static const void *helios_chronos_app_icon(uint8_t id)
     }
 }
 
-static const char *helios_weather_day_name(int32_t offset)
+static bool helios_screen_has_name(const char *expected)
 {
-    static const char *days[] = {"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
-    time_t now = time(RT_NULL);
-    struct tm *tm_now = localtime(&now);
-    int32_t day = tm_now ? tm_now->tm_wday : 0;
+    if (lv_display_get_screen_loading(NULL))
+        return false;
 
-    day = (day + offset) % 7;
-    if (day < 0)
-        day += 7;
-
-    return days[day];
+    lv_obj_t *screen = lv_screen_active();
+    const char *name = screen ? lv_obj_get_name(screen) : NULL;
+    return name && lv_streq(name, expected);
 }
 
-static void helios_weather_format_temp(char *buf, size_t buf_size, int32_t temp)
+static void helios_notification_added(const helios_pending_notification_t *pending)
 {
-    rt_snprintf(buf, buf_size, "%d°", (int)temp);
-}
+    if (!pending->preview_generation || pending->preview_generation != g_notification_preview_generation)
+        return;
 
-static void helios_weather_format_update_time(char *buf, size_t buf_size, uint32_t timestamp)
-{
-    time_t update_time = timestamp ? (time_t)timestamp : time(RT_NULL);
-    struct tm *tm_update = localtime(&update_time);
+    uint32_t count = helios_notifications_count();
+    const helios_notification_t *notification = count ? helios_notifications_get(count - 1) : NULL;
+    if (!notification)
+        return;
 
-    if (tm_update)
-        rt_snprintf(buf, buf_size, "%02d:%02d", tm_update->tm_hour, tm_update->tm_min);
-    else
-        rt_snprintf(buf, buf_size, "--:--");
-}
-
-static const chronos_hourly_forecast_t *helios_weather_current_hourly(void)
-{
-    time_t now = time(RT_NULL);
-    struct tm *tm_now = localtime(&now);
-    int32_t hour = tm_now ? tm_now->tm_hour : 0;
-
-    if (chronos_core_has_forecast_hour(hour))
-        return chronos_core_get_forecast_hour(hour);
-
-    for (int32_t i = 0; i < (int32_t)CHRONOS_FORECAST_SIZE; i++) {
-        if (chronos_core_has_forecast_hour(i))
-            return chronos_core_get_forecast_hour(i);
+    if (!pending->received_while_awake) {
+        helios_notification_preview_add(notification->id);
+    } else if (g_screen_on && helios_screen_has_name("home_#") && !helios_input_active()) {
+        helios_notification_preview_reset();
+        helios_notification_preview_add(notification->id);
+        helios_show_notification_preview();
     }
-
-    return NULL;
 }
 
-static void helios_chronos_add_notification(const void *icon, const char *app, const char *title, const char *message)
+static void helios_chronos_add_notification(const helios_pending_notification_t *pending)
 {
     time_t now = time(RT_NULL);
     struct tm *tm_now = localtime(&now);
@@ -370,19 +462,20 @@ static void helios_chronos_add_notification(const void *icon, const char *app, c
     if (tm_now)
         rt_snprintf(time_now, sizeof(time_now), "%02d:%02d", tm_now->tm_hour, tm_now->tm_min);
 
-    is_mpesa = helios_mpesa_handle_notification(app, title, message);
+    is_mpesa = helios_mpesa_handle_notification(pending->app, pending->title, pending->message);
 
-    helios_notifications_add(is_mpesa ? icon_mpesa_watch_32 : (icon ? icon : icon_nt_chat),
-                             is_mpesa ? "MPESA" : (title ? title : "Message"),
-                             time_now,
-                             message ? message : "");
+    if (helios_notifications_add(is_mpesa ? icon_mpesa_watch_32 : pending->icon,
+                                 is_mpesa ? "MPESA" : pending->title, time_now, pending->message))
+        helios_notification_added(pending);
+    helios_sounds_notification();
 }
 
 static void helios_chronos_notification_async(void *user_data)
 {
     (void)user_data;
 
-    while (1) {
+    unsigned budget = HELIOS_PENDING_NOTIFICATIONS;
+    while (budget--) {
         helios_pending_notification_t pending;
 
         rt_base_t level = rt_hw_interrupt_disable();
@@ -397,7 +490,13 @@ static void helios_chronos_notification_async(void *user_data)
         g_pending_notification_count--;
         rt_hw_interrupt_enable(level);
 
-        helios_chronos_add_notification(pending.icon, pending.app, pending.title, pending.message);
+        helios_chronos_add_notification(&pending);
+    }
+    /* A sustained stream must still give timers, touch and other work time. */
+    if (!helios_ui_dispatch_post(helios_chronos_notification_async)) {
+        rt_base_t level = rt_hw_interrupt_disable();
+        g_pending_notification_async = 0;
+        rt_hw_interrupt_enable(level);
     }
 }
 
@@ -415,6 +514,9 @@ static void helios_chronos_queue_notification(const void *icon, const char *app,
 
     uint8_t index = (uint8_t)((g_pending_notification_head + g_pending_notification_count) % HELIOS_PENDING_NOTIFICATIONS);
     g_pending_notifications[index].icon = icon ? icon : icon_nt_chat;
+    g_pending_notifications[index].received_while_awake = g_screen_on;
+    g_pending_notifications[index].preview_generation = (g_screen_on || g_capture_wrist_notifications)
+                                                        ? g_notification_preview_generation : 0;
     rt_snprintf(g_pending_notifications[index].app,
                 sizeof(g_pending_notifications[index].app),
                 "%s",
@@ -437,7 +539,7 @@ static void helios_chronos_queue_notification(const void *icon, const char *app,
     g_pending_notification_async = 1;
     rt_hw_interrupt_enable(level);
 
-    if (lv_async_call(helios_chronos_notification_async, RT_NULL) != LV_RESULT_OK) {
+    if (!helios_ui_dispatch_post(helios_chronos_notification_async)) {
         level = rt_hw_interrupt_disable();
         g_pending_notification_async = 0;
         rt_hw_interrupt_enable(level);
@@ -481,6 +583,146 @@ static void helios_chronos_music_async(void *user_data)
     helios_subject_set_music_album_color(lv_color_hex(music.background_color));
 }
 
+static void helios_call_dismiss(void)
+{
+    if (!g_call_screen || lv_screen_active() != g_call_screen)
+        return;
+
+    lv_obj_t *screen = g_call_return_screen;
+    if (!screen || !lv_obj_is_valid(screen))
+        screen = screen_home();
+    if (screen) {
+        g_call_return_screen = NULL;
+        helios_screen_load_transition(screen, LV_SCR_LOAD_ANIM_NONE, 0, true,
+                                      HELIOS_SCREEN_TRANSITION_DEFAULT);
+    }
+}
+
+static void helios_call_screen_event(lv_event_t *event)
+{
+    lv_event_code_t code = lv_event_get_code(event);
+    if (code == LV_EVENT_SCREEN_LOADED) {
+        helios_sounds_ringtone(true);
+    } else if (code == LV_EVENT_SCREEN_UNLOAD_START) {
+        helios_sounds_ringtone(false);
+    } else if (code == LV_EVENT_DELETE && lv_event_get_target(event) == g_call_screen) {
+        helios_sounds_ringtone(false);
+        helios_screen_wake_lock_release(g_call_screen);
+        g_call_screen = NULL;
+        if (g_call_return_screen && lv_obj_is_valid(g_call_return_screen))
+            lv_obj_delete_async(g_call_return_screen);
+        g_call_return_screen = NULL;
+    } else if (code == LV_EVENT_GESTURE) {
+        lv_indev_t *indev = lv_indev_active();
+        if (!indev)
+            return;
+        lv_dir_t direction = lv_indev_get_gesture_dir(indev);
+        if (direction == LV_DIR_LEFT || direction == LV_DIR_RIGHT) {
+            lv_indev_wait_release(indev);
+            helios_call_dismiss();
+        }
+    }
+}
+
+static void helios_call_async(void *unused)
+{
+    (void)unused;
+    char caller[sizeof(g_pending_caller)];
+    rt_base_t level = rt_hw_interrupt_disable();
+    bool active = g_pending_call_active;
+    bool started = g_pending_call_started;
+    rt_memcpy(caller, g_pending_caller, sizeof(caller));
+    g_pending_call_started = false;
+    g_pending_call_async = 0;
+    rt_hw_interrupt_enable(level);
+
+    if (!active) {
+        helios_sounds_ringtone(false);
+        helios_call_dismiss();
+        return;
+    }
+
+    helios_subject_set_caller_name(caller);
+    if (!started || g_call_screen)
+        return;
+
+    lv_obj_t *screen = call_create();
+    if (!screen)
+        return;
+
+    helios_screen_wake();
+    g_call_return_screen = lv_display_get_screen_loading(NULL);
+    if (!g_call_return_screen)
+        g_call_return_screen = lv_screen_active();
+    g_call_screen = screen;
+    lv_obj_remove_flag(screen, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_event_cb(screen, helios_call_screen_event, LV_EVENT_ALL, NULL);
+    helios_screen_load_transition(screen, LV_SCR_LOAD_ANIM_NONE, 0, false,
+                                  HELIOS_SCREEN_TRANSITION_DEFAULT);
+    helios_screen_wake_lock_acquire(screen, 0);
+}
+
+static bool helios_navigation_is_open(void)
+{
+    lv_obj_t *screen = lv_display_get_screen_loading(NULL);
+    if (!screen)
+        screen = lv_screen_active();
+
+    /* Both the launcher and automatic opening use the generated screen. */
+    const char *name = screen ? lv_obj_get_name(screen) : NULL;
+    return name && strcmp(name, "navigation_#") == 0;
+}
+
+static void helios_navigation_update_wake_lock(void)
+{
+    bool hold = g_screen_on && g_nav_active && helios_navigation_is_open();
+    if (!hold)
+        g_nav_unattended = false;
+
+    if (hold && !g_nav_wake_locked) {
+        g_nav_wake_locked = helios_screen_wake_lock_acquire(&g_nav_wake_locked, 0);
+    } else if (!hold && g_nav_wake_locked) {
+        helios_screen_wake_lock_release(&g_nav_wake_locked);
+        g_nav_wake_locked = false;
+    }
+}
+
+static void helios_screen_note_interaction(void)
+{
+    g_nav_unattended = false;
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_RAISE_TO_WAKE
+    g_wrist_view_active = false;
+#endif
+    helios_notification_preview_interact();
+}
+
+static void helios_screen_input_pressed(lv_event_t *event)
+{
+    (void)event;
+    helios_screen_note_interaction();
+}
+
+static bool helios_navigation_open(bool automatic)
+{
+    uint32_t button_sequence = helios_button_press_sequence();
+    bool input_active = helios_input_active();
+    helios_screen_wake();
+    if (helios_navigation_is_open())
+        return true;
+
+    for (uint32_t i = 0; i < helios_apps_count(); ++i) {
+        const helios_app_t *app = helios_apps_get(i);
+        if (strcmp(app->tag, "navigation") == 0) {
+            /* Only an automatic opening can put the watch to sleep at route end. */
+            g_nav_button_sequence = button_sequence;
+            g_nav_unattended = automatic && !input_active;
+            helios_apps_launch(app);
+            return helios_navigation_is_open();
+        }
+    }
+    return false;
+}
+
 static void helios_chronos_nav_async(void *user_data)
 {
     (void)user_data;
@@ -489,6 +731,8 @@ static void helios_chronos_nav_async(void *user_data)
 
     rt_base_t level = rt_hw_interrupt_disable();
     nav = g_pending_nav;
+    bool started = g_pending_nav_started;
+    g_pending_nav_started = false;
     g_pending_nav_async = 0;
     rt_hw_interrupt_enable(level);
 
@@ -512,6 +756,19 @@ static void helios_chronos_nav_async(void *user_data)
         helios_subject_set_nav_icon((void *)&g_nav_icon_dsc);
     else
         helios_subject_set_nav_icon(NULL);
+
+    bool active = nav.active && nav.is_navigation;
+    bool sleep = !active && g_nav_active && g_nav_unattended &&
+                 g_screen_on && helios_navigation_is_open() &&
+                 !helios_input_active() && helios_button_press_sequence() == g_nav_button_sequence;
+
+    g_nav_active = active;
+    g_nav_open_pending = active && (started || g_nav_open_pending);
+    helios_navigation_update_wake_lock();
+
+    if (sleep && g_screen_timeout_ms != 0 && !g_screen_awake_override &&
+        !helios_screen_wake_lock_active())
+        helios_screen_power(HELIOS_SCREEN_SLEEP);
 }
 
 static void helios_chronos_nav_icon_async(void *user_data)
@@ -534,85 +791,14 @@ static void helios_chronos_nav_icon_async(void *user_data)
 static void helios_chronos_weather_async(void *user_data)
 {
     (void)user_data;
-
     rt_base_t level = rt_hw_interrupt_disable();
     g_pending_weather_async = 0;
     rt_hw_interrupt_enable(level);
-
-    int weather_count = chronos_core_get_weather_count();
-    const chronos_weather_t *current = weather_count > 0 ? chronos_core_get_weather_at(0) : NULL;
-    const chronos_hourly_forecast_t *current_hour = helios_weather_current_hourly();
-    const chronos_weather_location_t *location = chronos_core_get_weather_location();
-    const char *city = location && location->city[0] ? location->city : chronos_core_get_weather_city();
-    char update_time[16];
-
-    if (city && city[0])
-        helios_subject_set_weather_location(city);
-
-    if (current) {
-        helios_subject_set_weather_code(current->icon);
-        helios_subject_set_weather_icon((void *)helios_weather_icon_get(current->icon));
-        helios_subject_set_weather_condition(helios_weather_condition_get(current->icon));
-        helios_subject_set_weather_temp(current->temp);
-        helios_subject_set_weather_temp_high(current->high);
-        helios_subject_set_weather_temp_low(current->low);
-        helios_subject_set_weather_uv(current->uv);
-    }
-
-    if (current_hour)
-        helios_subject_set_weather_humidity(current_hour->humidity);
-
-    helios_weather_format_update_time(update_time, sizeof(update_time), chronos_core_get_weather_time());
-    helios_subject_set_weather_update_time(update_time);
-    helios_subject_set_weather_temp_unit("C");
-
-    helios_weather_daily_clear();
-    for (int i = 0; i < weather_count && i < (int)HELIOS_DAILY_FORECAST_MAX; i++) {
-        const chronos_weather_t *weather = chronos_core_get_weather_at(i);
-        char temp[16];
-
-        if (!weather)
-            continue;
-
-        if (weather->high != 0 || weather->low != 0)
-            rt_snprintf(temp, sizeof(temp), "%d/%d°", weather->high, weather->low);
-        else
-            helios_weather_format_temp(temp, sizeof(temp), weather->temp);
-
-        helios_weather_daily_add(weather->icon, helios_weather_day_name(i), temp);
-    }
-
-    helios_weather_hourly_clear();
-    time_t now = time(RT_NULL);
-    struct tm *tm_now = localtime(&now);
-    int start_hour = tm_now ? tm_now->tm_hour : 0;
-    uint32_t displayed = 0;
-
-    for (int step = 0; step < (int)CHRONOS_FORECAST_SIZE && displayed < HELIOS_WEATHER_HOURLY_DISPLAY_MAX; step++) {
-        int hour = (start_hour + step) % (int)CHRONOS_FORECAST_SIZE;
-        const chronos_hourly_forecast_t *forecast;
-        char time_label[16];
-        char temp[16];
-        char humidity[16];
-
-        if (!chronos_core_has_forecast_hour(hour))
-            continue;
-
-        forecast = chronos_core_get_forecast_hour(hour);
-        if (!forecast)
-            continue;
-
-        rt_snprintf(time_label, sizeof(time_label), "%02d:00", forecast->hour);
-        helios_weather_format_temp(temp, sizeof(temp), forecast->temp);
-        rt_snprintf(humidity, sizeof(humidity), "%d%%", forecast->humidity);
-        helios_weather_hourly_add(forecast->icon, time_label, temp, humidity);
-        displayed++;
-    }
-
-    LOG_I("weather updated: days=%d hourly=%u city=%s", weather_count, displayed, city ? city : "");
+    helios_weather_render(time(NULL));
 }
 
-static void helios_chronos_schedule_async(lv_async_cb_t callback, volatile uint8_t *pending)
+/* Producers only publish work; LVGL itself is confined to the UI thread. */
+static void helios_chronos_schedule_async(helios_ui_work_t callback, volatile uint8_t *pending)
 {
     if (!g_ui_ready)
         return;
@@ -626,7 +812,7 @@ static void helios_chronos_schedule_async(lv_async_cb_t callback, volatile uint8
     *pending = 1;
     rt_hw_interrupt_enable(level);
 
-    if (lv_async_call(callback, RT_NULL) != LV_RESULT_OK) {
+    if (!helios_ui_dispatch_post(callback)) {
         level = rt_hw_interrupt_disable();
         *pending = 0;
         rt_hw_interrupt_enable(level);
@@ -641,8 +827,24 @@ void helios_app_chronos_init(void)
 
 void helios_app_chronos_connection(bool connected)
 {
+    rt_base_t level = rt_hw_interrupt_disable();
     g_pending_connected = connected;
+    bool clear_nav = !connected && g_pending_nav.active;
+    if (clear_nav) {
+        g_pending_nav = (chronos_navigation_t){
+            .eta = "Navigation",
+            .title = "Chronos",
+            .duration = "Disconnected",
+        };
+        g_pending_nav_started = false;
+    }
+    rt_hw_interrupt_enable(level);
+
     helios_chronos_schedule_async(helios_chronos_connection_async, &g_pending_connection_async);
+    if (clear_nav)
+        helios_chronos_schedule_async(helios_chronos_nav_async, &g_pending_nav_async);
+    if (!connected)
+        helios_app_call_update(NULL, false);
 }
 
 void helios_app_chronos_notification(const chronos_notification_t *notification)
@@ -657,10 +859,21 @@ void helios_app_chronos_notification(const chronos_notification_t *notification)
         notification->message);
 }
 
-void helios_app_chronos_ringer(const char *caller, bool active)
+void helios_app_call_update(const char *caller, bool active)
 {
-    if (active)
-        helios_chronos_queue_notification(icon_nt_chat, "Phone", "Incoming call", caller ? caller : "");
+    rt_base_t level = rt_hw_interrupt_disable();
+    if (active && !g_pending_call_active) {
+        g_pending_call_started = true;
+        rt_snprintf(g_pending_caller, sizeof(g_pending_caller), "%s", "Unknown caller");
+    }
+    if (active && caller && caller[0])
+        rt_snprintf(g_pending_caller, sizeof(g_pending_caller), "%s", caller);
+    if (!active)
+        g_pending_call_started = false;
+    g_pending_call_active = active;
+    rt_hw_interrupt_enable(level);
+
+    helios_chronos_schedule_async(helios_call_async, &g_pending_call_async);
 }
 
 void helios_app_music_update(const chronos_music_info_t *music)
@@ -694,6 +907,13 @@ static void helios_chronos_qr_async(void *unused)
         if (mask & (1UL << i)) helios_storage_ui_sync_qr(i);
 }
 
+static void helios_activity_progress_refresh(void)
+{
+    uint32_t target = helios_user_get().target_steps;
+    uint64_t progress = target ? (uint64_t)g_activity_steps * 100 / target : 0;
+    helios_subject_set_activity_progress(progress > 100 ? 100 : (int32_t)progress);
+}
+
 static void helios_chronos_user_async(void *unused)
 {
     (void)unused;
@@ -702,13 +922,55 @@ static void helios_chronos_user_async(void *unused)
     g_pending_user_async = 0;
     rt_hw_interrupt_enable(level);
     helios_storage_ui_sync_user(a, b);
+    helios_activity_progress_refresh();
     uint32_t kcal = helios_user_calories(g_activity_steps);
     helios_subject_set_activity_kcal(kcal > INT32_MAX ? INT32_MAX : (int32_t)kcal);
+}
+
+static void helios_chronos_phone_async(void *unused)
+{
+    (void)unused;
+    rt_base_t level = rt_hw_interrupt_disable();
+    chronos_phone_info_t phone = g_pending_phone;
+    uint8_t mask = g_pending_phone_mask;
+    g_pending_phone_mask = 0;
+    g_pending_phone_async = 0;
+    rt_hw_interrupt_enable(level);
+    if (mask & 1u) {
+        helios_subject_set_phone_battery(phone.battery_level);
+        helios_subject_set_phone_charging(phone.is_charging ? 1 : 0);
+    }
+    if (mask & 2u) {
+        helios_subject_set_chronos_app_version(phone.app_version);
+        helios_subject_set_chronos_app_code(phone.app_code);
+    }
+    if (mask & 4u) {
+        helios_subject_set_phone_manufacturer(phone.manufacturer);
+        helios_subject_set_phone_model(phone.model);
+        helios_subject_set_phone_sdk(phone.sdk_version);
+    }
 }
 
 void helios_app_chronos_config(chronos_config_t config, uint32_t a, uint32_t b)
 {
     switch (config) {
+    case CHRONOS_CONFIG_HOURLY:
+        helios_sounds_set_hourly(b != 0);
+        break;
+    case CHRONOS_CONFIG_SLEEP: {
+        unsigned start_hour = (b >> 24) & 0xffu, start_minute = (b >> 16) & 0xffu;
+        unsigned end_hour = (b >> 8) & 0xffu, end_minute = b & 0xffu;
+        if (start_hour < 24 && end_hour < 24 && start_minute < 60 && end_minute < 60)
+            helios_sounds_set_sleep(a != 0, start_hour * 60 + start_minute,
+                                   end_hour * 60 + end_minute);
+        break;
+    }
+    case CHRONOS_CONFIG_ALARM:
+        helios_alarms_request(a, b);
+        break;
+    case CHRONOS_CONFIG_24_HOUR:
+        helios_time_request_24_hour(b != 0);
+        break;
     case CHRONOS_CONFIG_RESET:
         /* No allocation or reset in the BLE callback. The UI thread snapshots
          * saved state and lets storage finish writing before restarting. */
@@ -740,6 +1002,11 @@ void helios_app_chronos_config(chronos_config_t config, uint32_t a, uint32_t b)
             return;
 
         rt_base_t level = rt_hw_interrupt_disable();
+        /* Latch a new route even if multiple packets arrive before UI dispatch. */
+        if (!nav->active || !nav->is_navigation)
+            g_pending_nav_started = false;
+        else if (!g_pending_nav.active || !g_pending_nav.is_navigation)
+            g_pending_nav_started = true;
         g_pending_nav = *nav;
         rt_hw_interrupt_enable(level);
 
@@ -776,31 +1043,18 @@ void helios_app_chronos_config(chronos_config_t config, uint32_t a, uint32_t b)
     case CHRONOS_CONFIG_WEATHER:
         helios_chronos_schedule_async(helios_chronos_weather_async, &g_pending_weather_async);
         break;
-    case CHRONOS_CONFIG_PHONE_BATTERY: {
-        const chronos_phone_info_t *phone = chronos_core_get_phone_info();
-        LOG_I("Phone battery: %s\n", phone->is_charging ? "Charging" : "Not Charging");
-        LOG_I("Level: %u%%\n", phone->battery_level);
-        helios_subject_set_phone_battery(phone->battery_level);
-        helios_subject_set_phone_charging(phone->is_charging ? 1 : 0);
-        break;
-    }
+    case CHRONOS_CONFIG_PHONE_BATTERY:
     case CHRONOS_CONFIG_APP: {
         const chronos_phone_info_t *phone = chronos_core_get_phone_info();
-        if (b == 0u) {
-            LOG_I("Chronos App; Code: %lu Version: %s\n",
-                   (unsigned long)a,
-                   phone->app_version);
-            helios_subject_set_chronos_app_version(phone->app_version);
-            helios_subject_set_chronos_app_code(phone->app_code);
-        } else if (b == 1u) {
-            LOG_I("Device Info; Android SDK: %lu Manufacturer: %s Model: %s\n",
-                   (unsigned long)a,
-                   phone->manufacturer,
-                   phone->model);
-            helios_subject_set_phone_manufacturer(phone->manufacturer);
-            helios_subject_set_phone_model(phone->model);
-            helios_subject_set_phone_sdk(phone->sdk_version);
-        }
+        uint8_t mask = config == CHRONOS_CONFIG_PHONE_BATTERY ? 1u :
+                       b == 0u ? 2u : b == 1u ? 4u : 0u;
+        if (!phone || !mask)
+            break;
+        rt_base_t level = rt_hw_interrupt_disable();
+        g_pending_phone = *phone;
+        g_pending_phone_mask |= mask;
+        rt_hw_interrupt_enable(level);
+        helios_chronos_schedule_async(helios_chronos_phone_async, &g_pending_phone_async);
         break;
     }
     default:
@@ -817,7 +1071,7 @@ void on_music_control_cb(lv_event_t *e)
 
 void helios_screen_wake(void)
 {
-    helios_screen_power(1);
+    helios_screen_power(HELIOS_SCREEN_WAKE);
 }
 
 void helios_screen_set_timeout_ms(uint32_t timeout_ms)
@@ -1019,20 +1273,72 @@ static void helios_diagnostic_battery_refresh(void)
     helios_subject_set_diagnostic_battery(text);
 }
 
+static lv_obj_t *g_fitness_steps_chart;
+
+static void helios_fitness_steps_update(lv_obj_t *chart, time_t now)
+{
+    lv_chart_series_t *series = lv_chart_get_series_next(chart, NULL);
+    if (!series)
+        return;
+
+    uint32_t bins[HELIOS_STEPS_HOURS_PER_DAY];
+    int32_t values[HELIOS_STEPS_HOURS_PER_DAY];
+    helios_storage_hourly_steps(now, bins);
+    /* LVGL multiplies bar values by the chart height in a signed integer. */
+    int32_t display_height = lv_display_get_vertical_resolution(lv_obj_get_display(chart));
+    uint32_t limit = INT32_MAX / LV_MAX(1, display_height);
+    int32_t peak = 100;
+    for (unsigned i = 0; i < HELIOS_STEPS_HOURS_PER_DAY; ++i) {
+        values[i] = (int32_t)LV_MIN(bins[i], limit);
+        peak = LV_MAX(peak, values[i]);
+    }
+
+    lv_chart_set_point_count(chart, HELIOS_STEPS_HOURS_PER_DAY);
+    int32_t *points = lv_chart_get_series_y_array(chart, series);
+    if (points && memcmp(points, values, sizeof(values)) != 0) {
+        memcpy(points, values, sizeof(values));
+        lv_chart_set_x_start_point(chart, series, 0);
+        lv_chart_set_axis_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, peak);
+        lv_chart_refresh(chart);
+    }
+}
+
+static void helios_fitness_chart_deleted(lv_event_t *event)
+{
+    if (lv_event_get_target(event) == g_fitness_steps_chart)
+        g_fitness_steps_chart = NULL;
+}
+
+static void helios_fitness_before_draw(lv_event_t *event)
+{
+    lv_obj_t *screen = lv_display_get_screen_active(lv_event_get_target(event));
+    const char *name = screen ? lv_obj_get_name(screen) : NULL;
+    if (!name || !lv_streq(name, "fitness_#"))
+        return;
+
+    lv_obj_t *chart = lv_obj_find_by_name(screen, "steps_chart");
+    if (!chart || chart == g_fitness_steps_chart)
+        return;
+
+    g_fitness_steps_chart = chart;
+    lv_obj_add_event_cb(chart, helios_fitness_chart_deleted, LV_EVENT_DELETE, NULL);
+    helios_fitness_steps_update(chart, time(NULL));
+}
+
 static void helios_ui_refresh(lv_timer_t *timer)
 {
     helios_storage_ui_poll();
     (void)timer;
 
     time_t now = time(RT_NULL);
+    if (g_fitness_steps_chart && lv_obj_get_screen(g_fitness_steps_chart) == lv_screen_active())
+        helios_fitness_steps_update(g_fitness_steps_chart, now);
+    helios_weather_poll(now);
     struct tm *tm_now = localtime(&now);
-    char time_now[16] = "--:--";
+    helios_time_publish(tm_now);
+    helios_sounds_poll(now, tm_now);
     if (tm_now)
     {
-        rt_snprintf(time_now, sizeof(time_now), "%02d:%02d", tm_now->tm_hour, tm_now->tm_min);
-        helios_subject_set_time_string(time_now);
-
-        helios_subject_set_time_hour(tm_now->tm_hour);
         helios_subject_set_time_minute(tm_now->tm_min);
         helios_subject_set_time_seconds(tm_now->tm_sec);
         helios_subject_set_time_day(tm_now->tm_mday);
@@ -1053,6 +1359,175 @@ static void helios_ui_refresh(lv_timer_t *timer)
     helios_diagnostic_battery_refresh();
 }
 
+static bool helios_screen_can_auto_sleep(void)
+{
+    return !g_screen_awake_override && g_screen_timeout_ms != 0 && !helios_screen_wake_lock_active();
+}
+
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_WRIST_GESTURES
+static bool helios_wrist_notifications(void)
+{
+    bool opening = helios_screen_has_name("home_#");
+    if (!opening && !helios_screen_has_name("notifications_#"))
+        return false;
+
+    lv_obj_t *screen = opening ? screen_notifications() : lv_screen_active();
+    if (!screen)
+        return false;
+
+    if (opening)
+        helios_screen_load_transition(screen, LV_SCR_LOAD_ANIM_NONE, 0, true,
+                                      HELIOS_SCREEN_TRANSITION_DEFAULT);
+
+    lv_obj_t *list = get_list_from_wd(screen, "notifications_list");
+    if (!list)
+        return opening;
+
+    lv_obj_update_layout(list);
+    if (opening) {
+        lv_obj_scroll_to_y(list, 0, LV_ANIM_OFF);
+    } else {
+        int32_t page = lv_obj_get_content_height(list);
+        int32_t remaining = lv_obj_get_scroll_bottom(list);
+        if (page > 0 && remaining > 0)
+            lv_obj_scroll_to_y(list, lv_obj_get_scroll_y(list) + LV_MIN(page, remaining), LV_ANIM_OFF);
+    }
+    return true;
+}
+
+static lv_obj_t *helios_widgets_container(lv_obj_t *screen)
+{
+    lv_obj_t *panel = lv_obj_get_child(screen, 0);
+    return panel ? wd_panel_get_container(panel) : NULL;
+}
+
+static bool helios_wrist_open_widgets(void)
+{
+    lv_obj_t *screen = screen_widgets();
+    lv_obj_t *container = screen ? helios_widgets_container(screen) : NULL;
+    lv_obj_t *first = container ? lv_obj_get_child(container, 0) : NULL;
+    if (!first) {
+        if (screen)
+            lv_obj_delete(screen);
+        return false;
+    }
+
+    lv_obj_scroll_to_view(first, LV_ANIM_OFF);
+    helios_screen_load_transition(screen, LV_SCR_LOAD_ANIM_NONE, 0, true,
+                                  HELIOS_SCREEN_TRANSITION_DEFAULT);
+    return true;
+}
+
+static bool helios_wrist_next_widget(void)
+{
+    if (!helios_screen_has_name("widgets_#"))
+        return false;
+
+    lv_obj_t *container = helios_widgets_container(lv_screen_active());
+    if (!container || lv_obj_is_scrolling(container))
+        return false;
+
+    /* Use the centered page so a preceding touch swipe sets the same position. */
+    lv_obj_update_layout(container);
+    lv_area_t viewport;
+    lv_obj_get_content_coords(container, &viewport);
+    int32_t center = (viewport.x1 + viewport.x2) / 2;
+    int32_t closest = INT32_MAX;
+    uint32_t current = 0;
+    uint32_t count = lv_obj_get_child_count(container);
+    if (count < 2)
+        return false;
+
+    for (uint32_t i = 0; i < count; ++i) {
+        lv_area_t area;
+        lv_obj_get_coords(lv_obj_get_child(container, (int32_t)i), &area);
+        int32_t distance = LV_ABS((area.x1 + area.x2) / 2 - center);
+        if (distance < closest) {
+            closest = distance;
+            current = i;
+        }
+    }
+
+    uint32_t next = (current + 1) % count;
+    lv_obj_scroll_to_view(lv_obj_get_child(container, (int32_t)next), LV_ANIM_OFF);
+    return true;
+}
+
+static bool helios_wrist_pivot_up(void)
+{
+    if (lv_display_get_screen_loading(NULL))
+        return false;
+
+    if (helios_notification_preview_is_open()) {
+        helios_notification_preview_dismiss();
+        return true;
+    }
+
+    if (helios_screen_has_name("home_#"))
+        return g_nav_active ? helios_navigation_open(false) : helios_wrist_open_widgets();
+
+    if (g_nav_active && helios_navigation_is_open())
+        return helios_wrist_open_widgets();
+
+    lv_obj_t *home = screen_home();
+    if (!home)
+        return false;
+
+    helios_screen_load_transition(home, LV_SCR_LOAD_ANIM_NONE, 0, true,
+                                  HELIOS_SCREEN_TRANSITION_DEFAULT);
+    return true;
+}
+
+static void helios_screen_wrist_poll(void)
+{
+    static uint32_t last_gesture_events;
+    static uint32_t last_pivot_up_events;
+    helios_bmi270_sample_t sample;
+    if (helios_bmi270_read(&sample) != RT_EOK)
+        return;
+
+    bool new_gesture = sample.wrist_gesture_events != last_gesture_events;
+    bool new_pivot_up = sample.wrist_pivot_up_events != last_pivot_up_events;
+    last_gesture_events = sample.wrist_gesture_events;
+    last_pivot_up_events = sample.wrist_pivot_up_events;
+    if ((!new_gesture && !new_pivot_up) || !helios_subject_get_gesture_navigation() || helios_input_active())
+        return;
+
+    rt_tick_t now = rt_tick_get();
+    rt_tick_t wake_age = now - g_screen_wake_tick;
+    rt_tick_t max_age = rt_tick_from_millisecond(750);
+    rt_tick_t pivot_up_age = now - sample.wrist_pivot_up_tick;
+    rt_tick_t age = now - sample.wrist_gesture_tick;
+
+    if (new_pivot_up && pivot_up_age <= max_age && pivot_up_age < wake_age) {
+        if (!helios_wrist_pivot_up())
+            return;
+    } else if (!new_gesture || age > max_age || age >= wake_age) {
+        return;
+    } else if (!helios_notification_preview_is_open()) {
+        if (sample.wrist_gesture != HELIOS_BMI270_GESTURE_FLICK_IN ||
+            (!helios_wrist_next_widget() && !helios_wrist_notifications()))
+            return;
+    } else if (helios_subject_get_screen_rtw() == 0 ||
+               age >= (rt_tick_t)(now - g_notification_wrist_open_tick)) {
+        return;
+    } else if (sample.wrist_gesture == HELIOS_BMI270_GESTURE_FLICK_IN) {
+        helios_notification_preview_next();
+    } else if (sample.wrist_gesture == HELIOS_BMI270_GESTURE_FLICK_OUT) {
+        helios_notification_preview_dismiss();
+    } else {
+        return;
+    }
+
+    helios_navigation_update_wake_lock();
+    lv_display_trigger_activity(NULL);
+#if HELIOS_IMU_RAISE_TO_WAKE
+    if (g_wrist_view_active)
+        helios_wrist_view_start();
+#endif
+}
+#endif
+
 static void helios_screen_idle_poll(lv_timer_t *timer)
 {
     (void)timer;
@@ -1063,32 +1538,64 @@ static void helios_screen_idle_poll(lv_timer_t *timer)
 #else
     uint8_t wrist_wake = 0;
 #endif
+    helios_navigation_update_wake_lock();
     if (!g_screen_on)
     {
         if (g_sleep_home_pending && lv_tick_elaps(g_screen_off_tick) >= HELIOS_SLEEP_HOME_DELAY_MS)
             helios_screen_restore_home();
-        if ((wrist_wake && helios_subject_get_screen_rtw() != 0) ||
-            helios_button_take_press(HELIOS_BUTTON_PA34) ||
+        if (helios_button_take_press(HELIOS_BUTTON_PA34) ||
             helios_button_take_press(HELIOS_BUTTON_PA11) ||
             helios_input_active())
             helios_screen_wake();
+        else if (wrist_wake && helios_subject_get_screen_rtw() != 0)
+            helios_screen_power(HELIOS_SCREEN_WRIST_WAKE);
         return;
     }
 
     if (helios_button_take_press(HELIOS_SCREEN_SLEEP_BUTTON))
     {
-        helios_screen_power(0);
+        helios_screen_power(HELIOS_SCREEN_SLEEP);
         return;
     }
 
-    if (helios_input_active())
+    uint32_t button_sequence = helios_button_press_sequence();
+    if (helios_button_take_press(HELIOS_BUTTON_PA11) || helios_input_active() ||
+        button_sequence != g_screen_button_sequence) {
+        helios_screen_note_interaction();
         lv_display_trigger_activity(NULL);
+    } else {
+        helios_notification_list_mark_visible_read();
+    }
+    g_screen_button_sequence = button_sequence;
 
-    if (g_screen_awake_override || g_screen_timeout_ms == 0)
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_WRIST_GESTURES
+    helios_screen_wrist_poll();
+#endif
+
+    bool preview_waiting = helios_notification_preview_poll();
+#if HELIOS_HAS_BMI270 && HELIOS_IMU_RAISE_TO_WAKE
+    if (g_wrist_view_active) {
+        if (g_nav_active && helios_navigation_is_open())
+            return;
+
+        if (!helios_screen_can_auto_sleep() ||
+            (!helios_notification_preview_is_open() && !helios_screen_has_name("home_#") &&
+             !helios_screen_has_name("widgets_#") && !helios_screen_has_name("notifications_#"))) {
+            g_wrist_view_active = false;
+        } else {
+            if ((rt_tick_t)(rt_tick_get() - g_wrist_view_started) >=
+                rt_tick_from_millisecond(HELIOS_WRIST_VIEW_TIMEOUT_MS))
+                helios_screen_power(HELIOS_SCREEN_AUTO_SLEEP);
+            return;
+        }
+    }
+#endif
+
+    if (preview_waiting || !helios_screen_can_auto_sleep())
         return;
 
     if (lv_display_get_inactive_time(NULL) >= g_screen_timeout_ms)
-        helios_screen_power(0);
+        helios_screen_power(HELIOS_SCREEN_AUTO_SLEEP);
 }
 
 #if HELIOS_HAS_BMI270
@@ -1102,30 +1609,47 @@ static void helios_motion_poll(lv_timer_t *timer)
         char text[UI_SUBJECT_STRING_LENGTH];
         char gyro[64];
         char tilt[64] = "";
+        char activity[32], gesture[32];
+        if (sample.temperature_valid)
+            helios_subject_set_battery_temp(sample.temperature_c);
         if (HELIOS_IMU_STEPS)
         {
             helios_storage_record_steps(time(NULL), sample.steps);
             uint32_t total = helios_storage_ready() ? helios_storage_daily_steps() : sample.steps;
             g_activity_steps = total;
+            helios_activity_progress_refresh();
             helios_subject_set_activity_steps(total > INT32_MAX ? INT32_MAX : (int32_t)total);
             uint32_t kcal = helios_user_calories(total);
             helios_subject_set_activity_kcal(kcal > INT32_MAX ? INT32_MAX : (int32_t)kcal);
         }
         if (sample.gyro_error)
-            rt_snprintf(gyro, sizeof(gyro), "Gyro error: %d", sample.gyro_error);
+            rt_snprintf(gyro, sizeof(gyro), "G error: %d", sample.gyro_error);
         else if (sample.gyro_enabled)
-            rt_snprintf(gyro, sizeof(gyro), "Gyro raw: %d, %d, %d", sample.gyro[0], sample.gyro[1], sample.gyro[2]);
+            rt_snprintf(gyro, sizeof(gyro), "G: %d,%d,%d", sample.gyro[0], sample.gyro[1], sample.gyro[2]);
         else
-            rt_snprintf(gyro, sizeof(gyro), "Gyro: off / starting");
+            rt_snprintf(gyro, sizeof(gyro), "G: off / starting");
+        if (sample.activity_error)
+            rt_snprintf(activity, sizeof(activity), "read error %d", sample.activity_error);
+        else
+            rt_snprintf(activity, sizeof(activity), "%s", !HELIOS_IMU_ACTIVITY ? "disabled" :
+                !sample.activity_valid ? "starting" : helios_bmi270_activity_name(sample.activity));
+        if (sample.wrist_gesture_error)
+            rt_snprintf(gesture, sizeof(gesture), "read error %d", sample.wrist_gesture_error);
+        else
+            rt_snprintf(gesture, sizeof(gesture), "%s", HELIOS_IMU_WRIST_GESTURES ?
+                helios_bmi270_gesture_name(sample.wrist_gesture) : "disabled");
 #if HELIOS_IMU_DEBUG_ORIENTATION
         int16_t roll, pitch;
         if (helios_bmi270_orientation(&sample, &roll, &pitch) == RT_EOK)
-            rt_snprintf(tilt, sizeof(tilt), "\nRoll/pitch: %d, %d (0.1 deg)", roll, pitch);
+            rt_snprintf(tilt, sizeof(tilt), "\nTilt: %d,%d (0.1 deg)", roll, pitch);
 #endif
         rt_snprintf(text, sizeof(text),
-                    "Accel raw: %d, %d, %d\n%s\nSteps: %lu%s\nStep events: %lu\nWake events: %lu%s%s",
+                    "Wrist position (est.): %s\nAct: %s <- %s [%lu]\nNav: %s [%lu]\nPivot ups: %lu\nA: %d,%d,%d\n%s\nSteps: %lu%s (%lu events)\nWake: %lu%s%s",
+                    helios_bmi270_focus_name(&sample), activity, helios_bmi270_activity_name(sample.previous_activity),
+                    (unsigned long)sample.activity_changes, gesture, (unsigned long)sample.wrist_gesture_events,
+                    (unsigned long)sample.wrist_pivot_up_events,
                     sample.accel[0], sample.accel[1], sample.accel[2], gyro,
-                    (unsigned long)sample.steps, HELIOS_IMU_STEPS ? "" : " (disabled)",
+                    (unsigned long)sample.steps, HELIOS_IMU_STEPS ? "" : " (off)",
                     (unsigned long)sample.step_events, (unsigned long)sample.wrist_wake_events,
                     HELIOS_IMU_RAISE_TO_WAKE ? "" : " (disabled)", tilt);
         helios_subject_set_diagnostic_bmi270(text);
@@ -1165,6 +1689,35 @@ static void helios_activity_sync(lv_timer_t *timer)
 }
 #endif
 
+static void helios_battery_usage_refresh(void)
+{
+    helios_battery_runtime_t runtime;
+    const char *value = "--";
+    char text[32];
+    if (helios_battery_estimate_remaining(time(NULL), &runtime))
+    {
+        switch (runtime.status)
+        {
+        case HELIOS_BATTERY_RUNTIME_AVAILABLE: {
+            uint32_t hours = runtime.remaining_seconds / 3600;
+            rt_snprintf(text, sizeof(text), "%lud %luh",
+                        (unsigned long)(hours / 24), (unsigned long)(hours % 24));
+            value = text;
+            break;
+        }
+        case HELIOS_BATTERY_RUNTIME_LEARNING:
+            value = "Estimating...";
+            break;
+        case HELIOS_BATTERY_RUNTIME_CHARGING:
+            value = "Charging";
+            break;
+        default:
+            break;
+        }
+    }
+    helios_subject_set_battery_usage(value);
+}
+
 static void helios_battery_poll(lv_timer_t *timer)
 {
     static rt_err_t last_error = RT_EOK;
@@ -1176,6 +1729,7 @@ static void helios_battery_poll(lv_timer_t *timer)
     g_battery_read_error = err;
     if (err == RT_EOK)
     {
+        helios_battery_observe(time(NULL), &battery);
         helios_ui_set_battery(battery.percent, battery.millivolts);
         helios_subject_set_battery_percent(battery.percent);
         helios_subject_set_battery_voltage(battery.millivolts / 1000.0f);
@@ -1191,23 +1745,30 @@ static void helios_battery_poll(lv_timer_t *timer)
         LOG_W("battery read failed: %d; run battery_status for diagnostics", err);
     }
     last_error = err;
+    helios_battery_usage_refresh();
     helios_diagnostic_battery_refresh();
 }
 
 void helios_diagnostic_screen_event(lv_event_t *e)
 {
-#if HELIOS_HAS_BMI270
     lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t *screen = lv_event_get_current_target(e);
     if (code == LV_EVENT_SCREEN_LOADED)
     {
+        if (!helios_screen_wake_lock_acquire(screen, 0))
+            LOG_W("Diagnostics could not acquire screen wake lock");
+#if HELIOS_HAS_BMI270
         helios_bmi270_set_diagnostics(1);
         helios_motion_poll(NULL);
+#endif
     }
     else if (code == LV_EVENT_SCREEN_UNLOAD_START || code == LV_EVENT_DELETE)
+    {
+        helios_screen_wake_lock_release(screen);
+#if HELIOS_HAS_BMI270
         helios_bmi270_set_diagnostics(0);
-#else
-    (void)e;
 #endif
+    }
 }
 
 void on_diagnostic_click(lv_event_t *e)
@@ -1270,14 +1831,22 @@ static void helios_ui_entry(void *parameter)
     rt_err_t err = littlevgl2rtt_init(LCD_DEVICE_NAME);
     RT_ASSERT(err == RT_EOK);
 
+    for (lv_indev_t *indev = lv_indev_get_next(NULL); indev; indev = lv_indev_get_next(indev))
+        lv_indev_add_event_cb(indev, helios_screen_input_pressed, LV_EVENT_PRESSED, NULL);
+
     err = helios_display_init_rotation();
     RT_ASSERT(err == RT_EOK);
 
     helios_ui_init("");
+    /* Replace the preview value before the battery view binds to this subject. */
+    lv_subject_init_float(&sb_battery_temp, NAN);
+    lv_display_add_event_cb(lv_display_get_default(), helios_fitness_before_draw, LV_EVENT_REFR_START, NULL);
     helios_chronos_prepare();
     helios_storage_ui_init();
+    helios_alarms_init();
     helios_subject_set_activity_steps(0);
     helios_subject_set_activity_kcal(0);
+    helios_activity_progress_refresh();
     g_ui_ready = 1;
     lv_timer_create(helios_ui_refresh, 1000, RT_NULL);
     lv_timer_create(helios_screen_idle_poll, HELIOS_SCREEN_IDLE_POLL_MS, RT_NULL);
@@ -1316,11 +1885,30 @@ static void helios_ui_entry(void *parameter)
 
     helios_prefs_init();
     helios_prefs_apply_saved_ui_settings();
+    helios_time_restore_format();
+    helios_ui_refresh(NULL);
 
     helios_screen_wake();
 
+    helios_sounds_startup();
+
     while (1)
     {
+        helios_ui_dispatch_poll();
+        if (g_nav_open_pending && !g_call_screen) {
+            helios_navigation_open(true);
+            helios_navigation_update_wake_lock();
+            g_nav_open_pending = false;
+        }
+        time_t alarm_now = time(RT_NULL);
+        struct tm alarm_calendar;
+        const struct tm *alarm_time = localtime_r(&alarm_now, &alarm_calendar);
+        if (helios_alarms_poll(alarm_time, helios_button_press_sequence())) {
+            /* The dismissal press belongs to the alarm, not navigation. */
+            while (helios_button_take_press(HELIOS_BUTTON_PA34)) {}
+            while (helios_button_take_press(HELIOS_BUTTON_PA11)) {}
+        }
+        helios_sounds_ringtone_poll(lv_tick_get());
         int delay_ms = lv_timer_handler();
         if (g_restart_requested) {
             g_restart_requested = 0;

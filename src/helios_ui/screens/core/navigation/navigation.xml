@@ -19,10 +19,23 @@
 			<wd_list-container>
 				<style name="style_base" />
 				<style name="style_pad" />
-				<bind_style name="style_pad_360" subject="sb_screen_size" ref_value="1" />
-				<bind_style name="style_pad_240" subject="sb_screen_size" ref_value="2" />
+				<bind_style
+					name="style_pad_360"
+					subject="sb_screen_size"
+					ref_value="1"
+				/>
+				<bind_style
+					name="style_pad_240"
+					subject="sb_screen_size"
+					ref_value="2"
+				/>
 
-				<hs_text_normal text="Navigation" width="90%" style_text_align="center" bind_text="sb_nav_text" />
+				<hs_text_normal
+					text="Navigation"
+					width="90%"
+					style_text_align="center"
+					bind_text="sb_nav_text"
+				/>
 				<wd_image
 					scale_0="500"
 					scale_1="385"
@@ -35,7 +48,12 @@
 					style_image_recolor="0xffffff"
 					style_image_recolor_opa="255"
 				/>
-				<hs_text_normal text="ESP32" width="90%" style_text_align="center" bind_text="sb_nav_title" />
+				<hs_text_normal
+					text="ESP32"
+					width="90%"
+					style_text_align="center"
+					bind_text="sb_nav_title"
+				/>
 				<hs_text_small
 					text="Avaialble on Chronos v3.7.5+"
 					width="90%"
@@ -44,5 +62,12 @@
 				/>
 			</wd_list-container>
 		</wd_list>
+
+		<hs_text_small
+			align="bottom_mid"
+			bind_text="sb_time_string"
+			style_text_color="0x6d6d6d"
+			style_pad_bottom="6"
+		/>
 	</view>
 </screen>

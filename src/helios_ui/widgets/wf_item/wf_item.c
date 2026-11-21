@@ -14,6 +14,11 @@
  *      DEFINES
  *********************/
 
+#define PV_BAT_ICON -1
+#define PV_BAT_100 -2
+#define PV_TEMP -3
+#define PV_MONTH_12 -4
+
 /**********************
  *      TYPEDEFS
  **********************/
@@ -59,6 +64,9 @@ void wf_item_set_image_array(lv_obj_t * wf_item, const void * image_array[], uin
     wf_item_t * widget = (wf_item_t *)wf_item;
     widget->image_array = image_array;
     widget->image_array_count = image_array_count;
+    if (widget->bind_subject) {
+        set_item_digit(widget, lv_subject_get_int(widget->bind_subject));
+    }
 }
 
 void wf_item_bind_subject(lv_obj_t * wf_item, lv_subject_t * bind_subject)
@@ -76,6 +84,9 @@ void wf_item_set_place_value(lv_obj_t * wf_item, int32_t place_value)
 {
     wf_item_t * widget = (wf_item_t *)wf_item;
     widget->place_value = place_value;
+    if (widget->bind_subject) {
+        set_item_digit(widget, lv_subject_get_int(widget->bind_subject));
+    }
 }
 
 /**********************
@@ -93,15 +104,38 @@ static void set_item_digit(wf_item_t * widget, int32_t value)
 {
     lv_obj_t * obj = (lv_obj_t *)widget;
 
+    if (widget->place_value == PV_TEMP) {
+        const void * src = NULL;
+        if (value < 0 && widget->image_array != NULL && widget->image_array_count > 0) {
+            src = widget->image_array[0];
+        }
+        lv_image_set_src(obj, src);
+        return;
+    }
+
     if (value < 0) {
         lv_image_set_src(obj, NULL);
         return;
     }
-    uint8_t v = get_digit(value, widget->place_value);
+    if (widget->image_array == NULL || widget->image_array_count == 0) return;
 
-    if (v >= widget->image_array_count) v = 0;
-
-    if (widget->image_array_count <= 0) return;
+    uint32_t v;
+    if (widget->place_value == PV_BAT_ICON) {
+        uint32_t percent = value > 100 ? 100 : (uint32_t)value;
+        /* Round to the nearest level, with transitions at the midpoints. */
+        v = (uint32_t)(((uint64_t)percent * (widget->image_array_count - 1) + 50) / 100);
+    }
+    else if (widget->place_value == PV_MONTH_12 && widget->image_array_count == 12) {
+        v = (value - 1) % 12;
+    }
+    else {
+        v = get_digit(value, widget->place_value == PV_BAT_100 ? 2 : widget->place_value);
+        if (widget->place_value == PV_BAT_100 && v == 0) {
+            lv_image_set_src(obj, NULL);
+            return;
+        }
+        if (v >= widget->image_array_count) v = 0;
+    }
 
     lv_image_set_src(obj, widget->image_array[v]);
 }

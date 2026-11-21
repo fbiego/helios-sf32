@@ -76,27 +76,27 @@
 					subject="sb_screen_size"
 					ref_value="2"
 				/>
-				<hs_title_pill tag="Diagnostics" width="content" />
+				<hs_title_pill tag="diagnostics" width="content" />
 
 				<hs_card>
 					<hs_title label="BMI270" />
 					<hs_text_small bind_text="sb_diagnostic_bmi270" />
 				</hs_card>
 				<hs_card>
-					<hs_title label="Battery" />
+					<hs_title tag="battery" />
 					<hs_text_small bind_text="sb_diagnostic_battery" />
 				</hs_card>
 				<hs_card>
-					<hs_title label="Haptics" />
+					<hs_title tag="haptics" />
 					<hs_row style_pad_column="10">
-						<hs_button_text text="Vibration">
+						<hs_button_text tag="vibration">
 							<event_cb
 								callback="on_diagnostic_click"
 								trigger="clicked"
 								user_data="vibration"
 							/>
 						</hs_button_text>
-						<hs_button_text text="Buzzer">
+						<hs_button_text tag="buzzer">
 							<event_cb
 								callback="on_diagnostic_click"
 								trigger="clicked"

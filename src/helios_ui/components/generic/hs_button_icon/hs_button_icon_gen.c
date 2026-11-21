@@ -107,7 +107,7 @@ lv_obj_t * hs_button_icon_create(lv_obj_t * parent, const void * icon, int32_t r
         wd_image_set_scale_2(wd_image_0, 130);
         wd_image_set_size_1(wd_image_0, 60);
         wd_image_set_size_2(wd_image_0, 40);
-        lv_image_set_rotation(wd_image_0, rotation);
+        wd_image_set_wd_rotation(wd_image_0, rotation);
         wd_image_bind_scale(wd_image_0, &sb_screen_size);
         lv_image_bind_src(wd_image_0, bind_icon);
         lv_obj_add_style(wd_image_0, &style_image, 0);

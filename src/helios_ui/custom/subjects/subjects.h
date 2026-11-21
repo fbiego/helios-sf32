@@ -208,6 +208,12 @@ void helios_subject_set_health_bpm(int32_t value);
 void helios_subject_set_health_oxygen(int32_t value);
 
 /**
+ * Activity progress set function.
+ * @param value    New value
+ */
+void helios_subject_set_activity_progress(int32_t value);
+
+/**
  * System ble connection set function.
  * @param value    New value
  */
@@ -448,6 +454,12 @@ void helios_subject_set_chronos_app_code(int32_t value);
 void helios_subject_set_phone_last_sync(const char * value);
 
 /**
+ * Caller name set function.
+ * @param value    New value
+ */
+void helios_subject_set_caller_name(const char * value);
+
+/**
  * Weather condition code set function.
  * @param value    New value
  */
@@ -591,6 +603,30 @@ void helios_subject_set_diagnostic_bmi270(const char * value);
  */
 void helios_subject_set_diagnostic_battery(const char * value);
 
+/**
+ * Notification sounds set function.
+ * @param value    New value
+ */
+void helios_subject_set_notif_sound(int32_t value);
+
+/**
+ * Notification vibration set function.
+ * @param value    New value
+ */
+void helios_subject_set_notif_vibration(int32_t value);
+
+/**
+ * Gesture navigation set function.
+ * @param value    New value
+ */
+void helios_subject_set_gesture_navigation(int32_t value);
+
+/**
+ * Wrist position set function.
+ * @param value    New value
+ */
+void helios_subject_set_wrist_position(int32_t value);
+
 
 /**********************
  * GET FUNCTIONS
@@ -601,6 +637,30 @@ void helios_subject_set_diagnostic_battery(const char * value);
  * @return         Current value
  */
 int32_t helios_subject_get_screen_rtw(void);
+
+/**
+ * Notification sounds get function.
+ * @return         Current value
+ */
+int32_t helios_subject_get_notif_sound(void);
+
+/**
+ * Notification vibration get function.
+ * @return         Current value
+ */
+int32_t helios_subject_get_notif_vibration(void);
+
+/**
+ * Gesture navigation get function.
+ * @return         Current value
+ */
+int32_t helios_subject_get_gesture_navigation(void);
+
+/**
+ * Wrist position get function.
+ * @return         Current value
+ */
+int32_t helios_subject_get_wrist_position(void);
 
 
 /**********************
@@ -726,6 +786,30 @@ void helios_subject_stopwatch_button_reset_state_change(int32_t value);
  * @param value    Updated value
  */
 void helios_subject_mpesa_balance_hidden_change(int32_t value);
+
+/**
+ * Notification sounds change callback.
+ * @param value    Updated value
+ */
+void helios_subject_notif_sound_change(int32_t value);
+
+/**
+ * Notification vibration change callback.
+ * @param value    Updated value
+ */
+void helios_subject_notif_vibration_change(int32_t value);
+
+/**
+ * Gesture navigation change callback.
+ * @param value    Updated value
+ */
+void helios_subject_gesture_navigation_change(int32_t value);
+
+/**
+ * Wrist position change callback.
+ * @param value    Updated value
+ */
+void helios_subject_wrist_position_change(int32_t value);
 
 
 #ifdef __cplusplus

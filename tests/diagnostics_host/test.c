@@ -6,7 +6,7 @@
 #define HELIOS_BUZZER_PWM_FUNCTION GPTIM2_CH2
 #define HELIOS_BUZZER_PWM_DEVICE "pwmt2"
 #define HELIOS_BUZZER_PWM_CHANNEL 2
-#define HELIOS_BUZZER_FREQUENCY_HZ 2000
+#define HELIOS_BUZZER_FREQUENCY_HZ 4000
 #define HELIOS_MOTOR_PIN 20
 #define HELIOS_MOTOR_PAD PAD_PA20
 #define HELIOS_MOTOR_GPIO GPIO_A20
@@ -23,13 +23,19 @@ void drv_reboot(void) {}
 static struct rt_device_pwm pwm;
 static int present = 1, open_error, pwm_error, timer_error;
 static int opens, running, levels[42];
+static rt_tick_t ticks;
+rt_tick_t rt_tick_get(void) { return ticks; }
+rt_err_t rt_mutex_init(struct rt_mutex *m, const char *n, uint8_t f)
+{ (void)m; (void)n; (void)f; return RT_EOK; }
+rt_err_t rt_mutex_take(struct rt_mutex *m, int32_t t) { (void)m; (void)t; return RT_EOK; }
+rt_err_t rt_mutex_release(struct rt_mutex *m) { (void)m; return RT_EOK; }
 rt_tick_t rt_tick_from_millisecond(int32_t ms) { return (rt_tick_t)ms; }
 rt_device_t rt_device_find(const char *name)
 { assert(strcmp(name, "pwmt2") == 0); return present ? &pwm : NULL; }
 rt_err_t rt_device_open(rt_device_t device, uint16_t flags)
 { assert(device == &pwm && flags == RT_DEVICE_OFLAG_RDWR); opens++; return open_error; }
 rt_err_t rt_pwm_set(struct rt_device_pwm *device, int channel, uint32_t period, uint32_t pulse)
-{ assert(device == &pwm && channel == 2 && period == 500000 && pulse == 250000); return pwm_error; }
+{ assert(device == &pwm && channel == 2 && period == 250000 && pulse == 125000); return pwm_error; }
 rt_err_t rt_pwm_enable(struct rt_device_pwm *device, int channel)
 { assert(device == &pwm && channel == 2); running = 1; return RT_EOK; }
 rt_err_t rt_pwm_disable(struct rt_device_pwm *device, int channel)
@@ -50,13 +56,16 @@ void rt_timer_init(struct rt_timer *timer, const char *name, void (*cb)(void *),
 rt_err_t rt_timer_start(struct rt_timer *timer)
 { timer->armed = !timer_error; return timer_error; }
 rt_err_t rt_timer_stop(struct rt_timer *timer) { timer->armed = 0; return RT_EOK; }
+rt_err_t rt_timer_control(struct rt_timer *timer, int command, void *arg)
+{ assert(command == RT_TIMER_CTRL_SET_TIME); timer->ticks = *(rt_tick_t *)arg; return RT_EOK; }
 static void expire(struct rt_timer *timer)
-{ assert(timer->armed); timer->armed = 0; timer->callback(timer->parameter); }
+{ assert(timer->armed); ticks += timer->ticks; timer->armed = 0; timer->callback(timer->parameter); }
 #endif
 
 int main(void)
 {
 #if HELIOS_HAS_BUZZER
+    assert(helios_buzzer_lock_init() == RT_EOK);
     present = 0;
     assert(helios_buzzer_test() == -RT_ERROR && !running);
     present = 1; open_error = -5;
@@ -67,20 +76,34 @@ int main(void)
     assert(helios_buzzer_test() == RT_EOK && opens == previous_opens);
     expire(&g_buzzer_timer);
     assert(!running && levels[41] == 0);
+    assert(helios_buzzer_tone(500) == RT_EOK && running);
+    helios_buzzer_silence();
+    assert(!running && !g_buzzer_timer.armed && levels[41] == 0);
+    assert(helios_buzzer_tone(120) == RT_EOK && running);
+    helios_buzzer_stop(NULL); /* A stale callback must not stop a new tone. */
+    assert(running);
+    expire(&g_buzzer_timer); assert(!running);
     pwm_error = -6;
     assert(helios_buzzer_test() == -6 && !running && levels[41] == 0);
     pwm_error = 0; timer_error = -7;
     assert(helios_buzzer_test() == -7 && !running && levels[41] == 0);
     timer_error = 0;
+    assert(helios_motor_lock_init() == RT_EOK);
     assert(helios_motor_test() == RT_EOK && levels[20] == 1 && g_motor_timer.ticks == 250);
     assert(helios_motor_test() == RT_EOK && levels[20] == 1);
     expire(&g_motor_timer);
     assert(levels[20] == 0);
+    assert(helios_motor_pulse(120) == RT_EOK && g_motor_timer.ticks == 120);
+    helios_motor_stop(NULL);
+    assert(levels[20] == 1);
+    helios_motor_silence();
+    assert(!g_motor_timer.armed && levels[20] == 0);
     timer_error = -8;
     assert(helios_motor_test() == -8 && levels[20] == 0);
     levels[25] = 0; assert(helios_charge_detect_level() == 0);
     levels[25] = 1; assert(helios_charge_detect_level() == 1);
 #else
+    helios_buzzer_silence();
     assert(helios_buzzer_test() == -RT_ENOSYS);
     assert(helios_motor_test() == -RT_ENOSYS);
     assert(helios_charge_detect_level() == -RT_ENOSYS);

@@ -91,11 +91,11 @@ lv_obj_t * settings_alert_create(lv_obj_t * parent)
         lv_obj_bind_style(wd_list_container_0, &style_pad_rect_240, LV_STATE_USER_1, &sb_screen_size, 2);
         lv_obj_t * hs_card_0 = hs_card_create(wd_list_container_0);
         lv_obj_set_style_pad_ver(hs_card_0, 5, 0);
-        hs_switch_create(hs_card_0, "Circular Scroll", "sound", &sb_list_circular_mode);
+        hs_switch_create(hs_card_0, "Circular Scroll", "sound", &sb_notif_sound);
 
         hs_line_create(hs_card_0);
 
-        hs_switch_create(hs_card_0, "Circular Scroll", "vibration", &sb_list_circular_mode);
+        hs_switch_create(hs_card_0, "Circular Scroll", "vibration", &sb_notif_vibration);
 
         hs_line_create(hs_card_0);
 

@@ -49,6 +49,10 @@ void helios_subjects_init(void)
     lv_subject_add_observer(&sb_stopwatch_button_start_state, int_subject_observer_cb, (void *)helios_subject_stopwatch_button_start_state_change);
     lv_subject_add_observer(&sb_stopwatch_button_reset_state, int_subject_observer_cb, (void *)helios_subject_stopwatch_button_reset_state_change);
     lv_subject_add_observer(&sb_mpesa_balance_hidden, int_subject_observer_cb, (void *)helios_subject_mpesa_balance_hidden_change);
+    lv_subject_add_observer(&sb_notif_sound, int_subject_observer_cb, (void *)helios_subject_notif_sound_change);
+    lv_subject_add_observer(&sb_notif_vibration, int_subject_observer_cb, (void *)helios_subject_notif_vibration_change);
+    lv_subject_add_observer(&sb_gesture_navigation, int_subject_observer_cb, (void *)helios_subject_gesture_navigation_change);
+    lv_subject_add_observer(&sb_wrist_position, int_subject_observer_cb, (void *)helios_subject_wrist_position_change);
 
 }
 
@@ -249,6 +253,13 @@ void helios_subject_set_health_oxygen(int32_t value)
 {
     lv_lock();
     lv_subject_set_int(&sb_health_oxygen, value);
+    lv_unlock();
+}
+
+void helios_subject_set_activity_progress(int32_t value)
+{
+    lv_lock();
+    lv_subject_set_int(&sb_activity_progress, value);
     lv_unlock();
 }
 
@@ -532,6 +543,13 @@ void helios_subject_set_phone_last_sync(const char * value)
     lv_unlock();
 }
 
+void helios_subject_set_caller_name(const char * value)
+{
+    lv_lock();
+    lv_subject_copy_string(&sb_caller_name, value);
+    lv_unlock();
+}
+
 void helios_subject_set_weather_code(int32_t value)
 {
     lv_lock();
@@ -700,6 +718,34 @@ void helios_subject_set_diagnostic_battery(const char * value)
     lv_unlock();
 }
 
+void helios_subject_set_notif_sound(int32_t value)
+{
+    lv_lock();
+    lv_subject_set_int(&sb_notif_sound, value);
+    lv_unlock();
+}
+
+void helios_subject_set_notif_vibration(int32_t value)
+{
+    lv_lock();
+    lv_subject_set_int(&sb_notif_vibration, value);
+    lv_unlock();
+}
+
+void helios_subject_set_gesture_navigation(int32_t value)
+{
+    lv_lock();
+    lv_subject_set_int(&sb_gesture_navigation, value);
+    lv_unlock();
+}
+
+void helios_subject_set_wrist_position(int32_t value)
+{
+    lv_lock();
+    lv_subject_set_int(&sb_wrist_position, value);
+    lv_unlock();
+}
+
 /**********************
  * GET FUNCTIONS
  **********************/
@@ -707,6 +753,26 @@ void helios_subject_set_diagnostic_battery(const char * value)
 int32_t helios_subject_get_screen_rtw(void)
 {
     return lv_subject_get_int(&sb_screen_rtw);
+}
+
+int32_t helios_subject_get_notif_sound(void)
+{
+    return lv_subject_get_int(&sb_notif_sound);
+}
+
+int32_t helios_subject_get_notif_vibration(void)
+{
+    return lv_subject_get_int(&sb_notif_vibration);
+}
+
+int32_t helios_subject_get_gesture_navigation(void)
+{
+    return lv_subject_get_int(&sb_gesture_navigation);
+}
+
+int32_t helios_subject_get_wrist_position(void)
+{
+    return lv_subject_get_int(&sb_wrist_position);
 }
 
 /**********************
@@ -811,6 +877,26 @@ void __attribute__((weak)) helios_subject_stopwatch_button_reset_state_change(in
 void __attribute__((weak)) helios_subject_mpesa_balance_hidden_change(int32_t value)
 {
     LV_LOG_USER("Subject mpesa_balance_hidden changed %d", value);
+}
+
+void __attribute__((weak)) helios_subject_notif_sound_change(int32_t value)
+{
+    LV_LOG_USER("Subject notif_sound changed %d", value);
+}
+
+void __attribute__((weak)) helios_subject_notif_vibration_change(int32_t value)
+{
+    LV_LOG_USER("Subject notif_vibration changed %d", value);
+}
+
+void __attribute__((weak)) helios_subject_gesture_navigation_change(int32_t value)
+{
+    LV_LOG_USER("Subject gesture_navigation changed %d", value);
+}
+
+void __attribute__((weak)) helios_subject_wrist_position_change(int32_t value)
+{
+    LV_LOG_USER("Subject wrist_position changed %d", value);
 }
 
 /**********************

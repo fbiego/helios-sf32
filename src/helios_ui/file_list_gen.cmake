@@ -11,6 +11,8 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/components/control/control_slider/control_slider_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/control/control_switch/control_switch_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/dialogs/info_dialog/info_dialog_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/components/dialogs/notification_dialog/notification_dialog_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_arc/hs_arc_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_bar/hs_bar_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_button_icon/hs_button_icon_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_button_text/hs_button_text_gen.c
@@ -22,6 +24,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_dropdown/hs_dropdown_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_info_sb_sb/hs_info_sb_sb_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_info_sb/hs_info_sb_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_info_tag_sb/hs_info_tag_sb_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_info/hs_info_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_lap_item/hs_lap_item_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/generic/hs_line/hs_line_gen.c
@@ -58,6 +61,9 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/components/weather/daily_forecast/daily_forecast_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/weather/hourly_forecast/hourly_forecast_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/weather/weather_widget/weather_widget_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/NS_Emoji_14_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/NS_Emoji_18_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/NS_Emoji_20_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/NS_Medium_14_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/NS_Medium_16_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/NS_Medium_18_data.c
@@ -121,6 +127,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_back_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_brightness_empty_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_brightness_full_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_calories_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_chat_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_connect_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_contacts_data.c
@@ -169,6 +176,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_play_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_qr_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_restart_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_route_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_running_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_settings_bell_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_settings_brightness_data.c
@@ -180,6 +188,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_settings_smartwatch_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_sleep_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_spotify_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/icon_steps_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_stop_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_stopwatch_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_text_hide_data.c
@@ -210,6 +219,7 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_wt_tornado_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/icon_wt_wind_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_blood_oxygen_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/images/img_call_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_finger_sensor_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_heart_beat_data.c
   ${CMAKE_CURRENT_LIST_DIR}/images/img_music_album_data.c
@@ -222,8 +232,10 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/screens/apps/sc_mpesa/sc_mpesa_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/applications/applications_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/boot/boot_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/core/call/call_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/contacts/contacts_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/diagnostics/diagnostics_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/core/fitness/fitness_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/home/home_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/music/music_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/core/navigation/navigation_gen.c

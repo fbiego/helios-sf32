@@ -22,6 +22,7 @@ with tempfile.TemporaryDirectory(prefix="helios-storage-") as temporary:
         f"-I{test / 'stubs'}", f"-I{test}", f"-I{root / 'src'}", f"-I{root / 'src/chronos_core'}", f"-I{cjson}",
         str(test / "test_ui.c"), str(test / "ui_support.c"),
         str(root / "src/core/helios_user.c"),
+        str(root / "src/core/helios_weather_data.c"),
         str(root / "src/chronos_core/chronos_core.c"),
         *[str(root / f"src/helios_ui/custom/apps/{name}/{name}.c") for name in ("notifications", "contacts", "weather")],
         str(cjson / "cJSON.c"), "-lm", "-o", str(ui_exe)

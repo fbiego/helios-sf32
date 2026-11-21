@@ -8,11 +8,27 @@
 #include "helios_ble.h"
 #include "helios_ios.h"
 #include "helios_platform.h"
+#include "helios_storage.h"
 
 #define LOG_TAG "helios.proto"
 #include "log.h"
 
 static uint8_t g_chronos_ready;
+
+static bool helios_chronos_steps_record(const helios_steps_record_t *record, void *user)
+{
+    (void)user;
+    if (!helios_ble_can_notify()) return false;
+    return chronos_core_send_steps_record(record->steps, record->calories,
+        record->hour, record->day, record->month, record->year,
+        0, 0, 0, 0) == CHRONOS_STATUS_OK;
+}
+
+static void helios_chronos_health_request(chronos_health_request_t request, bool enabled)
+{
+    if (request == CHRONOS_HEALTH_STEPS_RECORDS && enabled && helios_ble_can_notify())
+        helios_storage_request_steps(helios_chronos_steps_record, NULL);
+}
 
 void helios_chronos_update_battery(uint8_t percent, uint8_t charging)
 {
@@ -68,7 +84,7 @@ static void helios_chronos_notification(chronos_notification_t *notification)
 
 static void helios_chronos_ringer(const char *caller, bool active)
 {
-    helios_app_chronos_ringer(caller, active);
+    helios_app_call_update(caller, active);
     LOG_D("ringer %s %s", active ? "start" : "stop", caller ? caller : "");
 }
 
@@ -142,6 +158,7 @@ static void helios_chronos_init_once(void)
     chronos_core_set_notification_cb(helios_chronos_notification);
     chronos_core_set_ringer_cb(helios_chronos_ringer);
     chronos_core_set_config_cb(helios_chronos_config);
+    chronos_core_set_health_request_cb(helios_chronos_health_request);
     helios_app_chronos_init();
 
     g_chronos_ready = 1;
@@ -164,6 +181,7 @@ void helios_chronos_prepare(void)
 void helios_chronos_on_disconnected(void)
 {
     helios_chronos_init_once();
+    helios_storage_request_steps(NULL, NULL);
     chronos_core_reset_rx(chronos_core_get_state());
     chronos_core_set_connection_status(false, false);
     LOG_I("Chronos disconnected");

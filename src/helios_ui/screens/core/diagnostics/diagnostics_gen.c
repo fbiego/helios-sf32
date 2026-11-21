@@ -108,7 +108,7 @@ lv_obj_t * diagnostics_create(void)
         lv_obj_add_style(hs_column_0, &style_cont, 0);
         lv_obj_bind_style(hs_column_0, &style_cont_360, 0, &sb_screen_size, 1);
         lv_obj_bind_style(hs_column_0, &style_cont_240, 0, &sb_screen_size, 2);
-        lv_obj_t * hs_title_pill_0 = hs_title_pill_create(hs_column_0, "Diagnostics");
+        lv_obj_t * hs_title_pill_0 = hs_title_pill_create(hs_column_0, "diagnostics");
         lv_obj_set_width(hs_title_pill_0, LV_SIZE_CONTENT);
 
         lv_obj_t * hs_card_0 = hs_card_create(hs_column_0);
@@ -118,20 +118,20 @@ lv_obj_t * diagnostics_create(void)
         lv_label_bind_text(hs_text_small_0, &sb_diagnostic_bmi270, NULL);
 
         lv_obj_t * hs_card_1 = hs_card_create(hs_column_0);
-        hs_title_create(hs_card_1, "Battery", "", &sb_battery_percent);
+        hs_title_create(hs_card_1, "Select", "battery", &sb_battery_percent);
 
         lv_obj_t * hs_text_small_1 = hs_text_small_create(hs_card_1);
         lv_label_bind_text(hs_text_small_1, &sb_diagnostic_battery, NULL);
 
         lv_obj_t * hs_card_2 = hs_card_create(hs_column_0);
-        hs_title_create(hs_card_2, "Haptics", "", &sb_battery_percent);
+        hs_title_create(hs_card_2, "Select", "haptics", &sb_battery_percent);
 
         lv_obj_t * hs_row_0 = hs_row_create(hs_card_2);
         lv_obj_set_style_pad_column(hs_row_0, 10, 0);
-        lv_obj_t * hs_button_text_0 = hs_button_text_create(hs_row_0, "Vibration", "", 0);
+        lv_obj_t * hs_button_text_0 = hs_button_text_create(hs_row_0, "Text", "vibration", 0);
         lv_obj_add_event_cb(hs_button_text_0, on_diagnostic_click, LV_EVENT_CLICKED, "vibration");
 
-        lv_obj_t * hs_button_text_1 = hs_button_text_create(hs_row_0, "Buzzer", "", 0);
+        lv_obj_t * hs_button_text_1 = hs_button_text_create(hs_row_0, "Text", "buzzer", 0);
         lv_obj_add_event_cb(hs_button_text_1, on_diagnostic_click, LV_EVENT_CLICKED, "buzzer");
 
         hs_space_create(hs_column_0);
