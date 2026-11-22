@@ -37,15 +37,12 @@ Long-press the home screen to switch watchfaces. These previews show the faces e
 
 ### SiFli LCD DevKit
 
-<img src="src/faces/174_390/preview.png" alt="174 watchface" width="120">
-<img src="src/faces/228_390/preview.png" alt="228 watchface" width="120">
-<img src="src/faces/1889_2_390/preview.png" alt="1889 watchface" width="120">
-<img src="src/faces/1891_2_390/preview.png" alt="1891 watchface" width="120">
+| 174 | 228 | 1889 | 1891 |
+| :---: | :---: | :---: | :---: |
+| <img src="src/faces/174_390/preview.png" alt="174 watchface" width="120"> | <img src="src/faces/228_390/preview.png" alt="228 watchface" width="120"> | <img src="src/faces/1889_2_390/preview.png" alt="1889 watchface" width="120"> | <img src="src/faces/1891_2_390/preview.png" alt="1891 watchface" width="120"> |
 
 ### DIY SFWatch v1.0
 
-<img src="src/faces/116_2_466/preview.png" alt="116 watchface" width="120">
-<img src="src/faces/pixel_resized_466/preview.png" alt="Pixel watchface" width="120">
-<img src="src/faces/756_466/preview.png" alt="756 watchface" width="120">
-<img src="src/faces/uoe_face/preview.png" alt="UOE watchface" width="120">
-<img src="src/faces/gta_vi_dark/preview.png" alt="GTA VI Dark watchface" width="120">
+| 116 | Pixel | 756 | UOE | GTA VI Dark |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="src/faces/116_2_466/preview.png" alt="116 watchface" width="120"> | <img src="src/faces/pixel_resized_466/preview.png" alt="Pixel watchface" width="120"> | <img src="src/faces/756_466/preview.png" alt="756 watchface" width="120"> | <img src="src/faces/uoe_face/preview.png" alt="UOE watchface" width="120"> | <img src="src/faces/gta_vi_dark/preview.png" alt="GTA VI Dark watchface" width="120"> |
